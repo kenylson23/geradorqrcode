@@ -109,7 +109,7 @@ export function QrForm({ onGenerate }: QrFormProps) {
 
   const onSubmit = (data: QrCodeForm) => {
     // Add country code if it's a phone-based type and not already present
-    const modifiedData = { ...data };
+    const modifiedData = { ...data } as any;
     if ((data.type === 'whatsapp' || data.type === 'phone') && data.phone) {
       // If the phone doesn't start with +, add the selected country code
       if (!data.phone.startsWith('+')) {

@@ -12,6 +12,10 @@ export function useQrGenerator() {
     
     switch (data.type) {
       case "url":
+      case "video":
+      case "facebook":
+      case "instagram":
+      case "pdf":
         value = data.url;
         break;
       case "text":
@@ -30,6 +34,15 @@ export function useQrGenerator() {
         break;
       case "phone":
         value = `tel:${data.phone}`;
+        break;
+      case "links":
+        value = data.links.map(l => `${l.label}: ${l.url}`).join("\n");
+        break;
+      case "vcard":
+        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}\nEND:VCARD`;
+        break;
+      case "images":
+        value = data.urls.join("\n");
         break;
     }
 

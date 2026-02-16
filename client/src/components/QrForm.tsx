@@ -62,17 +62,15 @@ const countryCodes = [
 
 const qrOptions: { type: QrType; label: string; description: string; icon: any }[] = [
   { type: "url", label: "Site", description: "Link para qualquer URL de site", icon: Globe },
-  { type: "text", label: "PDF", description: "Exibir um PDF", icon: FileText }, // Reusing text for PDF logic or similar
-  { type: "text", label: "Lista de links", description: "Compartilhar vários links", icon: Share2 },
-  { type: "phone", label: "vCard", description: "Compartilhe um cartão de visita digital", icon: UserCircle },
-  { type: "text", label: "Negócios", description: "Compartilhe informações sobre sua empresa", icon: Briefcase },
-  { type: "url", label: "Vídeo", description: "Mostrar um vídeo", icon: Video },
-  { type: "text", label: "Imagens", description: "Compartilhar várias imagens", icon: ImageIcon },
-  { type: "url", label: "Facebook", description: "Compartilhe sua página do Facebook", icon: Facebook },
-  { type: "url", label: "Instagram", description: "Compartilhe seu Instagram", icon: Instagram },
-  { type: "text", label: "Mídias sociais", description: "Compartilhe seus canais de mídia social", icon: Users },
+  { type: "pdf", label: "PDF", description: "Exibir um PDF", icon: FileText },
+  { type: "links", label: "Lista de links", description: "Compartilhar vários links", icon: Share2 },
+  { type: "vcard", label: "vCard", description: "Compartilhe um cartão de visita digital", icon: UserCircle },
+  { type: "url", label: "Negócios", description: "Compartilhe informações sobre sua empresa", icon: Briefcase },
+  { type: "video", label: "Vídeo", description: "Mostrar um vídeo", icon: Video },
+  { type: "images", label: "Imagens", description: "Compartilhar várias imagens", icon: ImageIcon },
+  { type: "facebook", label: "Facebook", description: "Compartilhe sua página do Facebook", icon: Facebook },
+  { type: "instagram", label: "Instagram", description: "Compartilhe seu Instagram", icon: Instagram },
   { type: "whatsapp", label: "WhatsApp", description: "Receba mensagens do WhatsApp", icon: MessageCircle },
-  { type: "text", label: "MP3", description: "Compartilhar um arquivo de áudio", icon: Music },
 ];
 
 export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
@@ -94,7 +92,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     
     switch (type) {
       case "url":
-        form.reset({ type: "url", url: "" });
+      case "video":
+      case "facebook":
+      case "instagram":
+      case "pdf":
+        form.reset({ type: type as any, url: "" });
         break;
       case "text":
         form.reset({ type: "text", text: "" });
@@ -108,12 +110,21 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       case "phone":
         form.reset({ type: "phone", phone: "" });
         break;
+      case "links":
+        form.reset({ type: "links", links: [{ label: "", url: "" }] });
+        break;
+      case "vcard":
+        form.reset({ type: "vcard", firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "" });
+        break;
+      case "images":
+        form.reset({ type: "images", urls: [""] });
+        break;
     }
   };
 
   const onSubmit = (data: QrCodeForm) => {
     const modifiedData = { ...data } as any;
-    if ((data.type === 'whatsapp' || data.type === 'phone') && data.phone) {
+    if ((data.type === 'whatsapp' || data.type === 'phone' || data.type === 'vcard') && data.phone) {
       if (!data.phone.startsWith('+')) {
         modifiedData.phone = `+${selectedCountryCode}${data.phone.replace(/^0+/, '')}`;
       }
@@ -169,14 +180,19 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               transition={{ duration: 0.2 }}
               className="bg-white p-6 rounded-2xl border border-border shadow-sm min-h-[300px]"
             >
-              {activeType === "url" && (
+              {(activeType === "url" || activeType === "video" || activeType === "facebook" || activeType === "instagram" || activeType === "pdf") && (
                 <div className="space-y-4">
                   <FormField
                     control={form.control}
                     name="url"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">URL do Site</FormLabel>
+                        <FormLabel className="text-base font-semibold text-foreground">
+                          {activeType === "pdf" ? "URL do PDF" : 
+                           activeType === "video" ? "URL do Vídeo" : 
+                           activeType === "facebook" ? "URL do Facebook" : 
+                           activeType === "instagram" ? "URL do Instagram" : "URL do Site"}
+                        </FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="https://example.com" 
@@ -189,6 +205,122 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
+                </div>
+              )}
+
+              {activeType === "vcard" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome</FormLabel>
+                        <FormControl><Input {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sobrenome</FormLabel>
+                        <FormControl><Input {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Telefone</FormLabel>
+                        <div className="flex gap-2">
+                          <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                            <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {countryCodes.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} +{c.code}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormControl><Input {...field} value={field.value || ''} placeholder="923 000 000"/></FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl><Input type="email" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="organization"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Empresa</FormLabel>
+                        <FormControl><Input {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {activeType === "links" && (
+                <div className="space-y-4">
+                  <FormLabel>Links</FormLabel>
+                  {(form.watch("links") || []).map((_, index) => (
+                    <div key={index} className="flex gap-2">
+                      <FormField
+                        control={form.control}
+                        name={`links.${index}.label`}
+                        render={({ field }) => (
+                          <FormControl><Input placeholder="Título" {...field} /></FormControl>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`links.${index}.url`}
+                        render={({ field }) => (
+                          <FormControl><Input placeholder="URL" {...field} /></FormControl>
+                        )}
+                      />
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" onClick={() => {
+                    const current = form.getValues("links") || [];
+                    form.setValue("links", [...current, { label: "", url: "" }]);
+                  }}>Adicionar Link</Button>
+                </div>
+              )}
+
+              {activeType === "images" && (
+                <div className="space-y-4">
+                  <FormLabel>URLs das Imagens</FormLabel>
+                  {(form.watch("urls") || []).map((_, index) => (
+                    <FormField
+                      key={index}
+                      control={form.control}
+                      name={`urls.${index}`}
+                      render={({ field }) => (
+                        <FormControl><Input placeholder="https://image-url.com/photo.jpg" {...field} /></FormControl>
+                      )}
+                    />
+                  ))}
+                  <Button type="button" variant="outline" onClick={() => {
+                    const current = form.getValues("urls") || [];
+                    form.setValue("urls", [...current, ""]);
+                  }}>Adicionar Imagem</Button>
                 </div>
               )}
 

@@ -75,7 +75,7 @@ const qrOptions: { type: QrType; label: string; description: string; icon: any }
   { type: "text", label: "MP3", description: "Compartilhar um arquivo de áudio", icon: Music },
 ];
 
-export function QrForm({ onGenerate }: QrFormProps) {
+export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   const [activeType, setActiveType] = useState<QrType | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState("244");
 

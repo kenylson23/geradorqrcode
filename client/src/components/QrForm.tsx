@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Select,
   SelectContent,
@@ -26,14 +25,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { 
-  Link as LinkIcon, 
-  Type, 
-  Phone, 
-  Mail, 
+  Globe, 
+  FileText, 
+  Share2, 
+  UserCircle, 
+  Briefcase, 
+  Video, 
+  Image as ImageIcon, 
+  Facebook, 
+  Instagram, 
+  Users, 
   MessageCircle, 
+  Music,
   Sparkles
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface QrFormProps {
@@ -53,24 +59,23 @@ const countryCodes = [
   { code: "670", name: "TL (+670)", flag: "🇹🇱" },
 ];
 
-const icons: Record<QrType, React.ReactNode> = {
-  url: <LinkIcon className="w-4 h-4" />,
-  text: <Type className="w-4 h-4" />,
-  whatsapp: <MessageCircle className="w-4 h-4" />,
-  email: <Mail className="w-4 h-4" />,
-  phone: <Phone className="w-4 h-4" />,
-};
-
-const labels: Record<QrType, string> = {
-  url: "Website",
-  text: "Texto",
-  whatsapp: "WhatsApp",
-  email: "E-mail",
-  phone: "Telefone",
-};
+const qrOptions: { type: QrType; label: string; description: string; icon: any }[] = [
+  { type: "url", label: "Site", description: "Link para qualquer URL de site", icon: Globe },
+  { type: "text", label: "PDF", description: "Exibir um PDF", icon: FileText }, // Reusing text for PDF logic or similar
+  { type: "text", label: "Lista de links", description: "Compartilhar vários links", icon: Share2 },
+  { type: "phone", label: "vCard", description: "Compartilhe um cartão de visita digital", icon: UserCircle },
+  { type: "text", label: "Negócios", description: "Compartilhe informações sobre sua empresa", icon: Briefcase },
+  { type: "url", label: "Vídeo", description: "Mostrar um vídeo", icon: Video },
+  { type: "text", label: "Imagens", description: "Compartilhar várias imagens", icon: ImageIcon },
+  { type: "url", label: "Facebook", description: "Compartilhe sua página do Facebook", icon: Facebook },
+  { type: "url", label: "Instagram", description: "Compartilhe seu Instagram", icon: Instagram },
+  { type: "text", label: "Mídias sociais", description: "Compartilhe seus canais de mídia social", icon: Users },
+  { type: "whatsapp", label: "WhatsApp", description: "Receba mensagens do WhatsApp", icon: MessageCircle },
+  { type: "text", label: "MP3", description: "Compartilhar um arquivo de áudio", icon: Music },
+];
 
 export function QrForm({ onGenerate }: QrFormProps) {
-  const [activeTab, setActiveTab] = useState<QrType>("url");
+  const [activeType, setActiveType] = useState<QrType | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState("244");
 
   const form = useForm<QrCodeForm>({
@@ -82,12 +87,9 @@ export function QrForm({ onGenerate }: QrFormProps) {
     mode: "onChange"
   });
 
-  // Reset form when tab changes
-  const handleTabChange = (value: string) => {
-    const type = value as QrType;
-    setActiveTab(type);
+  const handleTypeSelect = (type: QrType) => {
+    setActiveType(type);
     
-    // Set appropriate default values for the new type
     switch (type) {
       case "url":
         form.reset({ type: "url", url: "" });
@@ -108,10 +110,8 @@ export function QrForm({ onGenerate }: QrFormProps) {
   };
 
   const onSubmit = (data: QrCodeForm) => {
-    // Add country code if it's a phone-based type and not already present
     const modifiedData = { ...data } as any;
     if ((data.type === 'whatsapp' || data.type === 'phone') && data.phone) {
-      // If the phone doesn't start with +, add the selected country code
       if (!data.phone.startsWith('+')) {
         modifiedData.phone = `+${selectedCountryCode}${data.phone.replace(/^0+/, '')}`;
       }
@@ -119,34 +119,53 @@ export function QrForm({ onGenerate }: QrFormProps) {
     onGenerate(modifiedData);
   };
 
+  if (!activeType) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-foreground mb-8">1. Selecione um tipo de código QR</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {qrOptions.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleTypeSelect(option.type)}
+              className="group flex flex-col items-center p-6 bg-white rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+              data-testid={`button-qr-type-${option.type}-${index}`}
+            >
+              <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
+                <option.icon className="w-6 h-6 text-primary" />
+              </div>
+              <span className="font-bold text-foreground text-center mb-1">{option.label}</span>
+              <span className="text-[10px] text-muted-foreground text-center leading-tight">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="w-full grid grid-cols-5 p-1 bg-muted/50 rounded-xl mb-6">
-          {qrTypes.map((type) => (
-            <TabsTrigger 
-              key={type} 
-              value={type}
-              className="flex flex-col sm:flex-row items-center gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all duration-200"
-            >
-              {icons[type]}
-              <span className="hidden sm:inline text-xs font-medium">{labels[type]}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <Button 
+        variant="ghost" 
+        onClick={() => setActiveType(null)} 
+        className="mb-4 text-muted-foreground hover:text-primary"
+      >
+        ← Voltar para seleção
+      </Button>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white p-6 rounded-2xl border border-border shadow-sm min-h-[300px]"
-              >
-                <TabsContent value="url" className="mt-0 space-y-4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeType}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white p-6 rounded-2xl border border-border shadow-sm min-h-[300px]"
+            >
+              {activeType === "url" && (
+                <div className="space-y-4">
                   <FormField
                     control={form.control}
                     name="url"
@@ -155,41 +174,42 @@ export function QrForm({ onGenerate }: QrFormProps) {
                         <FormLabel className="text-base font-semibold text-foreground">URL do Site</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="https://www.angola-online.ao" 
+                            placeholder="https://example.com" 
                             {...field} 
                             value={field.value || ''}
-                            className="input-field"
+                            className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20"
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <p className="text-sm text-muted-foreground">Cole o link para o qual você deseja que as pessoas sejam direcionadas.</p>
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="text" className="mt-0 space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="text"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Texto Simples</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Olá! Este é um código QR de texto." 
-                            className="min-h-[150px] resize-none rounded-xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 p-4"
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TabsContent>
+              {activeType === "text" && (
+                <FormField
+                  control={form.control}
+                  name="text"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold text-foreground">Conteúdo do Texto</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Digite seu texto aqui..." 
+                          className="min-h-[150px] resize-none rounded-xl border-2 border-border focus-visible:ring-primary/20"
+                          {...field} 
+                          value={field.value || ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-                <TabsContent value="whatsapp" className="mt-0 space-y-4">
+              {activeType === "whatsapp" && (
+                <div className="space-y-4">
                   <FormField
                     control={form.control}
                     name="phone"
@@ -215,7 +235,7 @@ export function QrForm({ onGenerate }: QrFormProps) {
                           <FormControl>
                             <Input 
                               placeholder="923 000 000" 
-                              className="input-field flex-1"
+                              className="h-12 rounded-xl border-2 border-border flex-1"
                               {...field} 
                               value={field.value || ''}
                             />
@@ -234,7 +254,7 @@ export function QrForm({ onGenerate }: QrFormProps) {
                         <FormControl>
                           <Textarea 
                             placeholder="Olá, gostaria de mais informações..." 
-                            className="min-h-[100px] resize-none rounded-xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 p-4"
+                            className="min-h-[100px] resize-none rounded-xl border-2 border-border"
                             {...field} 
                             value={field.value || ''}
                           />
@@ -243,116 +263,58 @@ export function QrForm({ onGenerate }: QrFormProps) {
                       </FormItem>
                     )}
                   />
-                </TabsContent>
+                </div>
+              )}
 
-                <TabsContent value="email" className="mt-0 space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">E-mail de Destino</FormLabel>
+              {activeType === "phone" && (
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold text-foreground">Número de Telefone</FormLabel>
+                      <div className="flex gap-2">
+                        <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                          <SelectTrigger className="w-[120px] h-12 rounded-xl border-2 border-border">
+                            <SelectValue placeholder="Código" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryCodes.map((c) => (
+                              <SelectItem key={c.code} value={c.code}>
+                                <span className="flex items-center gap-2">
+                                  <span>{c.flag}</span>
+                                  <span>+{c.code}</span>
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormControl>
                           <Input 
-                            placeholder="contacto@empresa.ao" 
-                            className="input-field"
+                            placeholder="222 123 456" 
+                            className="h-12 rounded-xl border-2 border-border flex-1"
                             {...field} 
                             value={field.value || ''}
                           />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="subject"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Assunto (Opcional)</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="Dúvida sobre produto" 
-                            className="input-field"
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="body"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Corpo do E-mail (Opcional)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Escreva sua mensagem aqui..." 
-                            className="min-h-[100px] resize-none rounded-xl border-2 border-border focus:border-primary focus:ring-4 focus:ring-primary/10 p-4"
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TabsContent>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-                <TabsContent value="phone" className="mt-0 space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Número de Telefone</FormLabel>
-                        <div className="flex gap-2">
-                          <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
-                            <SelectTrigger className="w-[120px] h-12 rounded-xl border-2 border-border">
-                              <SelectValue placeholder="Código" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {countryCodes.map((c) => (
-                                <SelectItem key={c.code} value={c.code}>
-                                  <span className="flex items-center gap-2">
-                                    <span>{c.flag}</span>
-                                    <span>+{c.code}</span>
-                                  </span>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormControl>
-                            <Input 
-                              placeholder="222 123 456" 
-                              className="input-field flex-1"
-                              {...field} 
-                              value={field.value || ''}
-                            />
-                          </FormControl>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <p className="text-sm text-muted-foreground">O código QR iniciará uma chamada telefônica quando escaneado.</p>
-                </TabsContent>
-              </motion.div>
-            </AnimatePresence>
-
-            <Button 
-              type="submit" 
-              className="w-full h-14 text-lg font-semibold rounded-xl bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <Sparkles className="mr-2 h-5 w-5" />
-              Gerar QR Code
-            </Button>
-          </form>
-        </Form>
-      </Tabs>
+          <Button 
+            type="submit" 
+            className="w-full h-14 text-lg font-semibold rounded-xl bg-primary hover:bg-primary/90"
+          >
+            <Sparkles className="mr-2 h-5 w-5" />
+            Gerar QR Code
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }

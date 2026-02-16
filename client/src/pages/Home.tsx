@@ -3,13 +3,15 @@ import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
 import { QrResult } from "@/components/QrResult";
 import { useQrGenerator } from "@/hooks/use-qr-generator";
+import { useState } from "react";
 
 export default function Home() {
   const { qrData, generate, download, reset } = useQrGenerator();
+  const [currentStep, setCurrentStep] = useState(1);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
-      <Header />
+      <Header currentStep={currentStep} />
 
       <main className="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -18,7 +20,13 @@ export default function Home() {
             {/* Left Column: Form and Selection */}
             <div className="lg:col-span-8">
               <div className="bg-white rounded-3xl p-8 border border-border shadow-sm">
-                <QrForm onGenerate={generate} />
+                <QrForm 
+                  onGenerate={(data) => {
+                    generate(data);
+                    setCurrentStep(3);
+                  }} 
+                  onStepChange={setCurrentStep}
+                />
               </div>
             </div>
 

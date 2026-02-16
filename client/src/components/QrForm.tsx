@@ -44,6 +44,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface QrFormProps {
   onGenerate: (data: QrCodeForm) => void;
+  onStepChange: (step: number) => void;
 }
 
 const countryCodes = [
@@ -89,6 +90,7 @@ export function QrForm({ onGenerate }: QrFormProps) {
 
   const handleTypeSelect = (type: QrType) => {
     setActiveType(type);
+    onStepChange(2);
     
     switch (type) {
       case "url":
@@ -147,7 +149,10 @@ export function QrForm({ onGenerate }: QrFormProps) {
     <div className="w-full">
       <Button 
         variant="ghost" 
-        onClick={() => setActiveType(null)} 
+        onClick={() => {
+          setActiveType(null);
+          onStepChange(1);
+        }} 
         className="mb-4 text-muted-foreground hover:text-primary"
       >
         ← Voltar para seleção

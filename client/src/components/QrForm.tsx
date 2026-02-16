@@ -37,10 +37,12 @@ import {
   Users, 
   MessageCircle, 
   Music,
-  Sparkles
+  Sparkles,
+  Upload
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
 
 interface QrFormProps {
   onGenerate: (data: QrCodeForm) => void;
@@ -76,6 +78,8 @@ const qrOptions: { type: QrType; label: string; description: string; icon: any }
 export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   const [activeType, setActiveType] = useState<QrType | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState("244");
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const form = useForm<QrCodeForm>({
     resolver: zodResolver(qrCodeFormSchema),
@@ -85,6 +89,38 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     },
     mode: "onChange"
   });
+
+  const uploadFile = async (file: File) => {
+    setIsUploading(true);
+    setProgress(0);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Upload error:", error);
+      return null;
+    } finally {
+      setIsUploading(false);
+      setProgress(100);
+    }
+  };
+
+  const handleFileUpload = async (file: File, fieldName: any) => {
+    const result = await uploadFile(file);
+    if (result) {
+      form.setValue(fieldName, result.url || result.objectPath);
+    }
+  };
 
   const handleTypeSelect = (type: QrType) => {
     setActiveType(type);
@@ -345,26 +381,22 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       )}
                     />
                   ))}
-                  <div className="flex flex-col gap-2">
-                    <FormLabel className="text-sm font-medium">Ou faça upload de imagens</FormLabel>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={async (e) => {
-                        if (e.target.files) {
-                          const newUrls = [...(form.getValues("fileUrls") || [])];
-                          for (const file of Array.from(e.target.files)) {
-                            const result = await uploadFile(file);
-                            if (result) newUrls.push(result.objectPath);
-                          }
-                          form.setValue("fileUrls", newUrls);
+                  <Button type="button" variant="outline" onClick={async () => {
+                    const current = form.getValues("urls") || [];
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = async (e: any) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const result = await uploadFile(file);
+                        if (result) {
+                          form.setValue("urls", [...current, result.url || result.objectPath]);
                         }
-                      }}
-                      disabled={isUploading}
-                    />
-                    {isUploading && <Progress value={progress} className="h-2" />}
-                  </div>
+                      }
+                    };
+                    input.click();
+                  }}>Upload de Imagem</Button>
                   <Button type="button" variant="outline" onClick={() => {
                     const current = form.getValues("urls") || [];
                     form.setValue("urls", [...current, ""]);

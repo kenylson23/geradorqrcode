@@ -19,6 +19,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
   Link as LinkIcon, 
   Type, 
   Phone, 
@@ -32,6 +39,19 @@ import { motion, AnimatePresence } from "framer-motion";
 interface QrFormProps {
   onGenerate: (data: QrCodeForm) => void;
 }
+
+const countryCodes = [
+  { code: "244", name: "AO (+244)", flag: "🇦🇴" },
+  { code: "351", name: "PT (+351)", flag: "🇵🇹" },
+  { code: "55", name: "BR (+55)", flag: "🇧🇷" },
+  { code: "1", name: "US (+1)", flag: "🇺🇸" },
+  { code: "44", name: "UK (+44)", flag: "🇬🇧" },
+  { code: "238", name: "CV (+238)", flag: "🇨🇻" },
+  { code: "258", name: "MZ (+258)", flag: "🇲🇿" },
+  { code: "239", name: "ST (+239)", flag: "🇸🇹" },
+  { code: "245", name: "GW (+245)", flag: "🇬🇼" },
+  { code: "670", name: "TL (+670)", flag: "🇹🇱" },
+];
 
 const icons: Record<QrType, React.ReactNode> = {
   url: <LinkIcon className="w-4 h-4" />,
@@ -51,6 +71,7 @@ const labels: Record<QrType, string> = {
 
 export function QrForm({ onGenerate }: QrFormProps) {
   const [activeTab, setActiveTab] = useState<QrType>("url");
+  const [selectedCountryCode, setSelectedCountryCode] = useState("244");
 
   const form = useForm<QrCodeForm>({
     resolver: zodResolver(qrCodeFormSchema),
@@ -87,7 +108,15 @@ export function QrForm({ onGenerate }: QrFormProps) {
   };
 
   const onSubmit = (data: QrCodeForm) => {
-    onGenerate(data);
+    // Add country code if it's a phone-based type and not already present
+    const modifiedData = { ...data };
+    if ((data.type === 'whatsapp' || data.type === 'phone') && data.phone) {
+      // If the phone doesn't start with +, add the selected country code
+      if (!data.phone.startsWith('+')) {
+        modifiedData.phone = `+${selectedCountryCode}${data.phone.replace(/^0+/, '')}`;
+      }
+    }
+    onGenerate(modifiedData);
   };
 
   return (
@@ -167,14 +196,31 @@ export function QrForm({ onGenerate }: QrFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-base font-semibold text-foreground">Número do WhatsApp</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="+244 923 000 000" 
-                            className="input-field"
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
+                        <div className="flex gap-2">
+                          <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                            <SelectTrigger className="w-[120px] h-12 rounded-xl border-2 border-border">
+                              <SelectValue placeholder="Código" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryCodes.map((c) => (
+                                <SelectItem key={c.code} value={c.code}>
+                                  <span className="flex items-center gap-2">
+                                    <span>{c.flag}</span>
+                                    <span>+{c.code}</span>
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormControl>
+                            <Input 
+                              placeholder="923 000 000" 
+                              className="input-field flex-1"
+                              {...field} 
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -263,14 +309,31 @@ export function QrForm({ onGenerate }: QrFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-base font-semibold text-foreground">Número de Telefone</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="+244 222 123 456" 
-                            className="input-field"
-                            {...field} 
-                            value={field.value || ''}
-                          />
-                        </FormControl>
+                        <div className="flex gap-2">
+                          <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                            <SelectTrigger className="w-[120px] h-12 rounded-xl border-2 border-border">
+                              <SelectValue placeholder="Código" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countryCodes.map((c) => (
+                                <SelectItem key={c.code} value={c.code}>
+                                  <span className="flex items-center gap-2">
+                                    <span>{c.flag}</span>
+                                    <span>+{c.code}</span>
+                                  </span>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormControl>
+                            <Input 
+                              placeholder="222 123 456" 
+                              className="input-field flex-1"
+                              {...field} 
+                              value={field.value || ''}
+                            />
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -293,3 +356,4 @@ export function QrForm({ onGenerate }: QrFormProps) {
     </div>
   );
 }
+

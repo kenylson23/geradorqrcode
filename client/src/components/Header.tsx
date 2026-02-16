@@ -26,7 +26,7 @@ export function Header() {
               <span className="text-sm font-semibold">Tipo de código QR</span>
               <div className="w-12 h-px bg-muted-foreground/30 mx-2" />
               <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-bold">2</div>
-              <span className="text-sm font-medium text-muted-foreground">Contente</span>
+              <span className="text-sm font-medium text-muted-foreground">Conteúdo</span>
               <div className="w-12 h-px bg-muted-foreground/30 mx-2" />
               <div className="w-6 h-6 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-bold">3</div>
               <span className="text-sm font-medium text-muted-foreground">Design QR</span>

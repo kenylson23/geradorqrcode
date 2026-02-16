@@ -16,7 +16,7 @@ export function useQrGenerator() {
       case "facebook":
       case "instagram":
       case "pdf":
-        value = data.url;
+        value = (data as any).fileUrl ? `${window.location.origin}${(data as any).fileUrl}` : ((data as any).url || "");
         break;
       case "text":
         value = data.text;
@@ -39,10 +39,12 @@ export function useQrGenerator() {
         value = data.links.map(l => `${l.label}: ${l.url}`).join("\n");
         break;
       case "vcard":
-        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}\nEND:VCARD`;
+        const photo = (data as any).photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${(data as any).photoUrl}` : "";
+        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}${photo}\nEND:VCARD`;
         break;
       case "images":
-        value = data.urls.join("\n");
+        const urls = [...((data as any).urls || []), ...((data as any).fileUrls || []).map((path: string) => `${window.location.origin}${path}`)];
+        value = urls.join("\n");
         break;
     }
 

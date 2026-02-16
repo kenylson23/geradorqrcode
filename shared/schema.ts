@@ -11,7 +11,8 @@ export type QrType = typeof qrTypes[number];
 // Schema for URL QR Code (Used for site, video, facebook, instagram)
 export const urlQrSchema = z.object({
   type: z.enum(["url", "video", "facebook", "instagram"]),
-  url: z.string().url({ message: "Please enter a valid URL" }),
+  url: z.string().url({ message: "Please enter a valid URL" }).optional(),
+  fileUrl: z.string().optional(),
 });
 
 // Schema for Text QR Code
@@ -23,7 +24,8 @@ export const textQrSchema = z.object({
 // Schema for PDF QR Code
 export const pdfQrSchema = z.object({
   type: z.literal("pdf"),
-  url: z.string().url({ message: "Please enter a valid PDF URL" }),
+  url: z.string().url({ message: "Please enter a valid PDF URL" }).optional(),
+  fileUrl: z.string().optional(),
 });
 
 // Schema for Links List QR Code
@@ -44,12 +46,14 @@ export const vcardQrSchema = z.object({
   email: z.string().email().optional(),
   organization: z.string().optional(),
   jobTitle: z.string().optional(),
+  photoUrl: z.string().optional(),
 });
 
 // Schema for Images QR Code
 export const imagesQrSchema = z.object({
   type: z.literal("images"),
-  urls: z.array(z.string().url()).min(1, "At least one image URL is required"),
+  urls: z.array(z.string().url()).optional(),
+  fileUrls: z.array(z.string()).optional(),
 });
 
 // Schema for WhatsApp QR Code

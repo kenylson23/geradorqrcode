@@ -246,6 +246,47 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     );
   };
 
+  const renderUrlPreview = (val: string) => {
+    return (
+      <div className="w-full flex flex-col h-full bg-[#FF9F43]">
+        {/* Browser Top Bar */}
+        <div className="px-4 pt-4 pb-2">
+          <div className="bg-white/20 backdrop-blur-md rounded-full h-10 flex items-center px-4 gap-3 border border-white/20">
+            <Globe className="w-4 h-4 text-white" />
+            <span className="text-[10px] text-white font-medium truncate">
+              {val}
+            </span>
+          </div>
+        </div>
+
+        {/* Website Content Mockup */}
+        <div className="flex-1 bg-white mt-4 rounded-t-[2.5rem] p-6 space-y-6">
+          {/* Main Image Placeholder */}
+          <div className="w-full aspect-[4/3] bg-slate-100 rounded-2xl flex items-center justify-center">
+            <Globe className="w-12 h-12 text-slate-200" />
+          </div>
+
+          {/* Text Skeletons */}
+          <div className="space-y-3">
+            <div className="h-4 bg-slate-100 rounded-full w-full" />
+            <div className="h-4 bg-slate-100 rounded-full w-[90%]" />
+          </div>
+
+          <div className="flex justify-center pt-4">
+             <div className="h-4 bg-slate-100 rounded-full w-1/2" />
+          </div>
+
+          {/* Bottom Button Placeholder */}
+          <div className="mt-auto pt-8">
+            <div className="h-12 bg-slate-100 rounded-xl w-full flex items-center justify-center">
+               <div className="h-3 bg-slate-200 rounded-full w-1/3" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -261,9 +302,15 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </div>
 
         {/* Screen Content */}
-        <div className="flex-1 bg-white flex flex-col">
+        <div className="flex-1 bg-white flex flex-col relative">
+          {activeTab === "details" && value.startsWith("http") ? (
+            <div className="absolute inset-0 z-10">
+              {renderUrlPreview(value)}
+            </div>
+          ) : null}
+
           {/* Header/Tabs */}
-          <div className="pt-12 px-6 pb-4 border-b border-slate-100 flex justify-center gap-4">
+          <div className="pt-12 px-6 pb-4 border-b border-slate-100 flex justify-center gap-4 bg-white">
             <button
               onClick={() => setActiveTab("qr")}
               className={`flex flex-col items-center gap-1 transition-colors ${
@@ -326,37 +373,41 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   exit={{ opacity: 0, x: -10 }}
                   className="w-full space-y-4"
                 >
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-bold text-slate-900 font-display">Conteúdo</h3>
-                    <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Dados codificados</p>
-                  </div>
+                  {!value.startsWith("http") && (
+                    <>
+                      <div className="text-center mb-6">
+                        <h3 className="text-xl font-bold text-slate-900 font-display">Conteúdo</h3>
+                        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Dados codificados</p>
+                      </div>
 
-                  <div className="space-y-4 text-left w-full">
-                    {value.includes("TITLE:") && value.includes("ORG:") ? (
-                      renderBusinessPreview(value)
-                    ) : value.startsWith("BEGIN:VCARD") ? (
-                      renderVCardPreview(value)
-                    ) : (
-                      <>
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">Tipo de Dado</span>
-                          <p className="text-sm font-semibold text-slate-700">{getContentType(value)}</p>
-                        </div>
+                      <div className="space-y-4 text-left w-full">
+                        {value.includes("TITLE:") && value.includes("ORG:") ? (
+                          renderBusinessPreview(value)
+                        ) : value.startsWith("BEGIN:VCARD") ? (
+                          renderVCardPreview(value)
+                        ) : (
+                          <>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase">Tipo de Dado</span>
+                              <p className="text-sm font-semibold text-slate-700">{getContentType(value)}</p>
+                            </div>
 
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 overflow-hidden">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">Valor do Conteúdo</span>
-                          <p className="text-sm text-slate-600 break-all leading-relaxed whitespace-pre-wrap mt-1">
-                            {value}
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 overflow-hidden">
+                              <span className="text-[10px] font-bold text-slate-400 uppercase">Valor do Conteúdo</span>
+                              <p className="text-sm text-slate-600 break-all leading-relaxed whitespace-pre-wrap mt-1">
+                                {value}
+                              </p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <div className="flex flex-col w-full gap-3 mt-auto mb-8 pt-6">
+            <div className="flex flex-col w-full gap-3 mt-auto mb-8 pt-6 z-20">
               <Button 
                 onClick={onDownload}
                 className="w-full h-11 text-sm rounded-xl" 
@@ -390,7 +441,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           </div>
 
           {/* Home Indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-slate-200 rounded-full" />
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-slate-200 rounded-full z-20" />
         </div>
       </div>
     </motion.div>

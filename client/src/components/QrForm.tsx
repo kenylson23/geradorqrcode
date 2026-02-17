@@ -1320,6 +1320,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                   </div>
                 </div>
               )}
+
+              {activeType === "text" && (
                 <FormField
                   control={form.control}
                   name="text"

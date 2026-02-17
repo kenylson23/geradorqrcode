@@ -87,31 +87,41 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     mode: "onChange"
   });
 
-  const uploadFile = async (file: File) => {
-    setIsUploading(true);
-    setProgress(0);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!response.ok) throw new Error("Upload failed");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Upload error:", error);
-      return null;
-    } finally {
-      setIsUploading(false);
-      setProgress(100);
-    }
-  };
-
   const handleFileUpload = async (file: File, fieldName: any) => {
-    const result = await uploadFile(file);
-    if (result) {
-      form.setValue(fieldName, result.url || result.objectPath);
+    setIsUploading(true);
+    setProgress(10);
+    try {
+      const response = await fetch("/api/uploads/request-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type || "application/pdf",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to get upload URL");
+      const { uploadURL, objectPath } = await response.json();
+
+      setProgress(30);
+      const uploadRes = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type || "application/pdf" },
+      });
+
+      if (!uploadRes.ok) throw new Error("Upload failed");
+
+      setProgress(100);
+      const finalUrl = window.location.origin + objectPath;
+      form.setValue(fieldName, finalUrl);
       // Trigger update after file upload
       onGenerate(form.getValues());
+    } catch (error) {
+      console.error("Upload error:", error);
+    } finally {
+      setIsUploading(false);
     }
   };
 

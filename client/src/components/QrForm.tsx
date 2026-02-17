@@ -156,7 +156,17 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         });
         break;
       case "vcard":
-        form.reset({ type: "vcard", firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "" });
+        form.reset({ 
+          type: "vcard", 
+          firstName: "", 
+          lastName: "", 
+          phone: "", 
+          email: "", 
+          organization: "", 
+          jobTitle: "",
+          website: "",
+          location: ""
+        });
         break;
       case "images":
         form.reset({ type: "images", urls: [""] });
@@ -341,6 +351,28 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       <FormItem>
                         <FormLabel>Empresa</FormLabel>
                         <FormControl><Input {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Website</FormLabel>
+                        <FormControl><Input placeholder="https://..." {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Localização</FormLabel>
+                        <FormControl><Input placeholder="Endereço ou Cidade" {...field} value={field.value || ''}/></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

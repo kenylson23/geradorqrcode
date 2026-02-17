@@ -40,7 +40,9 @@ export function useQrGenerator() {
         break;
       case "vcard":
         const photo = (data as any).photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${(data as any).photoUrl}` : "";
-        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}${photo}\nEND:VCARD`;
+        const website = (data as any).website ? `\nURL:${(data as any).website}` : "";
+        const location = (data as any).location ? `\nADR:;;${(data as any).location};;;;` : "";
+        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}${photo}${website}${location}\nEND:VCARD`;
         break;
       case "images":
         const urls = [...((data as any).urls || []), ...((data as any).fileUrls || []).map((path: string) => `${window.location.origin}${path}`)];

@@ -68,8 +68,12 @@ export const vcardQrSchema = z.object({
 // Schema for Images QR Code
 export const imagesQrSchema = z.object({
   type: z.literal("images"),
+  title: z.string().optional(),
+  description: z.string().optional(),
   urls: z.array(z.string().url()).optional(),
   fileUrls: z.array(z.string()).optional(),
+  buttonName: z.string().optional(),
+  buttonLink: z.string().url().optional(),
 });
 
 // Schema for WhatsApp QR Code

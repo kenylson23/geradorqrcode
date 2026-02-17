@@ -174,7 +174,14 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         });
         break;
       case "images":
-        form.reset({ type: "images", urls: [""] });
+        form.reset({ 
+          type: "images", 
+          title: "",
+          description: "",
+          urls: [""],
+          buttonName: "",
+          buttonLink: ""
+        });
         break;
       case "business":
         form.reset({ 
@@ -1142,6 +1149,145 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                           </Button>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "images" && (
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Título da Galeria</FormLabel>
+                        <FormControl><Input placeholder="Ex: Minhas Férias" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descrição da Galeria</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Conte um pouco sobre estas fotos..." 
+                            className="resize-none"
+                            {...field} 
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="space-y-4 pt-4 border-t">
+                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Botão de Ação (Opcional)</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="buttonName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome do Botão</FormLabel>
+                            <FormControl><Input placeholder="Ex: Ver Site" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="buttonLink"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Link do Botão</FormLabel>
+                            <FormControl><Input placeholder="https://..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 pt-4 border-t">
+                    <FormLabel className="text-base font-semibold">Imagens</FormLabel>
+                    <div className="flex flex-col gap-3">
+                      {(form.watch("urls" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2">
+                          <FormField
+                            control={form.control}
+                            name={`urls.${index}`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl>
+                                  <Input 
+                                    placeholder="URL da Imagem (https://...)" 
+                                    {...field} 
+                                    className="h-10"
+                                  />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-destructive"
+                            onClick={() => {
+                              const current = form.getValues("urls" as any) || [];
+                              form.setValue("urls" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-dashed"
+                        onClick={() => {
+                          const current = form.getValues("urls" as any) || [];
+                          form.setValue("urls" as any, [...current, ""]);
+                        }}
+                      >
+                        + Adicionar URL de Imagem
+                      </Button>
+                    </div>
+
+                    <div className="mt-4 p-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+                      <FormLabel className="text-sm font-medium mb-2 block">Ou faça upload de arquivos</FormLabel>
+                      <Input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={async (e) => {
+                          if (e.target.files) {
+                            const currentFileUrls = form.getValues("fileUrls" as any) || [];
+                            const newUrls = [...currentFileUrls];
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              const result = await uploadFile(e.target.files[i]);
+                              if (result) newUrls.push(result.url || result.objectPath);
+                            }
+                            form.setValue("fileUrls" as any, newUrls);
+                          }
+                        }}
+                        disabled={isUploading}
+                        className="cursor-pointer bg-white"
+                      />
+                      {isUploading && <Progress value={progress} className="h-2 mt-2" />}
+                      {(form.watch("fileUrls" as any) || []).length > 0 && (
+                        <p className="text-xs text-green-600 font-medium mt-2 flex items-center gap-1">
+                          <Upload className="w-3 h-3" /> {(form.watch("fileUrls" as any)).length} imagens carregadas!
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

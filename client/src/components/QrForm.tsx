@@ -97,7 +97,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     setIsUploading(true);
     setProgress(10);
     try {
-      // Para arquivos pequenos (< 3KB), podemos embutir no QR
+      // Para arquivos pequenos (< 3KB), podemos embutir no QR (base64)
       // Para arquivos maiores, precisamos de uma URL (Object Storage)
       if (file.size <= 3 * 1024) {
         setProgress(20);
@@ -111,6 +111,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         setProgress(100);
       } else {
         // Upload para o Object Storage para arquivos > 3KB
+        // NOTA: No Netlify/Deploy Estático, este endpoint /api/uploads/request-url não existirá 
+        // a menos que você configure Netlify Functions ou use um serviço externo.
         setProgress(20);
         const response = await fetch("/api/uploads/request-url", {
           method: "POST",
@@ -122,7 +124,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
           }),
         });
 
-        if (!response.ok) throw new Error("Falha ao solicitar URL de upload");
+        if (!response.ok) throw new Error("Serviço de upload não disponível em deploy estático");
         
         const { uploadURL, objectPath } = await response.json();
         setProgress(50);
@@ -136,17 +138,15 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         if (!uploadRes.ok) throw new Error("Falha no upload do arquivo");
         
         setProgress(90);
-        // A URL final para o QR Code será a rota de acesso ao objeto
         const publicUrl = `${window.location.origin}${objectPath}`;
         form.setValue(fieldName, publicUrl);
         setProgress(100);
       }
       
-      // Atualiza o preview em tempo real
       onGenerate(form.getValues());
     } catch (error) {
       console.error("Erro no processamento do arquivo:", error);
-      alert("Erro ao processar arquivo. Tente novamente.");
+      alert("Atenção: O upload de arquivos grandes requer um servidor ativo. Em deploys puramente estáticos (como Netlify sem Functions), apenas links diretos ou arquivos minúsculos (<3KB) funcionarão.");
     } finally {
       setTimeout(() => {
         setIsUploading(false);

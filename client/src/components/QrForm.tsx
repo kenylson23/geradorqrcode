@@ -278,22 +278,64 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                     )}
                   />
                   {activeType === "video" && (
-                    <div className="space-y-2">
-                      <FormLabel className="text-sm font-medium">Ou faça upload do arquivo</FormLabel>
-                      <div className="flex flex-col gap-2">
-                        <Input
-                          type="file"
-                          accept="video/*"
-                          onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "fileUrl")}
-                          disabled={isUploading}
-                          className="cursor-pointer"
-                        />
-                        {isUploading && <Progress value={progress} className="h-2" />}
-                        {form.watch("fileUrl") && (
-                          <p className="text-xs text-green-600 font-medium flex items-center gap-1">
-                            <Upload className="w-3 h-3" /> Arquivo carregado com sucesso!
-                          </p>
+                    <div className="space-y-4 pt-4 border-t mt-4">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome da Pessoa ou Empresa</FormLabel>
+                            <FormControl><Input placeholder="Ex: João Silva ou Empresa ACME" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Título do Vídeo</FormLabel>
+                            <FormControl><Input placeholder="Ex: Tutorial de Uso" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Descrição do Vídeo</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Uma breve descrição sobre o que trata o vídeo..." 
+                                className="resize-none"
+                                {...field} 
+                                value={field.value || ''}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="space-y-2">
+                        <FormLabel className="text-sm font-medium">Ou faça upload do arquivo</FormLabel>
+                        <div className="flex flex-col gap-2">
+                          <Input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "fileUrl")}
+                            disabled={isUploading}
+                            className="cursor-pointer"
+                          />
+                          {isUploading && <Progress value={progress} className="h-2" />}
+                          {form.watch("fileUrl") && (
+                            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                              <Upload className="w-3 h-3" /> Arquivo carregado com sucesso!
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}

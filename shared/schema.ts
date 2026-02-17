@@ -13,6 +13,9 @@ export const urlQrSchema = z.object({
   type: z.enum(["url", "video", "facebook", "instagram"]),
   url: z.string().url({ message: "Please enter a valid URL" }).optional(),
   fileUrl: z.string().optional(),
+  companyName: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
 });
 
 // Schema for Text QR Code

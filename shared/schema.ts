@@ -36,7 +36,8 @@ export const linksQrSchema = z.object({
   photoUrl: z.string().optional(),
   links: z.array(z.object({
     label: z.string().min(1),
-    url: z.string().url()
+    url: z.string().url(),
+    iconUrl: z.string().optional()
   })).min(1, "At least one link is required"),
 });
 

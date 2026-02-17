@@ -424,6 +424,23 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                             </FormItem>
                           )}
                         />
+                        <div className="space-y-2">
+                          <FormLabel className="text-xs">Ícone/Logo do Link</FormLabel>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], `links.${index}.iconUrl`)}
+                              disabled={isUploading}
+                              className="h-8 text-xs cursor-pointer"
+                            />
+                            {form.watch(`links.${index}.iconUrl`) && (
+                              <div className="w-8 h-8 rounded border bg-white flex items-center justify-center overflow-hidden shrink-0">
+                                <img src={form.watch(`links.${index}.iconUrl`)} alt="Icon" className="w-full h-full object-cover" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
                         {index > 0 && (
                           <Button 
                             type="button" 

@@ -89,28 +89,69 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   });
 
   const handleFileUpload = async (file: File, fieldName: any) => {
+    if (file.size > 10 * 1024 * 1024) {
+      alert("O arquivo excede o limite de 10MB.");
+      return;
+    }
+
     setIsUploading(true);
     setProgress(10);
     try {
-      setProgress(20);
-      
-      // Converte o arquivo para Base64 localmente
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      // Para arquivos pequenos (< 3KB), podemos embutir no QR
+      // Para arquivos maiores, precisamos de uma URL (Object Storage)
+      if (file.size <= 3 * 1024) {
+        setProgress(20);
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        form.setValue(fieldName, base64);
+        setProgress(100);
+      } else {
+        // Upload para o Object Storage para arquivos > 3KB
+        setProgress(20);
+        const response = await fetch("/api/uploads/request-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: file.name,
+            size: file.size,
+            contentType: file.type,
+          }),
+        });
 
-      setProgress(100);
-      form.setValue(fieldName, base64);
+        if (!response.ok) throw new Error("Falha ao solicitar URL de upload");
+        
+        const { uploadURL, objectPath } = await response.json();
+        setProgress(50);
+
+        const uploadRes = await fetch(uploadURL, {
+          method: "PUT",
+          body: file,
+          headers: { "Content-Type": file.type },
+        });
+
+        if (!uploadRes.ok) throw new Error("Falha no upload do arquivo");
+        
+        setProgress(90);
+        // A URL final para o QR Code será a rota de acesso ao objeto
+        const publicUrl = `${window.location.origin}${objectPath}`;
+        form.setValue(fieldName, publicUrl);
+        setProgress(100);
+      }
       
       // Atualiza o preview em tempo real
       onGenerate(form.getValues());
     } catch (error) {
       console.error("Erro no processamento do arquivo:", error);
+      alert("Erro ao processar arquivo. Tente novamente.");
     } finally {
-      setIsUploading(false);
+      setTimeout(() => {
+        setIsUploading(false);
+        setProgress(0);
+      }, 1000);
     }
   };
 
@@ -304,10 +345,6 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (file.size > 2 * 1024) {
-                                      alert("Para geração local, o arquivo deve ter menos de 3KB devido ao limite do QR Code. Para arquivos maiores, use a opção de URL.");
-                                      return;
-                                    }
                                     handleFileUpload(file, "fileUrl");
                                   }
                                 }}

@@ -241,24 +241,26 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
-                  <div className="space-y-2">
-                    <FormLabel className="text-sm font-medium">Ou faça upload do arquivo</FormLabel>
-                    <div className="flex flex-col gap-2">
-                      <Input
-                        type="file"
-                        accept={activeType === "pdf" ? "application/pdf" : activeType === "video" ? "video/*" : "*/*"}
-                        onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "fileUrl")}
-                        disabled={isUploading}
-                        className="cursor-pointer"
-                      />
-                      {isUploading && <Progress value={progress} className="h-2" />}
-                      {form.watch("fileUrl") && (
-                        <p className="text-xs text-green-600 font-medium flex items-center gap-1">
-                          <Upload className="w-3 h-3" /> Arquivo carregado com sucesso!
-                        </p>
-                      )}
+                  {activeType === "video" && (
+                    <div className="space-y-2">
+                      <FormLabel className="text-sm font-medium">Ou faça upload do arquivo</FormLabel>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="file"
+                          accept="video/*"
+                          onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "fileUrl")}
+                          disabled={isUploading}
+                          className="cursor-pointer"
+                        />
+                        {isUploading && <Progress value={progress} className="h-2" />}
+                        {form.watch("fileUrl") && (
+                          <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                            <Upload className="w-3 h-3" /> Arquivo carregado com sucesso!
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 

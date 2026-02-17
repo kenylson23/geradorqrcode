@@ -248,39 +248,57 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   const renderUrlPreview = (val: string) => {
     return (
-      <div className="w-full flex flex-col h-full bg-[#FF9F43]">
+      <div className="w-full flex flex-col h-full bg-slate-50">
         {/* Browser Top Bar */}
-        <div className="px-4 pt-4 pb-2">
-          <div className="bg-white/20 backdrop-blur-md rounded-full h-10 flex items-center px-4 gap-3 border border-white/20">
-            <Globe className="w-4 h-4 text-white" />
-            <span className="text-[10px] text-white font-medium truncate">
+        <div className="bg-slate-200/80 backdrop-blur-md border-b border-slate-300 px-4 py-3 flex items-center gap-2">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+          </div>
+          <div className="flex-1 bg-white rounded-md h-7 flex items-center px-3 gap-2 border border-slate-300 shadow-sm overflow-hidden">
+            <Globe className="w-3 h-3 text-slate-400 shrink-0" />
+            <span className="text-[10px] text-slate-600 font-medium truncate">
               {val}
             </span>
           </div>
+          <RefreshCw className="w-3 h-3 text-slate-400" />
         </div>
 
         {/* Website Content Mockup */}
-        <div className="flex-1 bg-white mt-4 rounded-t-[2.5rem] p-6 space-y-6">
-          {/* Main Image Placeholder */}
-          <div className="w-full aspect-[4/3] bg-slate-100 rounded-2xl flex items-center justify-center">
-            <Globe className="w-12 h-12 text-slate-200" />
-          </div>
-
-          {/* Text Skeletons */}
-          <div className="space-y-3">
-            <div className="h-4 bg-slate-100 rounded-full w-full" />
-            <div className="h-4 bg-slate-100 rounded-full w-[90%]" />
-          </div>
-
-          <div className="flex justify-center pt-4">
-             <div className="h-4 bg-slate-100 rounded-full w-1/2" />
-          </div>
-
-          {/* Bottom Button Placeholder */}
-          <div className="mt-auto pt-8">
-            <div className="h-12 bg-slate-100 rounded-xl w-full flex items-center justify-center">
-               <div className="h-3 bg-slate-200 rounded-full w-1/3" />
+        <div className="flex-1 overflow-y-auto bg-white p-6 space-y-6">
+          {/* Hero Section */}
+          <div className="space-y-4">
+            <div className="w-full aspect-video bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200 shadow-inner">
+              <Layout className="w-12 h-12 text-slate-200" />
             </div>
+            <div className="space-y-2">
+              <div className="h-6 bg-slate-100 rounded-md w-3/4" />
+              <div className="h-3 bg-slate-50 rounded-md w-full" />
+              <div className="h-3 bg-slate-50 rounded-md w-[90%]" />
+            </div>
+          </div>
+
+          {/* Feature Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="aspect-square bg-slate-50 rounded-lg border border-slate-100" />
+              <div className="h-2 bg-slate-100 rounded-full w-full" />
+            </div>
+            <div className="space-y-2">
+              <div className="aspect-square bg-slate-50 rounded-lg border border-slate-100" />
+              <div className="h-2 bg-slate-100 rounded-full w-full" />
+            </div>
+          </div>
+
+          {/* Content Block */}
+          <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10 space-y-3">
+             <div className="h-4 bg-primary/10 rounded-full w-1/2" />
+             <div className="space-y-1.5">
+               <div className="h-2 bg-slate-100 rounded-full w-full" />
+               <div className="h-2 bg-slate-100 rounded-full w-full" />
+               <div className="h-2 bg-slate-100 rounded-full w-2/3" />
+             </div>
           </div>
         </div>
       </div>

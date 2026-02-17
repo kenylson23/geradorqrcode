@@ -51,6 +51,8 @@ export const vcardQrSchema = z.object({
   organization: z.string().optional(),
   jobTitle: z.string().optional(),
   photoUrl: z.string().optional(),
+  website: z.string().url().optional(),
+  location: z.string().optional(),
 });
 
 // Schema for Images QR Code

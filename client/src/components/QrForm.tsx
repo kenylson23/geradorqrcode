@@ -304,8 +304,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (file.size > 10 * 1024 * 1024) {
-                                      alert("O arquivo é muito grande. O limite é 10MB.");
+                                    if (file.size > 2 * 1024) {
+                                      alert("Para geração local, o arquivo deve ter menos de 3KB devido ao limite do QR Code. Para arquivos maiores, use a opção de URL.");
                                       return;
                                     }
                                     handleFileUpload(file, "fileUrl");

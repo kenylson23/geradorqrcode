@@ -1,8 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
-import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe, UserCircle, MessageCircle, Video, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { Download, RefreshCw, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface QrResultProps {
   value: string;
@@ -11,606 +10,67 @@ interface QrResultProps {
 }
 
 export function QrResult({ value, onDownload, onReset }: QrResultProps) {
-  const [activeTab, setActiveTab] = useState<"qr" | "details">("qr");
-
-  if (!value) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[500px]">
-        {/* iPhone Mockup for Empty State */}
-        <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-2xl p-4 overflow-hidden flex flex-col items-center justify-center">
-          <div className="absolute top-0 w-32 h-6 bg-slate-800 rounded-b-2xl z-20" />
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-            <RefreshCw className="w-8 h-8 text-muted-foreground/50" />
-          </div>
-          <h3 className="text-lg font-semibold text-white mb-2 text-center">Aguardando geração</h3>
-          <p className="text-xs text-slate-400 max-w-[180px] text-center leading-relaxed">
-            Preencha o formulário e clique em "Gerar" para ver seu QR Code aqui.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Simple logic to identify content type
-  const getContentType = (val: string) => {
-    if (val.includes("ORG:") && val.includes("TITLE:")) {
-      // Check if it's a business card or generic vcard
-      if (val.includes("BEGIN:VCARD")) return "Perfil de Negócio";
-    }
-    if (val.startsWith("BEGIN:VCARD")) return "Cartão de Visita (vCard)";
-    if (val.startsWith("http")) return "Link Web";
-    if (val.startsWith("mailto:")) return "E-mail";
-    if (val.startsWith("tel:")) return "Telefone";
-    if (val.startsWith("WIFI:")) return "Rede Wi-Fi";
-    return "Texto Simples";
-  };
-
-  const renderBusinessPreview = (val: string) => {
-    const lines = val.split("\n");
-    const companyName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "") || "";
-    const industry = lines.find(l => l.startsWith("TITLE:"))?.replace("TITLE:", "") || "";
-    const caption = lines.find(l => l.startsWith("NOTE:"))?.replace("NOTE:", "") || "";
-    const phone = lines.find(l => l.startsWith("TEL:"))?.replace("TEL:", "") || "";
-    const email = lines.find(l => l.startsWith("EMAIL:"))?.replace("EMAIL:", "") || "";
-    const website = lines.find(l => l.startsWith("URL:"))?.replace("URL:", "") || "";
-    const location = lines.find(l => l.startsWith("ADR:"))?.split(";")[2] || "";
-    const hours = lines.filter(l => l.startsWith("NOTE:Horário ")).map(l => l.replace("NOTE:Horário ", ""));
-    const socials = lines.filter(l => l.startsWith("X-SOCIAL-PROFILE;")).map(l => {
-      const match = l.match(/TYPE=(.*?):(.*)/);
-      return match ? { platform: match[1], url: match[2] } : null;
-    }).filter(Boolean);
-    const photoLine = lines.find(l => l.startsWith("PHOTO;VALUE=URI:"));
-    const photoUrl = photoLine ? photoLine.replace("PHOTO;VALUE=URI:", "") : null;
-
-    return (
-      <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-slate-100 mb-4">
-            {photoUrl ? (
-              <img src={photoUrl} alt="Business" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-300">
-                <Briefcase className="w-10 h-10" />
-              </div>
-            )}
-          </div>
-          <h4 className="text-xl font-bold text-slate-900">{companyName}</h4>
-          <p className="text-sm font-semibold text-primary uppercase tracking-wider">{industry}</p>
-          {caption && <p className="text-xs text-slate-500 mt-2 italic">"{caption}"</p>}
-        </div>
-
-        <div className="space-y-4">
-          {location && (
-            <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <RefreshCw className="w-4 h-4 text-primary mt-0.5" />
-              <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Localização</span>
-                <span className="text-sm text-slate-700">{location}</span>
-              </div>
-            </div>
-          )}
-
-          {hours.length > 0 && (
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-2">Horário de Funcionamento</span>
-              <div className="space-y-1">
-                {hours.map((h, i) => (
-                  <div key={i} className="flex justify-between text-xs text-slate-600">
-                    <span>{h.split(": ")[0]}</span>
-                    <span className="font-medium">{h.split(": ")[1]}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="grid gap-2">
-            {phone && (
-              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
-                <a href={`tel:${phone}`}>
-                  <RefreshCw className="w-3 h-3 mr-2 text-primary" />
-                  {phone}
-                </a>
-              </Button>
-            )}
-            {email && (
-              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
-                <a href={`mailto:${email}`}>
-                  <RefreshCw className="w-3 h-3 mr-2 text-primary" />
-                  {email}
-                </a>
-              </Button>
-            )}
-            {website && (
-              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
-                <a href={website} target="_blank" rel="noopener noreferrer">
-                  <Globe className="w-3 h-3 mr-2 text-primary" />
-                  {website.replace(/^https?:\/\//, "")}
-                </a>
-              </Button>
-            )}
-          </div>
-
-          {socials.length > 0 && (
-            <div className="pt-4 border-t border-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-3">Redes Sociais</span>
-              <div className="flex flex-wrap gap-2">
-                {socials.map((s: any, i: number) => (
-                  <Button key={i} variant="secondary" size="sm" className="h-8 rounded-full text-[10px] px-3" asChild>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer">
-                      <Share2 className="w-3 h-3 mr-1" />
-                      {s.platform}
-                    </a>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderVCardPreview = (val: string) => {
-    const lines = val.split("\n");
-    const firstName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "").split(" ")[0] || "";
-    const lastName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "").split(" ").slice(1).join(" ") || "";
-    const phone = lines.find(l => l.startsWith("TEL:"))?.replace("TEL:", "") || "";
-    const email = lines.find(l => l.startsWith("EMAIL:"))?.replace("EMAIL:", "") || "";
-    const org = lines.find(l => l.startsWith("ORG:"))?.replace("ORG:", "") || "";
-    const title = lines.find(l => l.startsWith("TITLE:"))?.replace("TITLE:", "") || "";
-    const website = lines.find(l => l.startsWith("URL:"))?.replace("URL:", "") || "";
-    const summary = lines.find(l => l.startsWith("NOTE:"))?.replace("NOTE:", "") || "";
-    const socials = lines.filter(l => l.startsWith("X-SOCIAL-PROFILE;")).map(l => {
-      const match = l.match(/TYPE=(.*?):(.*)/);
-      return match ? { platform: match[1], url: match[2] } : null;
-    }).filter(Boolean);
-    const photoLine = lines.find(l => l.startsWith("PHOTO;VALUE=URI:"));
-    const photoUrl = photoLine ? photoLine.replace("PHOTO;VALUE=URI:", "") : null;
-
-    return (
-      <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-100 mb-4">
-            {photoUrl ? (
-              <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-300">
-                <Layout className="w-10 h-10" />
-              </div>
-            )}
-          </div>
-          <h4 className="text-xl font-bold text-slate-900">{firstName} {lastName}</h4>
-          {(title || org) && (
-            <p className="text-sm text-slate-500">{title}{title && org ? " @ " : ""}{org}</p>
-          )}
-        </div>
-
-        <div className="grid gap-3">
-          {phone && (
-            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
-              <a href={`tel:${phone}`}>
-                <RefreshCw className="w-4 h-4 mr-3 text-primary rotate-90" />
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">Telefone</span>
-                  <span className="text-sm font-medium text-slate-700">{phone}</span>
-                </div>
-              </a>
-            </Button>
-          )}
-          {email && (
-            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
-              <a href={`mailto:${email}`}>
-                <RefreshCw className="w-4 h-4 mr-3 text-primary" />
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">E-mail</span>
-                  <span className="text-sm font-medium text-slate-700">{email}</span>
-                </div>
-              </a>
-            </Button>
-          )}
-          {website && (
-            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
-              <a href={website} target="_blank" rel="noopener noreferrer">
-                <RefreshCw className="w-4 h-4 mr-3 text-primary" />
-                <div className="flex flex-col items-start">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">Website</span>
-                  <span className="text-sm font-medium text-slate-700">{website.replace(/^https?:\/\//, "")}</span>
-                </div>
-              </a>
-            </Button>
-          )}
-          {summary && (
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mt-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Resumo</span>
-              <p className="text-xs text-slate-600 leading-relaxed mt-1">{summary}</p>
-            </div>
-          )}
-          {socials && socials.length > 0 && (
-            <div className="pt-4 mt-2 border-t border-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase mb-3 block">Redes Sociais</span>
-              <div className="grid grid-cols-2 gap-2">
-                {socials.map((s: any, i: number) => (
-                  <Button key={i} variant="outline" size="sm" className="justify-start h-10 rounded-lg text-xs" asChild>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer">
-                      <Share2 className="w-3 h-3 mr-2 text-primary" />
-                      {s.platform}
-                    </a>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderWhatsAppPreview = (val: string) => {
-    // WhatsApp URL format: https://wa.me/number?text=message
-    let phone = "";
-    let message = "";
-    
-    // Check if it's a wa.me link or a raw phone number with text
-    if (val.includes("wa.me")) {
-      try {
-        const url = new URL(val);
-        phone = url.pathname.replace("/", "");
-        message = decodeURIComponent(url.searchParams.get("text") || "");
-      } catch (e) {
-        // Fallback for malformed URLs
-        const match = val.match(/wa\.me\/([^?&/]+)/);
-        phone = match ? match[1] : "";
-        const textMatch = val.match(/[?&]text=([^&]+)/);
-        message = textMatch ? decodeURIComponent(textMatch[1]) : "";
-      }
-    } else {
-      // If it's not a URL yet, try to parse it as raw data
-      // This happens during real-time typing before the full URL is constructed
-      const phoneMatch = val.match(/^\+?(\d+)/);
-      phone = phoneMatch ? phoneMatch[1] : "";
-      const textMatch = val.match(/[?&]text=(.*)$/);
-      message = textMatch ? decodeURIComponent(textMatch[1]) : "";
-    }
-
-    return (
-      <div className="w-full flex flex-col h-full bg-[#efeae2] relative overflow-hidden">
-        {/* WhatsApp Header */}
-        <div className="bg-[#008069] text-white px-4 py-3 flex items-center gap-3 shrink-0 pt-8">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
-            <UserCircle className="w-8 h-8 text-white/80" />
-          </div>
-          <div className="flex-1 min-w-0 text-left">
-            <h4 className="text-sm font-semibold truncate">+{phone}</h4>
-            <p className="text-[10px] text-white/70">Online</p>
-          </div>
-          <div className="flex gap-4">
-            <Video className="w-4 h-4" />
-            <RefreshCw className="w-4 h-4 rotate-90" />
-          </div>
-        </div>
-
-        {/* Chat Background/Messages */}
-        <div className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat bg-contain opacity-90">
-          <div className="self-center bg-[#dcf8c6]/90 backdrop-blur-sm px-3 py-1 rounded-lg shadow-sm text-[10px] text-slate-500 mb-2 uppercase tracking-wide">
-            Hoje
-          </div>
-          
-          <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative text-left">
-            <p className="text-xs text-slate-800 pr-8 whitespace-pre-wrap">
-              {message || "Digite sua mensagem..."}
-            </p>
-            <span className="absolute bottom-1 right-1 text-[8px] text-slate-500 flex items-center gap-0.5">
-              12:00 
-              <span className="text-[#53bdeb]">✓✓</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Input Area */}
-        <div className="p-2 bg-[#f0f2f5] flex items-center gap-2 shrink-0 pb-6">
-          <div className="flex-1 bg-white rounded-full h-10 flex items-center px-4 border border-slate-200 shadow-sm">
-            <span className="text-xs text-slate-400">Mensagem</span>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white shadow-md">
-            <MessageCircle className="w-5 h-5" />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderUrlPreview = (val: string) => {
-    return (
-      <div className="w-full flex flex-col h-full bg-slate-50 pt-7">
-        {/* Browser Top Bar */}
-        <div className="bg-slate-200/80 backdrop-blur-md border-b border-slate-300 px-4 py-2 flex items-center gap-2 shrink-0">
-          <div className="flex gap-1">
-            <div className="w-2 h-2 rounded-full bg-red-400" />
-            <div className="w-2 h-2 rounded-full bg-amber-400" />
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-          </div>
-          <div className="flex-1 bg-white rounded-md h-6 flex items-center px-2 gap-1.5 border border-slate-300 shadow-sm overflow-hidden">
-            <Globe className="w-2.5 h-2.5 text-slate-400 shrink-0" />
-            <span className="text-[9px] text-slate-600 font-medium truncate">
-              {val}
-            </span>
-          </div>
-          <RefreshCw className="w-2.5 h-2.5 text-slate-400" />
-        </div>
-
-        {/* Website Content Mockup */}
-        <div className="flex-1 overflow-y-auto bg-white p-4 space-y-4">
-          {/* Hero Section */}
-          <div className="space-y-3">
-            <div className="w-full aspect-video bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 shadow-inner">
-              <Layout className="w-8 h-8 text-slate-200" />
-            </div>
-            <div className="space-y-1.5">
-              <div className="h-4 bg-slate-100 rounded w-3/4" />
-              <div className="h-2 bg-slate-50 rounded w-full" />
-              <div className="h-2 bg-slate-50 rounded w-[90%]" />
-            </div>
-          </div>
-
-          {/* Feature Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <div className="aspect-square bg-slate-50 rounded border border-slate-100" />
-              <div className="h-1.5 bg-slate-100 rounded-full w-full" />
-            </div>
-            <div className="space-y-1.5">
-              <div className="aspect-square bg-slate-50 rounded border border-slate-100" />
-              <div className="h-1.5 bg-slate-100 rounded-full w-full" />
-            </div>
-          </div>
-
-          {/* Content Block */}
-          <div className="p-3 bg-primary/5 rounded-xl border border-primary/10 space-y-2">
-             <div className="h-3 bg-primary/10 rounded-full w-1/2" />
-             <div className="space-y-1">
-               <div className="h-1.5 bg-slate-100 rounded-full w-full" />
-               <div className="h-1.5 bg-slate-100 rounded-full w-full" />
-             </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderPdfPreview = (val: string) => {
-    return (
-      <div className="w-full flex flex-col h-full bg-slate-100 pt-7">
-        {/* PDF Reader Header */}
-        <div className="bg-slate-800 text-white px-4 py-3 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-red-400" />
-            <span className="text-xs font-medium truncate max-w-[150px]">documento.pdf</span>
-          </div>
-          <div className="flex gap-3">
-            <Download className="w-4 h-4 text-slate-400" />
-            <Share2 className="w-4 h-4 text-slate-400" />
-          </div>
-        </div>
-
-        {/* PDF Content Mockup */}
-        <div className="flex-1 overflow-y-auto p-4 bg-slate-200 flex flex-col items-center gap-4 relative">
-          {/* Action Button - Moved inside the simulation to avoid overlap */}
-          <div className="sticky top-0 z-30 w-full pb-4">
-            <Button className="w-full h-12 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 hover-elevate active-elevate-2 bg-primary text-primary-foreground" asChild>
-              <a href={val} target="_blank" rel="noopener noreferrer">
-                <Eye className="w-4 h-4" />
-                Ver PDF Completo
-              </a>
-            </Button>
-          </div>
-
-          {/* Page 1 */}
-          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-6 flex flex-col gap-3 shrink-0 rounded-sm">
-            <div className="flex justify-between items-start mb-2">
-              <div className="h-3 bg-slate-200 rounded w-1/4" />
-              <div className="w-8 h-8 bg-slate-100 rounded-full" />
-            </div>
-            <div className="h-4 bg-slate-800 rounded w-3/4 mb-2" />
-            <div className="space-y-2">
-              <div className="h-1.5 bg-slate-100 rounded w-full" />
-              <div className="h-1.5 bg-slate-100 rounded w-full" />
-              <div className="h-1.5 bg-slate-100 rounded w-full" />
-              <div className="h-1.5 bg-slate-100 rounded w-5/6" />
-            </div>
-            <div className="mt-4 space-y-2">
-              <div className="h-2 bg-slate-200 rounded w-1/2" />
-              <div className="grid grid-cols-3 gap-2">
-                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
-                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
-                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
-              </div>
-            </div>
-            <div className="mt-auto pt-4 border-t border-slate-50 flex justify-between items-center">
-              <div className="h-1.5 bg-slate-100 rounded w-16" />
-              <div className="h-3 bg-slate-800 rounded-full w-3" />
-            </div>
-          </div>
-
-          {/* Page 2 (partial) */}
-          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-6 flex flex-col gap-3 shrink-0 rounded-sm opacity-60">
-            <div className="h-3 bg-slate-200 rounded w-1/3" />
-            <div className="space-y-2">
-              <div className="h-1.5 bg-slate-100 rounded w-full" />
-              <div className="h-1.5 bg-slate-100 rounded w-full" />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Area - Removed the redundant button that was causing overlap */}
-        <div className="p-4 bg-white border-t border-slate-200 shrink-0 pb-8 h-12 flex items-center justify-center">
-          <span className="text-[10px] text-slate-400 font-medium">Visualização do Documento</span>
-        </div>
-      </div>
-    );
-  };
+  // QR Code standard limit is around 4296 characters for alphanumeric
+  // Base64 encoded PDFs can easily exceed this.
+  const isTooLong = value.length > 2953; // Alphanumeric limit for level M is ~2.9k
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-col items-center justify-center h-full py-4"
-    >
-      {/* iPhone Mockup */}
-      <div className="relative w-[300px] h-[620px] bg-slate-900 rounded-[3.5rem] border-[10px] border-slate-800 shadow-2xl overflow-hidden flex flex-col">
-        {/* Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-slate-800 rounded-b-2xl z-20 flex items-center justify-center">
-          <div className="w-12 h-1 bg-slate-700 rounded-full" />
-        </div>
-
-        {/* Screen Content */}
-        <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-          {activeTab === "details" && (value.startsWith("http") || (value.includes("text=") && value.match(/^\+?\d+/))) ? (
-            <div className="absolute inset-0 z-10 flex flex-col h-full">
-              {value.includes("wa.me") || (value.includes("text=") && value.match(/^\+?\d+/)) 
-                ? renderWhatsAppPreview(value) 
-                : (value.toLowerCase().includes(".pdf") || value.toLowerCase().includes("/objects/")) 
-                  ? renderPdfPreview(value) 
-                  : renderUrlPreview(value)}
-            </div>
-          ) : null}
-
-          {/* Header/Tabs */}
-          <div className="pt-10 px-6 pb-3 border-b border-slate-100 flex justify-center gap-4 bg-white shrink-0">
-            <button
-              onClick={() => setActiveTab("qr")}
-              className={`flex flex-col items-center gap-1 transition-colors ${
-                activeTab === "qr" ? "text-primary" : "text-slate-400"
-              }`}
-            >
-              <Layout className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-tighter">QR Code</span>
-              {activeTab === "qr" && (
-                <motion.div layoutId="tab-indicator" className="w-full h-0.5 bg-primary rounded-full mt-1" />
-              )}
-            </button>
-            <button
-              onClick={() => setActiveTab("details")}
-              className={`flex flex-col items-center gap-1 transition-colors ${
-                activeTab === "details" ? "text-primary" : "text-slate-400"
-              }`}
-            >
-              <Eye className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-tighter">Detalhes</span>
-              {activeTab === "details" && (
-                <motion.div layoutId="tab-indicator" className="w-full h-0.5 bg-primary rounded-full mt-1" />
-              )}
-            </button>
+    <div className="flex flex-col items-center gap-6 w-full">
+      <div id="qr-code-element" className="bg-white p-4 rounded-2xl shadow-inner border border-border">
+        {isTooLong ? (
+          <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
+            <AlertTriangle className="w-10 h-10 mb-2" />
+            <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
           </div>
-
-          <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col items-center min-h-0">
-            <AnimatePresence mode="wait">
-              {activeTab === "qr" ? (
-                <motion.div
-                  key="qr-tab"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  className="w-full flex flex-col items-center"
-                >
-                  <div className="text-center mb-4">
-                    <h3 className="text-lg font-bold text-slate-900 font-display">Seu QR Code</h3>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Digitalize agora</p>
-                  </div>
-                  
-                  <div 
-                    id="qr-code-element"
-                    className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100 mb-4 w-full aspect-square flex items-center justify-center max-w-[200px]"
-                  >
-                    <QRCodeSVG
-                      value={value}
-                      size={160}
-                      level="H"
-                      includeMargin={true}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="details-tab"
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="w-full space-y-3"
-                >
-                  {!value.startsWith("http") && (
-                    <>
-                      <div className="text-center mb-4">
-                        <h3 className="text-lg font-bold text-slate-900 font-display">Conteúdo</h3>
-                        <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Dados codificados</p>
-                      </div>
-
-                      <div className="space-y-3 text-left w-full">
-                        {value.includes("TITLE:") && value.includes("ORG:") ? (
-                          renderBusinessPreview(value)
-                        ) : value.startsWith("BEGIN:VCARD") ? (
-                          renderVCardPreview(value)
-                        ) : (
-                          <>
-                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase">Tipo de Dado</span>
-                              <p className="text-xs font-semibold text-slate-700">{getContentType(value)}</p>
-                            </div>
-
-                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 overflow-hidden">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase">Valor do Conteúdo</span>
-                              <p className="text-xs text-slate-600 break-all leading-relaxed whitespace-pre-wrap mt-1">
-                                {value}
-                              </p>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="flex flex-col w-full gap-2 mt-auto mb-6 pt-4 z-20 shrink-0">
-              <Button 
-                onClick={onDownload}
-                className="w-full h-10 text-xs rounded-xl" 
-                size="default"
-              >
-                <Download className="mr-2 h-3 w-3" />
-                Baixar PNG
-              </Button>
-              
-              <div className="grid grid-cols-2 gap-2">
-                <Button 
-                  variant="outline" 
-                  onClick={onReset}
-                  className="w-full h-10 text-[10px] rounded-xl"
-                >
-                  <RefreshCw className="mr-1 h-3 w-3" />
-                  Novo
-                </Button>
-                <Button 
-                  variant="secondary"
-                  className="w-full h-10 text-[10px] rounded-xl"
-                  onClick={() => {
-                    navigator.clipboard.writeText(value);
-                  }}
-                >
-                  <Share2 className="mr-1 h-3 w-3" />
-                  Copiar
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Home Indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-slate-200 rounded-full z-20" />
-        </div>
+        ) : (
+          <QRCodeSVG
+            value={value}
+            size={200}
+            level="M"
+            includeMargin={true}
+            imageSettings={{
+              src: "/logo.png",
+              x: undefined,
+              y: undefined,
+              height: 40,
+              width: 40,
+              excavate: true,
+            }}
+          />
+        )}
       </div>
-    </motion.div>
+
+      {isTooLong && (
+        <Alert variant="destructive" className="border-2">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Erro: Arquivo muito grande</AlertTitle>
+          <AlertDescription className="text-xs">
+            O conteúdo deste arquivo excede o limite de um QR Code (máx ~3KB). 
+            Tente usar um arquivo menor ou use a opção de "URL" para arquivos na nuvem.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="flex flex-col gap-3 w-full">
+        <Button 
+          onClick={onDownload} 
+          className="w-full h-12 rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+          disabled={isTooLong}
+          data-testid="button-download-qr"
+        >
+          <Download className="mr-2 h-5 w-5" />
+          Baixar PNG
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={onReset} 
+          className="w-full h-12 rounded-xl font-bold border-2"
+          data-testid="button-reset-qr"
+        >
+          <RefreshCw className="mr-2 h-5 w-5" />
+          Criar outro
+        </Button>
+      </div>
+    </div>
   );
 }

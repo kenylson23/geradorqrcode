@@ -19,8 +19,9 @@ interface UseUploadOptions {
 }
 
 /**
- * React hook for handling file uploads locally using Base64.
- * This avoids the need for a backend in the initial free version.
+ * React hook for handling file uploads.
+ * Uses presigned URLs for direct client-to-storage uploads (Object Storage).
+ * This supports large files without backend buffering.
  */
 export function useUpload(options: UseUploadOptions = {}) {
   const [isUploading, setIsUploading] = useState(false);
@@ -28,7 +29,7 @@ export function useUpload(options: UseUploadOptions = {}) {
   const [progress, setProgress] = useState(0);
 
   /**
-   * Process a file locally by converting it to a Base64 string.
+   * Upload a file directly to Object Storage using a presigned URL.
    */
   const uploadFile = useCallback(
     async (file: File): Promise<UploadResponse | null> => {
@@ -37,21 +38,46 @@ export function useUpload(options: UseUploadOptions = {}) {
       setProgress(0);
 
       try {
-        setProgress(20);
-        
-        // Use FileReader to convert file to base64
-        const base64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
+        // 1. Get presigned URL from backend
+        const res = await fetch("/api/object-storage/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
         });
+
+        if (!res.ok) {
+          throw new Error("Failed to get upload URL");
+        }
+
+        const { uploadURL } = await res.json();
+        setProgress(20);
+
+        // 2. Upload file directly to the signed URL
+        const uploadRes = await new Promise<XMLHttpRequest>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("PUT", uploadURL);
+          xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const percent = Math.round((event.loaded / event.total) * 80) + 20;
+              setProgress(percent);
+            }
+          };
+
+          xhr.onload = () => resolve(xhr);
+          xhr.onerror = () => reject(new Error("Network error during upload"));
+          xhr.send(file);
+        });
+
+        if (uploadRes.status !== 200) {
+          throw new Error(`Upload failed with status ${uploadRes.status}`);
+        }
 
         setProgress(100);
         
         const response: UploadResponse = {
-          uploadURL: base64,
-          objectPath: file.name,
+          uploadURL,
+          objectPath: uploadURL.split("?")[0], // Simplified path extraction
           metadata: {
             name: file.name,
             size: file.size,
@@ -62,7 +88,7 @@ export function useUpload(options: UseUploadOptions = {}) {
         options.onSuccess?.(response);
         return response;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error("File processing failed");
+        const error = err instanceof Error ? err : new Error("Upload failed");
         setError(error);
         options.onError?.(error);
         return null;
@@ -74,7 +100,7 @@ export function useUpload(options: UseUploadOptions = {}) {
   );
 
   /**
-   * Simulated parameters for Uppy to handle files locally.
+   * Integration for Uppy to handle files directly via signed URLs.
    */
   const getUploadParameters = useCallback(
     async (
@@ -84,11 +110,20 @@ export function useUpload(options: UseUploadOptions = {}) {
       url: string;
       headers?: Record<string, string>;
     }> => {
-      // For local handling with Uppy, we can't easily do Base64 through AwsS3 plugin without a destination
-      // But we can simulate a successful "upload" to a blob URL or just ignore the actual network call
+      const res = await fetch("/api/object-storage/upload-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to get upload URL");
+      }
+
+      const { uploadURL } = await res.json();
+
       return {
         method: "PUT",
-        url: "blob:local",
+        url: uploadURL,
         headers: { "Content-Type": file.type || "application/octet-stream" },
       };
     },

@@ -72,8 +72,10 @@ export const imagesQrSchema = z.object({
   description: z.string().optional(),
   urls: z.array(z.string().url()).optional(),
   fileUrls: z.array(z.string()).optional(),
-  buttonName: z.string().optional(),
-  buttonLink: z.string().url().optional(),
+  buttons: z.array(z.object({
+    label: z.string().min(1),
+    url: z.string().url()
+  })).optional(),
 });
 
 // Schema for WhatsApp QR Code

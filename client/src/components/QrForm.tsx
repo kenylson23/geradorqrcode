@@ -67,8 +67,8 @@ const qrOptions: { type: QrType; label: string; description: string; icon: any }
   { type: "url", label: "Site", description: "Link para qualquer URL de site", icon: Globe },
   { type: "pdf", label: "PDF", description: "Exibir um PDF", icon: FileText },
   { type: "links", label: "Lista de links", description: "Compartilhar vários links", icon: Share2 },
+  { type: "business", label: "Negócios", description: "Compartilhe informações sobre sua empresa", icon: Briefcase },
   { type: "vcard", label: "vCard", description: "Compartilhe um cartão de visita digital", icon: UserCircle },
-  { type: "url", label: "Negócios", description: "Compartilhe informações sobre sua empresa", icon: Briefcase },
   { type: "video", label: "Vídeo", description: "Mostrar um vídeo", icon: Video },
   { type: "images", label: "Imagens", description: "Compartilhar várias imagens", icon: ImageIcon },
   { type: "facebook", label: "Facebook", description: "Compartilhe sua página do Facebook", icon: Facebook },
@@ -123,7 +123,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     }
   };
 
-  const handleTypeSelect = (type: QrType) => {
+  const handleTypeSelect = (type: any) => {
     setActiveType(type);
     onStepChange(2);
     
@@ -175,6 +175,21 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         break;
       case "images":
         form.reset({ type: "images", urls: [""] });
+        break;
+      case "business":
+        form.reset({ 
+          type: "business", 
+          companyName: "", 
+          industry: "", 
+          caption: "", 
+          photoUrl: "", 
+          location: "", 
+          email: "", 
+          website: "", 
+          phone: "",
+          openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }],
+          socialLinks: []
+        });
         break;
     }
   };
@@ -443,7 +458,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </Button>
                     </div>
                     <div className="space-y-3">
-                      {(form.watch("socialLinks" as any) || []).map((_, index) => (
+                      {(form.watch("socialLinks" as any) || []).map((_: any, index: number) => (
                         <div key={index} className="flex gap-2 items-end border p-3 rounded-lg bg-slate-50/50">
                           <FormField
                             control={form.control}
@@ -476,6 +491,222 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                               <FormItem className="flex-[2]">
                                 <FormLabel className="text-xs">URL do Perfil</FormLabel>
                                 <FormControl><Input className="h-9" placeholder="https://..." {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-destructive h-9 w-9"
+                            onClick={() => {
+                              const current = form.getValues("socialLinks" as any) || [];
+                              form.setValue("socialLinks" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "business" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2 space-y-2">
+                    <FormLabel>Foto da Empresa</FormLabel>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "photoUrl")}
+                      disabled={isUploading}
+                    />
+                    {isUploading && <Progress value={progress} className="h-2" />}
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome da Empresa</FormLabel>
+                        <FormControl><Input placeholder="Nome da sua empresa" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ramo de Atividade</FormLabel>
+                        <FormControl><Input placeholder="Ex: Restauração, Tecnologia" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="caption"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Legenda / Slogan</FormLabel>
+                        <FormControl><Input placeholder="Uma frase curta sobre seu negócio" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Horário de Funcionamento</h3>
+                    <div className="space-y-3">
+                      {(form.watch("openingHours" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end">
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.day`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Dia (Ex: Seg-Sex)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.hours`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Horas (Ex: 08:00 - 17:00)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => {
+                              const current = form.getValues("openingHours" as any) || [];
+                              form.setValue("openingHours" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-dashed"
+                        onClick={() => {
+                          const current = form.getValues("openingHours" as any) || [];
+                          form.setValue("openingHours" as any, [...current, { day: "", hours: "" }]);
+                        }}
+                      >
+                        + Adicionar Horário
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Contato e Localização</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl><Input placeholder="+244 ..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl><Input type="email" placeholder="contato@empresa.com" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Website</FormLabel>
+                            <FormControl><Input placeholder="https://..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Localização</FormLabel>
+                            <FormControl><Input placeholder="Endereço da empresa" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Redes Sociais</h3>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const current = form.getValues("socialLinks" as any) || [];
+                          form.setValue("socialLinks" as any, [...current, { platform: "Instagram", url: "" }]);
+                        }}
+                      >
+                        + Adicionar
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      {(form.watch("socialLinks" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end border p-3 rounded-lg bg-slate-50/50">
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.platform`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue placeholder="Plataforma" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Instagram">Instagram</SelectItem>
+                                    <SelectItem value="Facebook">Facebook</SelectItem>
+                                    <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                                    <SelectItem value="Twitter">Twitter/X</SelectItem>
+                                    <SelectItem value="YouTube">YouTube</SelectItem>
+                                    <SelectItem value="TikTok">TikTok</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.url`}
+                            render={({ field }) => (
+                              <FormItem className="flex-[2]">
+                                <FormControl><Input className="h-9" placeholder="URL do Perfil" {...field} /></FormControl>
                               </FormItem>
                             )}
                           />
@@ -658,7 +889,437 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              {activeType === "text" && (
+              {activeType === "business" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2 space-y-2">
+                    <FormLabel>Foto da Empresa</FormLabel>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "photoUrl")}
+                      disabled={isUploading}
+                    />
+                    {isUploading && <Progress value={progress} className="h-2" />}
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome da Empresa</FormLabel>
+                        <FormControl><Input placeholder="Nome da sua empresa" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ramo de Atividade</FormLabel>
+                        <FormControl><Input placeholder="Ex: Restauração, Tecnologia" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="caption"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Legenda / Slogan</FormLabel>
+                        <FormControl><Input placeholder="Uma frase curta sobre seu negócio" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Horário de Funcionamento</h3>
+                    <div className="space-y-3">
+                      {(form.watch("openingHours" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end">
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.day`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Dia (Ex: Seg-Sex)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.hours`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Horas (Ex: 08:00 - 17:00)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => {
+                              const current = form.getValues("openingHours" as any) || [];
+                              form.setValue("openingHours" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-dashed"
+                        onClick={() => {
+                          const current = form.getValues("openingHours" as any) || [];
+                          form.setValue("openingHours" as any, [...current, { day: "", hours: "" }]);
+                        }}
+                      >
+                        + Adicionar Horário
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Contato e Localização</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl><Input placeholder="+244 ..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl><Input type="email" placeholder="contato@empresa.com" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Website</FormLabel>
+                            <FormControl><Input placeholder="https://..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Localização</FormLabel>
+                            <FormControl><Input placeholder="Endereço da empresa" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Redes Sociais</h3>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const current = form.getValues("socialLinks" as any) || [];
+                          form.setValue("socialLinks" as any, [...current, { platform: "Instagram", url: "" }]);
+                        }}
+                      >
+                        + Adicionar
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      {(form.watch("socialLinks" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end border p-3 rounded-lg bg-slate-50/50">
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.platform`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue placeholder="Plataforma" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Instagram">Instagram</SelectItem>
+                                    <SelectItem value="Facebook">Facebook</SelectItem>
+                                    <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                                    <SelectItem value="Twitter">Twitter/X</SelectItem>
+                                    <SelectItem value="YouTube">YouTube</SelectItem>
+                                    <SelectItem value="TikTok">TikTok</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.url`}
+                            render={({ field }) => (
+                              <FormItem className="flex-[2]">
+                                <FormControl><Input className="h-9" placeholder="URL do Perfil" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-destructive h-9 w-9"
+                            onClick={() => {
+                              const current = form.getValues("socialLinks" as any) || [];
+                              form.setValue("socialLinks" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "business" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-2 space-y-2">
+                    <FormLabel>Foto da Empresa</FormLabel>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "photoUrl")}
+                      disabled={isUploading}
+                    />
+                    {isUploading && <Progress value={progress} className="h-2" />}
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome da Empresa</FormLabel>
+                        <FormControl><Input placeholder="Nome da sua empresa" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ramo de Atividade</FormLabel>
+                        <FormControl><Input placeholder="Ex: Restauração, Tecnologia" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="caption"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Legenda / Slogan</FormLabel>
+                        <FormControl><Input placeholder="Uma frase curta sobre seu negócio" {...field} value={field.value || ''}/></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Horário de Funcionamento</h3>
+                    <div className="space-y-3">
+                      {(form.watch("openingHours" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end">
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.day`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Dia (Ex: Seg-Sex)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.hours`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl><Input placeholder="Horas (Ex: 08:00 - 17:00)" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => {
+                              const current = form.getValues("openingHours" as any) || [];
+                              form.setValue("openingHours" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-dashed"
+                        onClick={() => {
+                          const current = form.getValues("openingHours" as any) || [];
+                          form.setValue("openingHours" as any, [...current, { day: "", hours: "" }]);
+                        }}
+                      >
+                        + Adicionar Horário
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Contato e Localização</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl><Input placeholder="+244 ..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl><Input type="email" placeholder="contato@empresa.com" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Website</FormLabel>
+                            <FormControl><Input placeholder="https://..." {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Localização</FormLabel>
+                            <FormControl><Input placeholder="Endereço da empresa" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Redes Sociais</h3>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const current = form.getValues("socialLinks" as any) || [];
+                          form.setValue("socialLinks" as any, [...current, { platform: "Instagram", url: "" }]);
+                        }}
+                      >
+                        + Adicionar
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      {(form.watch("socialLinks" as any) || []).map((_: any, index: number) => (
+                        <div key={index} className="flex gap-2 items-end border p-3 rounded-lg bg-slate-50/50">
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.platform`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue placeholder="Plataforma" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Instagram">Instagram</SelectItem>
+                                    <SelectItem value="Facebook">Facebook</SelectItem>
+                                    <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                                    <SelectItem value="Twitter">Twitter/X</SelectItem>
+                                    <SelectItem value="YouTube">YouTube</SelectItem>
+                                    <SelectItem value="TikTok">TikTok</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.url`}
+                            render={({ field }) => (
+                              <FormItem className="flex-[2]">
+                                <FormControl><Input className="h-9" placeholder="URL do Perfil" {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-destructive h-9 w-9"
+                            onClick={() => {
+                              const current = form.getValues("socialLinks" as any) || [];
+                              form.setValue("socialLinks" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
                 <FormField
                   control={form.control}
                   name="text"

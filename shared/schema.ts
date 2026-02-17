@@ -90,6 +90,27 @@ export const phoneQrSchema = z.object({
   phone: z.string().min(9, { message: "Phone number is required" }),
 });
 
+// Schema for Business QR Code
+export const businessQrSchema = z.object({
+  type: z.literal("business"),
+  companyName: z.string().min(1, "Company name is required"),
+  industry: z.string().min(1, "Industry is required"),
+  caption: z.string().optional(),
+  photoUrl: z.string().optional(),
+  location: z.string().optional(),
+  email: z.string().email().optional(),
+  website: z.string().url().optional(),
+  phone: z.string().optional(),
+  openingHours: z.array(z.object({
+    day: z.string(),
+    hours: z.string()
+  })).optional(),
+  socialLinks: z.array(z.object({
+    platform: z.string(),
+    url: z.string().url()
+  })).optional(),
+});
+
 // Combined schema for the form
 export const qrCodeFormSchema = z.discriminatedUnion("type", [
   urlQrSchema,
@@ -101,6 +122,7 @@ export const qrCodeFormSchema = z.discriminatedUnion("type", [
   linksQrSchema,
   vcardQrSchema,
   imagesQrSchema,
+  businessQrSchema,
 ]);
 
 export type QrCodeForm = z.infer<typeof qrCodeFormSchema>;

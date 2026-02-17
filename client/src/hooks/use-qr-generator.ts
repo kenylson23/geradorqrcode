@@ -52,6 +52,19 @@ export function useQrGenerator() {
         const urls = [...((data as any).urls || []), ...((data as any).fileUrls || []).map((path: string) => `${window.location.origin}${path}`)];
         value = urls.join("\n");
         break;
+      case "business":
+        const bizPhoto = (data as any).photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${(data as any).photoUrl}` : "";
+        const bizWebsite = (data as any).website ? `\nURL:${(data as any).website}` : "";
+        const bizLocation = (data as any).location ? `\nADR:;;${(data as any).location};;;;` : "";
+        const bizPhone = (data as any).phone ? `\nTEL:${(data as any).phone}` : "";
+        const bizEmail = (data as any).email ? `\nEMAIL:${(data as any).email}` : "";
+        const bizOrg = `\nORG:${(data as any).companyName}`;
+        const bizTitle = `\nTITLE:${(data as any).industry}`;
+        const bizCaption = (data as any).caption ? `\nNOTE:${(data as any).caption}` : "";
+        const bizHours = ((data as any).openingHours || []).map((h: any) => `\nNOTE:Horário ${h.day}: ${h.hours}`).join("");
+        const bizSocial = ((data as any).socialLinks || []).map((s: any) => `\nX-SOCIAL-PROFILE;TYPE=${s.platform}:${s.url}`).join("");
+        value = `BEGIN:VCARD\nVERSION:3.0\nFN:${(data as any).companyName}${bizOrg}${bizTitle}${bizPhoto}${bizWebsite}${bizLocation}${bizPhone}${bizEmail}${bizCaption}${bizHours}${bizSocial}\nEND:VCARD`;
+        break;
     }
 
     setQrData(value);

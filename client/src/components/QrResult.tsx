@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import { Download, RefreshCw, Share2, Eye, Layout } from "lucide-react";
+import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -33,12 +33,122 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Simple logic to identify content type
   const getContentType = (val: string) => {
+    if (val.includes("ORG:") && val.includes("TITLE:")) {
+      // Check if it's a business card or generic vcard
+      if (val.includes("BEGIN:VCARD")) return "Perfil de Negócio";
+    }
     if (val.startsWith("BEGIN:VCARD")) return "Cartão de Visita (vCard)";
     if (val.startsWith("http")) return "Link Web";
     if (val.startsWith("mailto:")) return "E-mail";
     if (val.startsWith("tel:")) return "Telefone";
     if (val.startsWith("WIFI:")) return "Rede Wi-Fi";
     return "Texto Simples";
+  };
+
+  const renderBusinessPreview = (val: string) => {
+    const lines = val.split("\n");
+    const companyName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "") || "";
+    const industry = lines.find(l => l.startsWith("TITLE:"))?.replace("TITLE:", "") || "";
+    const caption = lines.find(l => l.startsWith("NOTE:"))?.replace("NOTE:", "") || "";
+    const phone = lines.find(l => l.startsWith("TEL:"))?.replace("TEL:", "") || "";
+    const email = lines.find(l => l.startsWith("EMAIL:"))?.replace("EMAIL:", "") || "";
+    const website = lines.find(l => l.startsWith("URL:"))?.replace("URL:", "") || "";
+    const location = lines.find(l => l.startsWith("ADR:"))?.split(";")[2] || "";
+    const hours = lines.filter(l => l.startsWith("NOTE:Horário ")).map(l => l.replace("NOTE:Horário ", ""));
+    const socials = lines.filter(l => l.startsWith("X-SOCIAL-PROFILE;")).map(l => {
+      const match = l.match(/TYPE=(.*?):(.*)/);
+      return match ? { platform: match[1], url: match[2] } : null;
+    }).filter(Boolean);
+    const photoLine = lines.find(l => l.startsWith("PHOTO;VALUE=URI:"));
+    const photoUrl = photoLine ? photoLine.replace("PHOTO;VALUE=URI:", "") : null;
+
+    return (
+      <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg overflow-hidden bg-slate-100 mb-4">
+            {photoUrl ? (
+              <img src={photoUrl} alt="Business" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-slate-300">
+                <Briefcase className="w-10 h-10" />
+              </div>
+            )}
+          </div>
+          <h4 className="text-xl font-bold text-slate-900">{companyName}</h4>
+          <p className="text-sm font-semibold text-primary uppercase tracking-wider">{industry}</p>
+          {caption && <p className="text-xs text-slate-500 mt-2 italic">"{caption}"</p>}
+        </div>
+
+        <div className="space-y-4">
+          {location && (
+            <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <RefreshCw className="w-4 h-4 text-primary mt-0.5" />
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Localização</span>
+                <span className="text-sm text-slate-700">{location}</span>
+              </div>
+            </div>
+          )}
+
+          {hours.length > 0 && (
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-2">Horário de Funcionamento</span>
+              <div className="space-y-1">
+                {hours.map((h, i) => (
+                  <div key={i} className="flex justify-between text-xs text-slate-600">
+                    <span>{h.split(": ")[0]}</span>
+                    <span className="font-medium">{h.split(": ")[1]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="grid gap-2">
+            {phone && (
+              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
+                <a href={`tel:${phone}`}>
+                  <RefreshCw className="w-3 h-3 mr-2 text-primary" />
+                  {phone}
+                </a>
+              </Button>
+            )}
+            {email && (
+              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
+                <a href={`mailto:${email}`}>
+                  <RefreshCw className="w-3 h-3 mr-2 text-primary" />
+                  {email}
+                </a>
+              </Button>
+            )}
+            {website && (
+              <Button variant="outline" className="w-full justify-start h-10 rounded-lg text-xs" asChild>
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  <Globe className="w-3 h-3 mr-2 text-primary" />
+                  {website.replace(/^https?:\/\//, "")}
+                </a>
+              </Button>
+            )}
+          </div>
+
+          {socials.length > 0 && (
+            <div className="pt-4 border-t border-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase block mb-3">Redes Sociais</span>
+              <div className="flex flex-wrap gap-2">
+                {socials.map((s: any, i: number) => (
+                  <Button key={i} variant="secondary" size="sm" className="h-8 rounded-full text-[10px] px-3" asChild>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                      <Share2 className="w-3 h-3 mr-1" />
+                      {s.platform}
+                    </a>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const renderVCardPreview = (val: string) => {
@@ -222,7 +332,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   </div>
 
                   <div className="space-y-4 text-left w-full">
-                    {value.startsWith("BEGIN:VCARD") ? (
+                    {value.includes("TITLE:") && value.includes("ORG:") ? (
+                      renderBusinessPreview(value)
+                    ) : value.startsWith("BEGIN:VCARD") ? (
                       renderVCardPreview(value)
                     ) : (
                       <>

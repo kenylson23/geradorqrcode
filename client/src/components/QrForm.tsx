@@ -37,7 +37,7 @@ import {
   MessageCircle,
   Upload
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
@@ -187,11 +187,13 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   const watchedValues = form.watch();
   const [lastEmitted, setLastEmitted] = useState("");
 
-  const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;
-  if (watchedStr !== lastEmitted && activeType) {
-    setLastEmitted(watchedStr);
-    onGenerate(prepareData(watchedValues));
-  }
+  useEffect(() => {
+    const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;
+    if (watchedStr !== lastEmitted && activeType) {
+      setLastEmitted(watchedStr);
+      onGenerate(prepareData(watchedValues));
+    }
+  }, [watchedValues, selectedCountryCode, activeType, lastEmitted, onGenerate]);
 
   if (!activeType) {
     return (
@@ -298,7 +300,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                             >
                               <Upload className="w-8 h-8 text-muted-foreground" />
                               <span className="text-sm font-medium text-slate-600">
-                                {field.value ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF"}
+                                {form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF"}
                               </span>
                               <span className="text-[10px] text-muted-foreground">PDF até 10MB</span>
                               <input 

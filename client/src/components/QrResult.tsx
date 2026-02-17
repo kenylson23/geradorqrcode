@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe } from "lucide-react";
+import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe, UserCircle, MessageCircle, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -246,6 +246,59 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     );
   };
 
+  const renderWhatsAppPreview = (val: string) => {
+    // WhatsApp URL format: https://wa.me/number?text=message
+    const url = new URL(val);
+    const phone = url.pathname.replace("/", "");
+    const message = decodeURIComponent(url.searchParams.get("text") || "");
+
+    return (
+      <div className="w-full flex flex-col h-full bg-[#efeae2] relative overflow-hidden">
+        {/* WhatsApp Header */}
+        <div className="bg-[#008069] text-white px-4 py-3 flex items-center gap-3 shrink-0 pt-8">
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
+            <UserCircle className="w-8 h-8 text-white/80" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-semibold truncate">+{phone}</h4>
+            <p className="text-[10px] text-white/70">Online</p>
+          </div>
+          <div className="flex gap-4">
+            <Video className="w-4 h-4" />
+            <RefreshCw className="w-4 h-4 rotate-90" />
+          </div>
+        </div>
+
+        {/* Chat Background/Messages */}
+        <div className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat bg-contain opacity-90">
+          <div className="self-center bg-[#dcf8c6]/90 backdrop-blur-sm px-3 py-1 rounded-lg shadow-sm text-[10px] text-slate-500 mb-2 uppercase tracking-wide">
+            Hoje
+          </div>
+          
+          {message && (
+            <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative">
+              <p className="text-xs text-slate-800 pr-8">{message}</p>
+              <span className="absolute bottom-1 right-1 text-[8px] text-slate-500 flex items-center gap-0.5">
+                12:00 
+                <span className="text-[#53bdeb]">✓✓</span>
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Input Area */}
+        <div className="p-2 bg-[#f0f2f5] flex items-center gap-2 shrink-0 pb-6">
+          <div className="flex-1 bg-white rounded-full h-10 flex items-center px-4 border border-slate-200 shadow-sm">
+            <span className="text-xs text-slate-400">Mensagem</span>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-white shadow-md">
+            <MessageCircle className="w-5 h-5" />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderUrlPreview = (val: string) => {
     return (
       <div className="w-full flex flex-col h-full bg-slate-50 pt-7">
@@ -322,7 +375,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
           {activeTab === "details" && value.startsWith("http") ? (
             <div className="absolute inset-0 z-10 flex flex-col h-full">
-              {renderUrlPreview(value)}
+              {value.includes("wa.me") ? renderWhatsAppPreview(value) : renderUrlPreview(value)}
             </div>
           ) : null}
 

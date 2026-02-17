@@ -33,11 +33,81 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Simple logic to identify content type
   const getContentType = (val: string) => {
+    if (val.startsWith("BEGIN:VCARD")) return "Cartão de Visita (vCard)";
     if (val.startsWith("http")) return "Link Web";
     if (val.startsWith("mailto:")) return "E-mail";
     if (val.startsWith("tel:")) return "Telefone";
     if (val.startsWith("WIFI:")) return "Rede Wi-Fi";
     return "Texto Simples";
+  };
+
+  const renderVCardPreview = (val: string) => {
+    const lines = val.split("\n");
+    const firstName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "").split(" ")[0] || "";
+    const lastName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "").split(" ").slice(1).join(" ") || "";
+    const phone = lines.find(l => l.startsWith("TEL:"))?.replace("TEL:", "") || "";
+    const email = lines.find(l => l.startsWith("EMAIL:"))?.replace("EMAIL:", "") || "";
+    const org = lines.find(l => l.startsWith("ORG text-slate-400 uppercase font-bold"))?.replace("ORG:", "") || "";
+    const title = lines.find(l => l.startsWith("TITLE:"))?.replace("TITLE:", "") || "";
+    const website = lines.find(l => l.startsWith("URL:"))?.replace("URL:", "") || "";
+    const photoLine = lines.find(l => l.startsWith("PHOTO;VALUE=URI:"));
+    const photoUrl = photoLine ? photoLine.replace("PHOTO;VALUE=URI:", "") : null;
+
+    return (
+      <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden bg-slate-100 mb-4">
+            {photoUrl ? (
+              <img src={photoUrl} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-slate-300">
+                <Layout className="w-10 h-10" />
+              </div>
+            )}
+          </div>
+          <h4 className="text-xl font-bold text-slate-900">{firstName} {lastName}</h4>
+          {(title || org) && (
+            <p className="text-sm text-slate-500">{title}{title && org ? " @ " : ""}{org}</p>
+          )}
+        </div>
+
+        <div className="grid gap-3">
+          {phone && (
+            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
+              <a href={`tel:${phone}`}>
+                <RefreshCw className="w-4 h-4 mr-3 text-primary rotate-90" />
+                <div className="flex flex-col items-start">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">Telefone</span>
+                  <span className="text-sm font-medium text-slate-700">{phone}</span>
+                </div>
+              </a>
+            </Button>
+          )}
+          {email && (
+            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
+              <a href={`mailto:${email}`}>
+                <RefreshCw className="w-4 h-4 mr-3 text-primary" />
+                <div className="flex flex-col items-start">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">E-mail</span>
+                  <span className="text-sm font-medium text-slate-700">{email}</span>
+                </div>
+              </a>
+            </Button>
+          )}
+          {website && (
+            <Button variant="outline" className="w-full justify-start h-12 rounded-xl border-slate-200 hover:bg-slate-50" asChild>
+              <a href={website} target="_blank" rel="noopener noreferrer">
+                <RefreshCw className="w-4 h-4 mr-3 text-primary" />
+                <div className="flex flex-col items-start">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 leading-none mb-1">Website</span>
+                  <span className="text-sm font-medium text-slate-700">{website.replace(/^https?:\/\//, "")}</span>
+                </div>
+              </a>
+            </Button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -126,17 +196,23 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   </div>
 
                   <div className="space-y-4 text-left w-full">
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">Tipo de Dado</span>
-                      <p className="text-sm font-semibold text-slate-700">{getContentType(value)}</p>
-                    </div>
+                    {value.startsWith("BEGIN:VCARD") ? (
+                      renderVCardPreview(value)
+                    ) : (
+                      <>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Tipo de Dado</span>
+                          <p className="text-sm font-semibold text-slate-700">{getContentType(value)}</p>
+                        </div>
 
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 overflow-hidden">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase">Valor do Conteúdo</span>
-                      <p className="text-sm text-slate-600 break-all leading-relaxed whitespace-pre-wrap mt-1">
-                        {value}
-                      </p>
-                    </div>
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 overflow-hidden">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Valor do Conteúdo</span>
+                          <p className="text-sm text-slate-600 break-all leading-relaxed whitespace-pre-wrap mt-1">
+                            {value}
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               )}

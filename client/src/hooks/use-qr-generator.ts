@@ -16,7 +16,7 @@ export function useQrGenerator() {
       case "facebook":
       case "instagram":
       case "pdf":
-        value = (data as any).fileUrl ? `${window.location.origin}${(data as any).fileUrl}` : ((data as any).url || "");
+        value = (data as any).fileUrl || ((data as any).url || "");
         break;
       case "text":
         value = data.text;

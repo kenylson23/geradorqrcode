@@ -115,7 +115,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       if (!uploadRes.ok) throw new Error("Upload failed");
 
       setProgress(100);
-      const finalUrl = window.location.origin + objectPath;
+      const finalUrl = window.location.origin + "/objects" + objectPath;
       form.setValue(fieldName, finalUrl);
       // Trigger update after file upload
       onGenerate(form.getValues());

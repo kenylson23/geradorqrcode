@@ -394,35 +394,47 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </div>
 
         {/* PDF Content Mockup */}
-        <div className="flex-1 overflow-y-auto p-6 bg-slate-500/10 flex flex-col items-center gap-4">
+        <div className="flex-1 overflow-y-auto p-4 bg-slate-200 flex flex-col items-center gap-4">
           {/* Page 1 */}
-          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-8 flex flex-col gap-4 shrink-0">
-            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4" />
+          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-6 flex flex-col gap-3 shrink-0 rounded-sm">
+            <div className="flex justify-between items-start mb-2">
+              <div className="h-3 bg-slate-200 rounded w-1/4" />
+              <div className="w-8 h-8 bg-slate-100 rounded-full" />
+            </div>
+            <div className="h-4 bg-slate-800 rounded w-3/4 mb-2" />
             <div className="space-y-2">
-              <div className="h-2 bg-slate-100 rounded w-full" />
-              <div className="h-2 bg-slate-100 rounded w-full" />
-              <div className="h-2 bg-slate-100 rounded w-full" />
-              <div className="h-2 bg-slate-100 rounded w-2/3" />
+              <div className="h-1.5 bg-slate-100 rounded w-full" />
+              <div className="h-1.5 bg-slate-100 rounded w-full" />
+              <div className="h-1.5 bg-slate-100 rounded w-full" />
+              <div className="h-1.5 bg-slate-100 rounded w-5/6" />
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4">
-              <div className="h-20 bg-slate-50 rounded border border-slate-100" />
-              <div className="h-20 bg-slate-50 rounded border border-slate-100" />
+            <div className="mt-4 space-y-2">
+              <div className="h-2 bg-slate-200 rounded w-1/2" />
+              <div className="grid grid-cols-3 gap-2">
+                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
+                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
+                <div className="h-10 bg-slate-50 rounded border border-slate-100" />
+              </div>
             </div>
-            <div className="mt-auto flex justify-between">
-              <div className="h-2 bg-slate-100 rounded w-12" />
-              <div className="h-2 bg-slate-100 rounded w-4" />
+            <div className="mt-auto pt-4 border-t border-slate-50 flex justify-between items-center">
+              <div className="h-1.5 bg-slate-100 rounded w-16" />
+              <div className="h-3 bg-slate-800 rounded-full w-3" />
             </div>
           </div>
 
           {/* Page 2 (partial) */}
-          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-8 flex flex-col gap-4 shrink-0 opacity-50">
-            <div className="h-4 bg-slate-200 rounded w-1/4" />
+          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-6 flex flex-col gap-3 shrink-0 rounded-sm opacity-60">
+            <div className="h-3 bg-slate-200 rounded w-1/3" />
+            <div className="space-y-2">
+              <div className="h-1.5 bg-slate-100 rounded w-full" />
+              <div className="h-1.5 bg-slate-100 rounded w-full" />
+            </div>
           </div>
         </div>
 
         {/* Action Button */}
         <div className="p-4 bg-white border-t border-slate-200 shrink-0 pb-8">
-          <Button className="w-full h-12 rounded-xl font-bold gap-2" asChild>
+          <Button className="w-full h-12 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 hover-elevate active-elevate-2" asChild>
             <a href={val} target="_blank" rel="noopener noreferrer">
               <Eye className="w-4 h-4" />
               Ver PDF Completo
@@ -453,7 +465,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             <div className="absolute inset-0 z-10 flex flex-col h-full">
               {value.includes("wa.me") || (value.includes("text=") && value.match(/^\+?\d+/)) 
                 ? renderWhatsAppPreview(value) 
-                : (value.toLowerCase().includes(".pdf") || value.includes("/api/upload")) 
+                : (value.toLowerCase().includes(".pdf") || value.toLowerCase().includes("/objects/")) 
                   ? renderPdfPreview(value) 
                   : renderUrlPreview(value)}
             </div>

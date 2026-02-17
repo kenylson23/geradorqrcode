@@ -49,7 +49,7 @@ export function useQrGenerator() {
         value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}${org}${title}${photo}${website}${location}${summary}${social}\nEND:VCARD`;
         break;
       case "images":
-        const urls = [...((data as any).urls || []), ...((data as any).fileUrls || []).map((path: string) => `${window.location.origin}${path}`)];
+        const urls = [...((data as any).urls || []), ...((data as any).fileUrls || [])];
         value = urls.join("\n");
         break;
       case "business":

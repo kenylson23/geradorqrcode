@@ -92,35 +92,23 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     setIsUploading(true);
     setProgress(10);
     try {
-      const response = await fetch("/api/uploads/request-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: file.name,
-          size: file.size,
-          contentType: file.type || "application/pdf",
-        }),
+      setProgress(20);
+      
+      // Converte o arquivo para Base64 localmente
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
-
-      if (!response.ok) throw new Error("Failed to get upload URL");
-      const { uploadURL, objectPath } = await response.json();
-
-      setProgress(30);
-      const uploadRes = await fetch(uploadURL, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type || "application/pdf" },
-      });
-
-      if (!uploadRes.ok) throw new Error("Upload failed");
 
       setProgress(100);
-      const finalUrl = window.location.origin + "/objects" + objectPath;
-      form.setValue(fieldName, finalUrl);
-      // Trigger update after file upload
+      form.setValue(fieldName, base64);
+      
+      // Atualiza o preview em tempo real
       onGenerate(form.getValues());
     } catch (error) {
-      console.error("Upload error:", error);
+      console.error("Erro no processamento do arquivo:", error);
     } finally {
       setIsUploading(false);
     }

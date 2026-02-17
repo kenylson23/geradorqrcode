@@ -248,9 +248,19 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   const renderWhatsAppPreview = (val: string) => {
     // WhatsApp URL format: https://wa.me/number?text=message
-    const url = new URL(val);
-    const phone = url.pathname.replace("/", "");
-    const message = decodeURIComponent(url.searchParams.get("text") || "");
+    let phone = "";
+    let message = "";
+    try {
+      const url = new URL(val);
+      phone = url.pathname.replace("/", "");
+      message = decodeURIComponent(url.searchParams.get("text") || "");
+    } catch (e) {
+      // Fallback for malformed URLs
+      const match = val.match(/wa\.me\/(\d+)/);
+      phone = match ? match[1] : "";
+      const textMatch = val.match(/[?&]text=([^&]+)/);
+      message = textMatch ? decodeURIComponent(textMatch[1]) : "";
+    }
 
     return (
       <div className="w-full flex flex-col h-full bg-[#efeae2] relative overflow-hidden">
@@ -275,15 +285,15 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             Hoje
           </div>
           
-          {message && (
-            <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative">
-              <p className="text-xs text-slate-800 pr-8">{message}</p>
-              <span className="absolute bottom-1 right-1 text-[8px] text-slate-500 flex items-center gap-0.5">
-                12:00 
-                <span className="text-[#53bdeb]">✓✓</span>
-              </span>
-            </div>
-          )}
+          <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative">
+            <p className="text-xs text-slate-800 pr-8 whitespace-pre-wrap">
+              {message || "Digite sua mensagem..."}
+            </p>
+            <span className="absolute bottom-1 right-1 text-[8px] text-slate-500 flex items-center gap-0.5">
+              12:00 
+              <span className="text-[#53bdeb]">✓✓</span>
+            </span>
+          </div>
         </div>
 
         {/* Input Area */}

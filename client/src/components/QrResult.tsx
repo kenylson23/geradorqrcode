@@ -47,9 +47,14 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     const lastName = lines.find(l => l.startsWith("FN:"))?.replace("FN:", "").split(" ").slice(1).join(" ") || "";
     const phone = lines.find(l => l.startsWith("TEL:"))?.replace("TEL:", "") || "";
     const email = lines.find(l => l.startsWith("EMAIL:"))?.replace("EMAIL:", "") || "";
-    const org = lines.find(l => l.startsWith("ORG text-slate-400 uppercase font-bold"))?.replace("ORG:", "") || "";
+    const org = lines.find(l => l.startsWith("ORG:"))?.replace("ORG:", "") || "";
     const title = lines.find(l => l.startsWith("TITLE:"))?.replace("TITLE:", "") || "";
     const website = lines.find(l => l.startsWith("URL:"))?.replace("URL:", "") || "";
+    const summary = lines.find(l => l.startsWith("NOTE:"))?.replace("NOTE:", "") || "";
+    const socials = lines.filter(l => l.startsWith("X-SOCIAL-PROFILE;")).map(l => {
+      const match = l.match(/TYPE=(.*?):(.*)/);
+      return match ? { platform: match[1], url: match[2] } : null;
+    }).filter(Boolean);
     const photoLine = lines.find(l => l.startsWith("PHOTO;VALUE=URI:"));
     const photoUrl = photoLine ? photoLine.replace("PHOTO;VALUE=URI:", "") : null;
 
@@ -104,6 +109,27 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 </div>
               </a>
             </Button>
+          )}
+          {summary && (
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mt-2">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Resumo</span>
+              <p className="text-xs text-slate-600 leading-relaxed mt-1">{summary}</p>
+            </div>
+          )}
+          {socials && socials.length > 0 && (
+            <div className="pt-4 mt-2 border-t border-slate-100">
+              <span className="text-[10px] font-bold text-slate-400 uppercase mb-3 block">Redes Sociais</span>
+              <div className="grid grid-cols-2 gap-2">
+                {socials.map((s: any, i: number) => (
+                  <Button key={i} variant="outline" size="sm" className="justify-start h-10 rounded-lg text-xs" asChild>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer">
+                      <Share2 className="w-3 h-3 mr-2 text-primary" />
+                      {s.platform}
+                    </a>
+                  </Button>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -38,7 +38,8 @@ import {
   MessageCircle, 
   Music,
   Sparkles,
-  Upload
+  Upload,
+  RefreshCw
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -165,7 +166,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
           organization: "", 
           jobTitle: "",
           website: "",
-          location: ""
+          location: "",
+          companyName: "",
+          profession: "",
+          summary: "",
+          socialLinks: []
         });
         break;
       case "images":
@@ -377,6 +382,119 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <h3 className="text-sm font-bold text-foreground mb-4 uppercase tracking-wider">Detalhes da Empresa</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome da Empresa</FormLabel>
+                            <FormControl><Input placeholder="Sua Empresa" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="profession"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Profissão</FormLabel>
+                            <FormControl><Input placeholder="Ex: Designer, Engenheiro" {...field} value={field.value || ''}/></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="summary"
+                        render={({ field }) => (
+                          <FormItem className="md:col-span-2">
+                            <FormLabel>Resumo sobre a empresa ou negócio</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Conte um pouco sobre seu negócio..." 
+                                className="resize-none"
+                                {...field} 
+                                value={field.value || ''}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Redes Sociais</h3>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const current = form.getValues("socialLinks" as any) || [];
+                          form.setValue("socialLinks" as any, [...current, { platform: "Instagram", url: "" }]);
+                        }}
+                      >
+                        + Adicionar
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      {(form.watch("socialLinks" as any) || []).map((_, index) => (
+                        <div key={index} className="flex gap-2 items-end border p-3 rounded-lg bg-slate-50/50">
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.platform`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormLabel className="text-xs">Plataforma</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue placeholder="Plataforma" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="Instagram">Instagram</SelectItem>
+                                    <SelectItem value="Facebook">Facebook</SelectItem>
+                                    <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                                    <SelectItem value="Twitter">Twitter/X</SelectItem>
+                                    <SelectItem value="YouTube">YouTube</SelectItem>
+                                    <SelectItem value="TikTok">TikTok</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`socialLinks.${index}.url`}
+                            render={({ field }) => (
+                              <FormItem className="flex-[2]">
+                                <FormLabel className="text-xs">URL do Perfil</FormLabel>
+                                <FormControl><Input className="h-9" placeholder="https://..." {...field} /></FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="icon"
+                            className="text-destructive h-9 w-9"
+                            onClick={() => {
+                              const current = form.getValues("socialLinks" as any) || [];
+                              form.setValue("socialLinks" as any, current.filter((_: any, i: number) => i !== index));
+                            }}
+                          >
+                            <RefreshCw className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
 

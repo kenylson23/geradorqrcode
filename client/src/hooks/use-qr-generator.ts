@@ -42,7 +42,11 @@ export function useQrGenerator() {
         const photo = (data as any).photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${(data as any).photoUrl}` : "";
         const website = (data as any).website ? `\nURL:${(data as any).website}` : "";
         const location = (data as any).location ? `\nADR:;;${(data as any).location};;;;` : "";
-        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}\nORG:${data.organization || ""}\nTITLE:${data.jobTitle || ""}${photo}${website}${location}\nEND:VCARD`;
+        const org = (data as any).companyName ? `\nORG:${(data as any).companyName}` : ((data as any).organization ? `\nORG:${(data as any).organization}` : "");
+        const title = (data as any).profession ? `\nTITLE:${(data as any).profession}` : ((data as any).jobTitle ? `\nTITLE:${(data as any).jobTitle}` : "");
+        const summary = (data as any).summary ? `\nNOTE:${(data as any).summary}` : "";
+        const social = ((data as any).socialLinks || []).map((s: any) => `\nX-SOCIAL-PROFILE;TYPE=${s.platform}:${s.url}`).join("");
+        value = `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName};${data.firstName}\nFN:${data.firstName} ${data.lastName}\nTEL:${data.phone}\nEMAIL:${data.email || ""}${org}${title}${photo}${website}${location}${summary}${social}\nEND:VCARD`;
         break;
       case "images":
         const urls = [...((data as any).urls || []), ...((data as any).fileUrls || []).map((path: string) => `${window.location.origin}${path}`)];

@@ -283,14 +283,33 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
-                  {(activeType === "video" || activeType === "facebook") && (
+                  {(activeType === "video" || activeType === "facebook" || activeType === "instagram") && (
                     <div className="space-y-4 pt-4 border-t mt-4">
+                      {(activeType === "facebook" || activeType === "instagram") && (
+                        <div className="space-y-2">
+                          <FormLabel>Foto de Perfil</FormLabel>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "photoUrl")}
+                            disabled={isUploading}
+                          />
+                          {isUploading && <Progress value={progress} className="h-2" />}
+                          {form.watch("photoUrl") && (
+                            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                              <Upload className="w-3 h-3" /> Foto carregada!
+                            </p>
+                          )}
+                        </div>
+                      )}
                       <FormField
                         control={form.control}
                         name="title"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{activeType === "video" ? "Título do Vídeo" : "Título"}</FormLabel>
+                            <FormLabel>
+                              {activeType === "video" ? "Título do Vídeo" : "Título"}
+                            </FormLabel>
                             <FormControl><Input placeholder="Ex: Tutorial ou Título da Página" {...field} value={field.value || ''}/></FormControl>
                             <FormMessage />
                           </FormItem>
@@ -301,7 +320,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                         name="description"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{activeType === "video" ? "Descrição do Vídeo" : "Descrição"}</FormLabel>
+                            <FormLabel>
+                              {activeType === "video" ? "Descrição do Vídeo" : "Descrição"}
+                            </FormLabel>
                             <FormControl>
                               <Textarea 
                                 placeholder="Uma breve descrição..." 

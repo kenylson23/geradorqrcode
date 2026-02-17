@@ -297,11 +297,15 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                           <div className="flex flex-col gap-4">
                             <div 
                               className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer bg-slate-50/50"
-                              onClick={() => document.getElementById('pdf-upload')?.click()}
+                              onClick={() => {
+                                if (!isUploading) {
+                                  document.getElementById('pdf-upload')?.click();
+                                }
+                              }}
                             >
                               <Upload className="w-8 h-8 text-muted-foreground" />
                               <span className="text-sm font-medium text-slate-600">
-                                {form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF"}
+                                {isUploading ? "Enviando..." : (form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF")}
                               </span>
                               <span className="text-[10px] text-muted-foreground">PDF até 10MB</span>
                               <input 
@@ -311,7 +315,13 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                                 className="hidden" 
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
-                                  if (file) handleFileUpload(file, "fileUrl");
+                                  if (file) {
+                                    if (file.size > 10 * 1024 * 1024) {
+                                      alert("O arquivo é muito grande. O limite é 10MB.");
+                                      return;
+                                    }
+                                    handleFileUpload(file, "fileUrl");
+                                  }
                                 }}
                               />
                             </div>

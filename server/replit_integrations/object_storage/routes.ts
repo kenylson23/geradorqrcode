@@ -45,6 +45,13 @@ export function registerObjectStorageRoutes(app: Express): void {
         });
       }
 
+      // Limit file size to 10MB (10 * 1024 * 1024 bytes)
+      if (size && size > 10 * 1024 * 1024) {
+        return res.status(400).json({
+          error: "File size exceeds the 10MB limit",
+        });
+      }
+
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
 
       // Extract object path from the presigned URL for later reference

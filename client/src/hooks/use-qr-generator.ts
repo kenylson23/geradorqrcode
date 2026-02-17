@@ -24,7 +24,7 @@ export function useQrGenerator() {
       case "whatsapp":
         // Simple WhatsApp link format
         const phone = data.phone.replace(/\D/g, "");
-        const message = data.message ? `&text=${encodeURIComponent(data.message)}` : "";
+        const message = data.message ? `?text=${encodeURIComponent(data.message)}` : "";
         value = `https://wa.me/${phone}${message}`;
         break;
       case "email":

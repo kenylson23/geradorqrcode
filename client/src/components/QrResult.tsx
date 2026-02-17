@@ -394,7 +394,17 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </div>
 
         {/* PDF Content Mockup */}
-        <div className="flex-1 overflow-y-auto p-4 bg-slate-200 flex flex-col items-center gap-4">
+        <div className="flex-1 overflow-y-auto p-4 bg-slate-200 flex flex-col items-center gap-4 relative">
+          {/* Action Button - Moved inside the simulation to avoid overlap */}
+          <div className="sticky top-0 z-30 w-full pb-4">
+            <Button className="w-full h-12 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 hover-elevate active-elevate-2 bg-primary text-primary-foreground" asChild>
+              <a href={val} target="_blank" rel="noopener noreferrer">
+                <Eye className="w-4 h-4" />
+                Ver PDF Completo
+              </a>
+            </Button>
+          </div>
+
           {/* Page 1 */}
           <div className="w-full bg-white shadow-md aspect-[1/1.414] p-6 flex flex-col gap-3 shrink-0 rounded-sm">
             <div className="flex justify-between items-start mb-2">
@@ -432,14 +442,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           </div>
         </div>
 
-        {/* Action Button */}
-        <div className="p-4 bg-white border-t border-slate-200 shrink-0 pb-8">
-          <Button className="w-full h-12 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 hover-elevate active-elevate-2" asChild>
-            <a href={val} target="_blank" rel="noopener noreferrer">
-              <Eye className="w-4 h-4" />
-              Ver PDF Completo
-            </a>
-          </Button>
+        {/* Footer Area - Removed the redundant button that was causing overlap */}
+        <div className="p-4 bg-white border-t border-slate-200 shrink-0 pb-8 h-12 flex items-center justify-center">
+          <span className="text-[10px] text-slate-400 font-medium">Visualização do Documento</span>
         </div>
       </div>
     );

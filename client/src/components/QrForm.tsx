@@ -110,6 +110,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     const result = await uploadFile(file);
     if (result) {
       form.setValue(fieldName, result.url || result.objectPath);
+      // Trigger update after file upload
+      onGenerate(form.getValues());
     }
   };
 
@@ -117,50 +119,69 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     setActiveType(type);
     onStepChange(2);
     
+    let defaultValues: any = { type };
     switch (type) {
       case "url":
       case "video":
       case "facebook":
       case "instagram":
       case "pdf":
-        form.reset({ type, url: "" });
+        defaultValues = { ...defaultValues, url: "" };
         break;
       case "text":
-        form.reset({ type: "text", text: "" });
+        defaultValues = { ...defaultValues, text: "" };
         break;
       case "whatsapp":
-        form.reset({ type: "whatsapp", phone: "", message: "" });
+        defaultValues = { ...defaultValues, phone: "", message: "" };
         break;
       case "email":
-        form.reset({ type: "email", email: "", subject: "", body: "" });
+        defaultValues = { ...defaultValues, email: "", subject: "", body: "" };
         break;
       case "phone":
-        form.reset({ type: "phone", phone: "" });
+        defaultValues = { ...defaultValues, phone: "" };
         break;
       case "links":
-        form.reset({ type: "links", title: "", description: "", photoUrl: "", links: [{ label: "", url: "" }] });
+        defaultValues = { ...defaultValues, title: "", description: "", photoUrl: "", links: [{ label: "", url: "" }] };
         break;
       case "vcard":
-        form.reset({ type: "vcard", firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", socialLinks: [] });
+        defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", socialLinks: [] };
         break;
       case "images":
-        form.reset({ type: "images", title: "", description: "", urls: [""], buttons: [] });
+        defaultValues = { ...defaultValues, title: "", description: "", urls: [""], buttons: [] };
         break;
       case "business":
-        form.reset({ type: "business", companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] });
+        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
         break;
     }
+    form.reset(defaultValues);
+    // Initial generation with empty values
+    onGenerate(defaultValues);
   };
 
   const onSubmit = (data: QrCodeForm) => {
+    const modifiedData = prepareData(data);
+    onGenerate(modifiedData);
+  };
+
+  const prepareData = (data: QrCodeForm) => {
     const modifiedData = { ...data } as any;
     if ((data.type === 'whatsapp' || data.type === 'phone' || data.type === 'vcard') && data.phone) {
       if (!data.phone.startsWith('+')) {
         modifiedData.phone = `+${selectedCountryCode}${data.phone.replace(/^0+/, '')}`;
       }
     }
-    onGenerate(modifiedData);
+    return modifiedData;
   };
+
+  // Watch all fields for real-time preview
+  const watchedValues = form.watch();
+  const [lastEmitted, setLastEmitted] = useState("");
+
+  const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;
+  if (watchedStr !== lastEmitted && activeType) {
+    setLastEmitted(watchedStr);
+    onGenerate(prepareData(watchedValues));
+  }
 
   if (!activeType) {
     return (

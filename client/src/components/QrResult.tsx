@@ -248,7 +248,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   const renderUrlPreview = (val: string) => {
     return (
-      <div className="w-full flex flex-col h-full bg-slate-50">
+      <div className="w-full flex flex-col h-full bg-slate-50 pt-7">
         {/* Browser Top Bar */}
         <div className="bg-slate-200/80 backdrop-blur-md border-b border-slate-300 px-4 py-2 flex items-center gap-2 shrink-0">
           <div className="flex gap-1">

@@ -250,15 +250,26 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     // WhatsApp URL format: https://wa.me/number?text=message
     let phone = "";
     let message = "";
-    try {
-      const url = new URL(val);
-      phone = url.pathname.replace("/", "");
-      message = decodeURIComponent(url.searchParams.get("text") || "");
-    } catch (e) {
-      // Fallback for malformed URLs
-      const match = val.match(/wa\.me\/(\d+)/);
-      phone = match ? match[1] : "";
-      const textMatch = val.match(/[?&]text=([^&]+)/);
+    
+    // Check if it's a wa.me link or a raw phone number with text
+    if (val.includes("wa.me")) {
+      try {
+        const url = new URL(val);
+        phone = url.pathname.replace("/", "");
+        message = decodeURIComponent(url.searchParams.get("text") || "");
+      } catch (e) {
+        // Fallback for malformed URLs
+        const match = val.match(/wa\.me\/([^?&/]+)/);
+        phone = match ? match[1] : "";
+        const textMatch = val.match(/[?&]text=([^&]+)/);
+        message = textMatch ? decodeURIComponent(textMatch[1]) : "";
+      }
+    } else {
+      // If it's not a URL yet, try to parse it as raw data
+      // This happens during real-time typing before the full URL is constructed
+      const phoneMatch = val.match(/^\+?(\d+)/);
+      phone = phoneMatch ? phoneMatch[1] : "";
+      const textMatch = val.match(/[?&]text=(.*)$/);
       message = textMatch ? decodeURIComponent(textMatch[1]) : "";
     }
 
@@ -269,7 +280,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
             <UserCircle className="w-8 h-8 text-white/80" />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <h4 className="text-sm font-semibold truncate">+{phone}</h4>
             <p className="text-[10px] text-white/70">Online</p>
           </div>
@@ -285,7 +296,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             Hoje
           </div>
           
-          <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative">
+          <div className="self-end bg-[#dcf8c6] p-2 rounded-lg rounded-tr-none shadow-sm max-w-[80%] relative text-left">
             <p className="text-xs text-slate-800 pr-8 whitespace-pre-wrap">
               {message || "Digite sua mensagem..."}
             </p>
@@ -383,9 +394,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
         {/* Screen Content */}
         <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-          {activeTab === "details" && value.startsWith("http") ? (
+          {activeTab === "details" && (value.startsWith("http") || (value.includes("text=") && value.match(/^\+?\d+/))) ? (
             <div className="absolute inset-0 z-10 flex flex-col h-full">
-              {value.includes("wa.me") ? renderWhatsAppPreview(value) : renderUrlPreview(value)}
+              {value.includes("wa.me") || (value.includes("text=") && value.match(/^\+?\d+/)) ? renderWhatsAppPreview(value) : renderUrlPreview(value)}
             </div>
           ) : null}
 

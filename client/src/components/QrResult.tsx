@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe, UserCircle, MessageCircle, Video } from "lucide-react";
+import { Download, RefreshCw, Share2, Eye, Layout, Briefcase, Globe, UserCircle, MessageCircle, Video, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -378,6 +378,61 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     );
   };
 
+  const renderPdfPreview = (val: string) => {
+    return (
+      <div className="w-full flex flex-col h-full bg-slate-100 pt-7">
+        {/* PDF Reader Header */}
+        <div className="bg-slate-800 text-white px-4 py-3 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-red-400" />
+            <span className="text-xs font-medium truncate max-w-[150px]">documento.pdf</span>
+          </div>
+          <div className="flex gap-3">
+            <Download className="w-4 h-4 text-slate-400" />
+            <Share2 className="w-4 h-4 text-slate-400" />
+          </div>
+        </div>
+
+        {/* PDF Content Mockup */}
+        <div className="flex-1 overflow-y-auto p-6 bg-slate-500/10 flex flex-col items-center gap-4">
+          {/* Page 1 */}
+          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-8 flex flex-col gap-4 shrink-0">
+            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4" />
+            <div className="space-y-2">
+              <div className="h-2 bg-slate-100 rounded w-full" />
+              <div className="h-2 bg-slate-100 rounded w-full" />
+              <div className="h-2 bg-slate-100 rounded w-full" />
+              <div className="h-2 bg-slate-100 rounded w-2/3" />
+            </div>
+            <div className="mt-8 grid grid-cols-2 gap-4">
+              <div className="h-20 bg-slate-50 rounded border border-slate-100" />
+              <div className="h-20 bg-slate-50 rounded border border-slate-100" />
+            </div>
+            <div className="mt-auto flex justify-between">
+              <div className="h-2 bg-slate-100 rounded w-12" />
+              <div className="h-2 bg-slate-100 rounded w-4" />
+            </div>
+          </div>
+
+          {/* Page 2 (partial) */}
+          <div className="w-full bg-white shadow-md aspect-[1/1.414] p-8 flex flex-col gap-4 shrink-0 opacity-50">
+            <div className="h-4 bg-slate-200 rounded w-1/4" />
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="p-4 bg-white border-t border-slate-200 shrink-0 pb-8">
+          <Button className="w-full h-12 rounded-xl font-bold gap-2" asChild>
+            <a href={val} target="_blank" rel="noopener noreferrer">
+              <Eye className="w-4 h-4" />
+              Ver PDF Completo
+            </a>
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -396,7 +451,11 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
           {activeTab === "details" && (value.startsWith("http") || (value.includes("text=") && value.match(/^\+?\d+/))) ? (
             <div className="absolute inset-0 z-10 flex flex-col h-full">
-              {value.includes("wa.me") || (value.includes("text=") && value.match(/^\+?\d+/)) ? renderWhatsAppPreview(value) : renderUrlPreview(value)}
+              {value.includes("wa.me") || (value.includes("text=") && value.match(/^\+?\d+/)) 
+                ? renderWhatsAppPreview(value) 
+                : (value.toLowerCase().includes(".pdf") || value.includes("/api/upload")) 
+                  ? renderPdfPreview(value) 
+                  : renderUrlPreview(value)}
             </div>
           ) : null}
 

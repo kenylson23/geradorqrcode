@@ -147,7 +147,13 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         form.reset({ type: "phone", phone: "" });
         break;
       case "links":
-        form.reset({ type: "links", links: [{ label: "", url: "" }] });
+        form.reset({ 
+          type: "links", 
+          title: "",
+          description: "",
+          photoUrl: "",
+          links: [{ label: "", url: "" }] 
+        });
         break;
       case "vcard":
         form.reset({ type: "vcard", firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "" });
@@ -344,29 +350,108 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
               {activeType === "links" && (
                 <div className="space-y-4">
-                  <FormLabel>Links</FormLabel>
-                  {(form.watch("links") || []).map((_, index) => (
-                    <div key={index} className="flex gap-2">
-                      <FormField
-                        control={form.control}
-                        name={`links.${index}.label`}
-                        render={({ field }) => (
-                          <FormControl><Input placeholder="Título" {...field} /></FormControl>
-                        )}
+                  <div className="space-y-2">
+                    <FormLabel>Foto de Perfil</FormLabel>
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "photoUrl")}
+                        disabled={isUploading}
+                        className="cursor-pointer"
                       />
-                      <FormField
-                        control={form.control}
-                        name={`links.${index}.url`}
-                        render={({ field }) => (
-                          <FormControl><Input placeholder="URL" {...field} /></FormControl>
-                        )}
-                      />
+                      {isUploading && <Progress value={progress} className="h-2" />}
+                      {form.watch("photoUrl") && (
+                        <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                          <Upload className="w-3 h-3" /> Foto carregada!
+                        </p>
+                      )}
                     </div>
-                  ))}
-                  <Button type="button" variant="outline" onClick={() => {
-                    const current = form.getValues("links") || [];
-                    form.setValue("links", [...current, { label: "", url: "" }]);
-                  }}>Adicionar Link</Button>
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Título da Lista</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Meus Contatos" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Breve Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Uma breve descrição sobre seus links..." 
+                            className="resize-none"
+                            {...field} 
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-3">
+                    <FormLabel>Links</FormLabel>
+                    {(form.watch("links") || []).map((_, index) => (
+                      <div key={index} className="p-4 border rounded-xl space-y-3 bg-slate-50/50">
+                        <FormField
+                          control={form.control}
+                          name={`links.${index}.label`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl><Input placeholder="Título do Link (Ex: Instagram)" {...field} /></FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`links.${index}.url`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl><Input placeholder="URL (https://...)" {...field} /></FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        {index > 0 && (
+                          <Button 
+                            type="button" 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-destructive h-8 px-2 hover:bg-destructive/10"
+                            onClick={() => {
+                              const current = form.getValues("links") || [];
+                              form.setValue("links", current.filter((_, i) => i !== index));
+                            }}
+                          >
+                            Remover
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full border-dashed"
+                      onClick={() => {
+                        const current = form.getValues("links") || [];
+                        form.setValue("links", [...current, { label: "", url: "" }]);
+                      }}
+                    >
+                      + Adicionar Link
+                    </Button>
+                  </div>
                 </div>
               )}
 

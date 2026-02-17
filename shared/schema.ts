@@ -31,6 +31,9 @@ export const pdfQrSchema = z.object({
 // Schema for Links List QR Code
 export const linksQrSchema = z.object({
   type: z.literal("links"),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  photoUrl: z.string().optional(),
   links: z.array(z.object({
     label: z.string().min(1),
     url: z.string().url()

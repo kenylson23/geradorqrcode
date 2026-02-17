@@ -19,9 +19,9 @@ interface UseUploadOptions {
 }
 
 /**
- * React hook for handling file uploads purely on the client side.
+ * React hook for handling file uploads purely on theict side.
  * This avoids any backend dependency by converting files to Base64 strings.
- * Note: Base64 increases file size by ~33%, so it's best for reasonable file sizes.
+ * Optimized for files up to 10MB.
  */
 export function useUpload(options: UseUploadOptions = {}) {
   const [isUploading, setIsUploading] = useState(false);
@@ -30,9 +30,19 @@ export function useUpload(options: UseUploadOptions = {}) {
 
   /**
    * Process a file locally by converting it to a Base64 string.
+   * Supports files up to 10MB as requested.
    */
   const uploadFile = useCallback(
     async (file: File): Promise<UploadResponse | null> => {
+      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      
+      if (file.size > MAX_SIZE) {
+        const error = new Error("O arquivo excede o limite de 10MB.");
+        setError(error);
+        options.onError?.(error);
+        return null;
+      }
+
       setIsUploading(true);
       setError(null);
       setProgress(0);

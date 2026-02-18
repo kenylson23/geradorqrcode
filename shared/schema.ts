@@ -145,3 +145,5 @@ export const users = pgTable("users", {
 });
 
 export const insertUserSchema = createInsertSchema(users);
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;

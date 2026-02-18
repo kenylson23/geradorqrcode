@@ -115,10 +115,27 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await fetch("/api/cloudinary-upload", {
-          method: "POST",
-          body: formData,
-        });
+        // Try both Replit local API and Netlify function path
+        let response;
+        try {
+          response = await fetch("/.netlify/functions/cloudinary-upload", {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (!response.ok && response.status === 404) {
+             // Fallback to local API if not on Netlify
+             response = await fetch("/api/cloudinary-upload", {
+               method: "POST",
+               body: formData,
+             });
+          }
+        } catch (e) {
+          response = await fetch("/api/cloudinary-upload", {
+            method: "POST",
+            body: formData,
+          });
+        }
 
         if (!response.ok) {
           const errorData = await response.json();

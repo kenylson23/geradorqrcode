@@ -1,4 +1,4 @@
-import express, { type Request, Response, NextFunction } from "express";
+import express from "express";
 import multer from "multer";
 import { storage as dbStorage } from "./storage";
 
@@ -8,7 +8,7 @@ const upload = multer({
 });
 
 export function registerUploadRoutes(app: express.Express) {
-  app.post("/api/upload", upload.single("file"), async (req, res) => {
+  app.post("/api/upload", upload.single("file"), async (req: express.Request, res: express.Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });

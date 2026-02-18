@@ -43,7 +43,8 @@ export default function Home() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/upload", {
+      // Using the new Cloudinary endpoint (Netlify Function-like)
+      const res = await fetch("/api/cloudinary-upload", {
         method: "POST",
         body: formData,
       });
@@ -58,7 +59,7 @@ export default function Home() {
       setObjectPath(url);
       toast({
         title: "Sucesso!",
-        description: "Arquivo enviado com sucesso para o servidor.",
+        description: "Arquivo enviado com sucesso para o Cloudinary.",
       });
     } catch (error: any) {
       toast({

@@ -110,47 +110,30 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         form.setValue(fieldName, base64);
         setProgress(100);
       } else {
-        // Upload para o Cloudinary via Netlify Function-like endpoint
+        // Upload direto para o Cloudinary (Unsigned Upload)
         setProgress(20);
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "unsigned_upload");
 
-        // Try Netlify function path first, then fallback to local API
-        let response;
-        try {
-          console.log("Tentando upload via Netlify function...");
-          response = await fetch("/.netlify/functions/cloudinary-upload", {
-            method: "POST",
-            body: formData,
-          });
-          
-          if (!response.ok) {
-            console.warn(`Netlify function falhou com status ${response.status}. Tentando API local...`);
-            // Fallback to local API for any non-ok response from Netlify function path
-            const localResponse = await fetch("/api/cloudinary-upload", {
-              method: "POST",
-              body: formData,
-            });
-            if (localResponse.ok) {
-              response = localResponse;
-            }
-          }
-        } catch (e) {
-          console.error("Erro ao chamar Netlify function, tentando API local:", e);
-          response = await fetch("/api/cloudinary-upload", {
-            method: "POST",
-            body: formData,
-          });
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+        if (!cloudName) {
+          throw new Error("VITE_CLOUDINARY_CLOUD_NAME não configurado no frontend");
         }
+
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+          method: "POST",
+          body: formData,
+        });
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || `Erro no upload (Status: ${response.status})`);
+          throw new Error(errorData.error?.message || `Erro no upload direto (Status: ${response.status})`);
         }
         
-        const { url } = await response.json();
+        const { secure_url } = await response.json();
         setProgress(90);
-        form.setValue(fieldName, url);
+        form.setValue(fieldName, secure_url);
         setProgress(100);
       }
       

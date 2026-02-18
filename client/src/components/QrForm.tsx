@@ -115,22 +115,28 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         const formData = new FormData();
         formData.append("file", file);
 
-        // Try both Replit local API and Netlify function path
+        // Try Netlify function path first, then fallback to local API
         let response;
         try {
+          console.log("Tentando upload via Netlify function...");
           response = await fetch("/.netlify/functions/cloudinary-upload", {
             method: "POST",
             body: formData,
           });
           
-          if (!response.ok && response.status === 404) {
-             // Fallback to local API if not on Netlify
-             response = await fetch("/api/cloudinary-upload", {
-               method: "POST",
-               body: formData,
-             });
+          if (!response.ok) {
+            console.warn(`Netlify function falhou com status ${response.status}. Tentando API local...`);
+            // Fallback to local API for any non-ok response from Netlify function path
+            const localResponse = await fetch("/api/cloudinary-upload", {
+              method: "POST",
+              body: formData,
+            });
+            if (localResponse.ok) {
+              response = localResponse;
+            }
           }
         } catch (e) {
+          console.error("Erro ao chamar Netlify function, tentando API local:", e);
           response = await fetch("/api/cloudinary-upload", {
             method: "POST",
             body: formData,
@@ -138,8 +144,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         }
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Serviço de upload não disponível");
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Erro no upload (Status: ${response.status})`);
         }
         
         const { url } = await response.json();

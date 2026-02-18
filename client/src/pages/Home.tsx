@@ -40,39 +40,25 @@ export default function Home() {
 
     setUploading(true);
     try {
-      const res = await fetch("/api/uploads/request-url", {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: file.name,
-          size: file.size,
-          contentType: file.type || "application/octet-stream",
-        }),
+        body: formData,
       });
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error || "Falha ao obter URL de upload");
+        throw new Error(error.error || "Falha no upload");
       }
 
-      const { uploadURL, objectPath: path } = await res.json();
+      const { url } = await res.json();
 
-      const uploadRes = await fetch(uploadURL, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type || "application/octet-stream",
-        },
-      });
-
-      if (!uploadRes.ok) {
-        throw new Error("Falha no upload para o armazenamento");
-      }
-
-      setObjectPath(path);
+      setObjectPath(url);
       toast({
         title: "Sucesso!",
-        description: "Arquivo enviado com sucesso para o armazenamento de objetos.",
+        description: "Arquivo enviado com sucesso para o servidor.",
       });
     } catch (error: any) {
       toast({

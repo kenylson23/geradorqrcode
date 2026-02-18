@@ -28,17 +28,21 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Nenhum arquivo enviado" });
       }
 
-      // Convert buffer to base64 for Cloudinary
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-      const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-      
-      const result = await cloudinary.uploader.upload(dataURI, {
-        resource_type: "auto",
+      // Using the same logic as the Netlify function for consistency
+      const uploadResponse = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: "auto" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        uploadStream.end(req.file.buffer);
       });
 
       res.json({ 
-        url: result.secure_url,
-        public_id: result.public_id
+        url: (uploadResponse as any).secure_url,
+        public_id: (uploadResponse as any).public_id
       });
     } catch (error: any) {
       console.error("Cloudinary upload error:", error);

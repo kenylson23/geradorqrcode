@@ -110,43 +110,31 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         form.setValue(fieldName, base64);
         setProgress(100);
       } else {
-        // Upload para o Object Storage para arquivos > 3KB
-        // NOTA: No Netlify/Deploy Estático, este endpoint /api/uploads/request-url não existirá 
-        // a menos que você configure Netlify Functions ou use um serviço externo.
+        // Upload para o Cloudinary via Netlify Function-like endpoint
         setProgress(20);
-        const response = await fetch("/api/uploads/request-url", {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/api/cloudinary-upload", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: file.name,
-            size: file.size,
-            contentType: file.type,
-          }),
+          body: formData,
         });
 
-        if (!response.ok) throw new Error("Serviço de upload não disponível em deploy estático");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Serviço de upload não disponível");
+        }
         
-        const { uploadURL, objectPath } = await response.json();
-        setProgress(50);
-
-        const uploadRes = await fetch(uploadURL, {
-          method: "PUT",
-          body: file,
-          headers: { "Content-Type": file.type },
-        });
-
-        if (!uploadRes.ok) throw new Error("Falha no upload do arquivo");
-        
+        const { url } = await response.json();
         setProgress(90);
-        const publicUrl = `${window.location.origin}${objectPath}`;
-        form.setValue(fieldName, publicUrl);
+        form.setValue(fieldName, url);
         setProgress(100);
       }
       
       onGenerate(form.getValues());
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro no processamento do arquivo:", error);
-      alert("Atenção: O upload de arquivos grandes requer um servidor ativo. Em deploys puramente estáticos (como Netlify sem Functions), apenas links diretos ou arquivos minúsculos (<3KB) funcionarão.");
+      alert(error.message || "Erro ao processar o arquivo.");
     } finally {
       setTimeout(() => {
         setIsUploading(false);

@@ -28,13 +28,22 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Nenhum arquivo enviado" });
       }
 
+      console.log("Iniciando upload para Cloudinary...");
+      console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME ? "Configurado" : "NÃO CONFIGURADO");
+      console.log("API Key:", process.env.CLOUDINARY_API_KEY ? "Configurado" : "NÃO CONFIGURADO");
+      console.log("API Secret:", process.env.CLOUDINARY_API_SECRET ? "Configurado" : "NÃO CONFIGURADO");
+
       // Using the same logic as the Netlify function for consistency
       const uploadResponse = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           { resource_type: "auto" },
           (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
+            if (error) {
+              console.error("Erro no stream do Cloudinary:", error);
+              reject(error);
+            } else {
+              resolve(result);
+            }
           }
         );
         uploadStream.end(req.file.buffer);
@@ -46,7 +55,10 @@ export async function registerRoutes(
       });
     } catch (error: any) {
       console.error("Cloudinary upload error:", error);
-      res.status(500).json({ error: error.message || "Falha no upload para Cloudinary" });
+      res.status(500).json({ 
+        error: error.message || "Falha no upload para Cloudinary",
+        details: error.http_code ? `HTTP ${error.http_code}` : undefined
+      });
     }
   });
 

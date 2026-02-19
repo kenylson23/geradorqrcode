@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw, AlertTriangle, Globe, MessageCircle, FileText, User, Video, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase } from "lucide-react";
+import { Download, RefreshCw, AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState } from "react";
@@ -27,7 +27,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     
     switch (data.type) {
       case "url":
-      case "video":
       case "facebook":
       case "instagram":
       case "pdf":
@@ -80,7 +79,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   const isTooLong = qrValue.length > 2953; // Alphanumeric limit for level M is ~2.9k
 
   // Determine if it's a "real-time preview" (incomplete data)
-  const isUrlType = value?.type === 'url' || value?.type === 'video' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
+  const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = isUrlType 
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0)
     : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : true));
@@ -102,7 +101,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'url':
       case 'facebook':
       case 'instagram':
-      case 'video':
         const url = previewUrl || "";
         const fullUrl = url ? (url.startsWith('http') ? url : `https://${url}`) : "";
 
@@ -141,7 +139,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
                     {value.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
                       value.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
-                      value.type === 'video' ? <Video className="w-12 h-12 text-slate-400" /> :
                       <Globe className="w-12 h-12 text-slate-400" />}
                   </div>
                   <div className="space-y-2">

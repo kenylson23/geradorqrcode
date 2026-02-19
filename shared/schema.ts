@@ -5,12 +5,12 @@ import { z } from "zod";
 // We don't strictly need a database for a static QR generator, 
 // but we'll define the schemas here for form validation and type safety.
 
-export const qrTypes = ["url", "text", "whatsapp", "email", "phone", "pdf", "links", "vcard", "video", "images", "facebook", "instagram", "business"] as const;
+export const qrTypes = ["url", "text", "whatsapp", "email", "phone", "pdf", "links", "vcard", "images", "facebook", "instagram", "business"] as const;
 export type QrType = typeof qrTypes[number];
 
-// Schema for URL QR Code (Used for site, video, facebook, instagram)
+// Schema for URL QR Code (Used for site, facebook, instagram)
 export const urlQrSchema = z.object({
-  type: z.enum(["url", "video", "facebook", "instagram"]),
+  type: z.enum(["url", "facebook", "instagram"]),
   url: z.string().min(1, "URL is required").optional(),
   fileUrl: z.string().optional(),
   photoUrl: z.string().optional(),

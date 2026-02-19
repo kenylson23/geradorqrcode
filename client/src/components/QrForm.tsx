@@ -30,7 +30,6 @@ import {
   Share2, 
   UserCircle, 
   Briefcase, 
-  Video, 
   ImageIcon, 
   Facebook, 
   Instagram, 
@@ -72,7 +71,6 @@ const qrOptions: { type: QrType; label: string; description: string; icon: any }
   { type: "links", label: "Lista de links", description: "Compartilhar vários links", icon: Share2 },
   { type: "business", label: "Negócios", description: "Informações sobre sua empresa", icon: Briefcase },
   { type: "vcard", label: "vCard", description: "Cartão de visita digital", icon: UserCircle },
-  { type: "video", label: "Vídeo", description: "Mostrar um vídeo", icon: Video },
   { type: "images", label: "Imagens", description: "Compartilhar várias imagens", icon: ImageIcon },
   { type: "facebook", label: "Facebook", description: "Sua página do Facebook", icon: Facebook },
   { type: "instagram", label: "Instagram", description: "Seu perfil do Instagram", icon: Instagram },
@@ -155,7 +153,6 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     let defaultValues: any = { type };
     switch (type) {
       case "url":
-      case "video":
       case "facebook":
       case "instagram":
       case "pdf":
@@ -478,7 +475,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              {(activeType === "url" || activeType === "video" || activeType === "facebook" || activeType === "instagram") && (
+              {(activeType === "url" || activeType === "facebook" || activeType === "instagram") && (
                 <div className="space-y-4">
                   <FormField
                     control={form.control}

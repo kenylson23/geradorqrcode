@@ -94,23 +94,30 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
   const handleFileUpload = async (file: File, fieldName: any) => {
     try {
-      // Para arquivos pequenos (< 3KB), podemos embutir no QR (base64)
-      if (file.size <= 3 * 1024) {
-        setIsUploading(true);
-        setProgress(20);
-        const base64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-        form.setValue(fieldName, base64);
-        setProgress(100);
-      } else {
-        // Usar o hook useUpload que faz o upload direto para o Cloudinary
-        const result = await uploadFile(file);
-        if (result) {
-          form.setValue(fieldName, result.uploadURL);
+      setIsUploading(true);
+      setProgress(10);
+      
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/cloudinary-upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao fazer upload para o Cloudinary");
+      }
+
+      const result = await response.json();
+      setProgress(100);
+      
+      if (result.url) {
+        form.setValue(fieldName, result.url);
+        // Also update the general 'url' field for QR generation if it's a PDF
+        if (activeType === "pdf") {
+          form.setValue("url", result.url);
         }
       }
       

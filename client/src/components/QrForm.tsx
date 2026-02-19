@@ -316,7 +316,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                               <FormMessage />
                             </FormItem>
                           )}
-                        )}
+                        />
                         <FormField
                           control={form.control}
                           name={`links.${index}.url` as any}
@@ -328,7 +328,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                               <FormMessage />
                             </FormItem>
                           )}
-                        )}
+                        />
                       </div>
                     ))}
                     <Button

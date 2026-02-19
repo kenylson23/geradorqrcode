@@ -1,9 +1,4 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { Upload, FileText, CheckCircle2, QrCode } from "lucide-react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -13,71 +8,6 @@ import { useQrGenerator } from "@/hooks/use-qr-generator";
 export default function Home() {
   const { qrData, generate, download, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [objectPath, setObjectPath] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        toast({
-          variant: "destructive",
-          title: "Arquivo muito grande",
-          description: "O limite máximo é de 10MB.",
-        });
-        if (fileInputRef.current) fileInputRef.current.value = "";
-        return;
-      }
-      setFile(selectedFile);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-      if (!cloudName || !uploadPreset) {
-        throw new Error("Configurações do Cloudinary não encontradas.");
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error?.message || "Falha no upload");
-      }
-
-      const { secure_url } = await res.json();
-
-      setObjectPath(secure_url);
-      toast({
-        title: "Sucesso!",
-        description: "Arquivo enviado com sucesso para o Cloudinary.",
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro no upload",
-        description: error.message,
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
@@ -98,92 +28,6 @@ export default function Home() {
                   onStepChange={setCurrentStep}
                 />
               </div>
-
-              {/* Upload Section Integrated */}
-              <Card className="rounded-3xl border-border shadow-sm hover-elevate">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Upload className="w-6 h-6 text-primary" />
-                    Upload de Arquivos para o Servidor
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid w-full items-center gap-1.5">
-                    <Input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      className="cursor-pointer rounded-xl h-12"
-                      data-testid="input-file-upload"
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Limite de 10MB por arquivo. Armazenamento seguro no servidor.
-                    </p>
-                  </div>
-
-                  {file && (
-                    <div className="flex items-center gap-3 p-4 bg-muted rounded-2xl border">
-                      <FileText className="w-5 h-5 text-primary" />
-                      <div className="flex-1 min-w-0 text-left">
-                        <p className="text-sm font-medium truncate">{file.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {(file.size / (1024 * 1024)).toFixed(2)} MB
-                        </p>
-                      </div>
-                      <Button
-                        onClick={handleUpload}
-                        disabled={uploading}
-                        size="sm"
-                        className="rounded-xl"
-                        data-testid="button-upload-confirm"
-                      >
-                        {uploading ? "Enviando..." : "Confirmar Upload"}
-                      </Button>
-                    </div>
-                  )}
-
-                  {objectPath && (
-                    <div className="p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-2xl">
-                      <div className="flex items-center gap-2 text-green-700 dark:text-green-400 mb-2">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span className="font-medium">Upload Concluído</span>
-                      </div>
-                      <p className="text-xs font-mono break-all text-green-600 dark:text-green-500 mb-3">
-                        Caminho: {objectPath}
-                      </p>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="rounded-xl"
-                          asChild
-                        >
-                          <a href={objectPath} target="_blank" rel="noreferrer">
-                            Ver Arquivo
-                          </a>
-                        </Button>
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="rounded-xl"
-                          onClick={() => {
-                            const fullUrl = window.location.origin + objectPath;
-                            generate(fullUrl);
-                            setCurrentStep(3);
-                            toast({
-                              title: "QR Code Gerado",
-                              description: "QR Code gerado para o link do arquivo.",
-                            });
-                          }}
-                        >
-                          <QrCode className="w-4 h-4 mr-2" />
-                          Gerar QR Code
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
             </div>
 
             {/* Right Column: Mobile Preview */}

@@ -52,11 +52,12 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'instagram':
       case 'video':
         const url = previewUrl || "";
-        const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || "https://online-qr-generator.com";
+        const fullUrl = url ? (url.startsWith('http') ? url : `https://${url}`) : "";
+
         return (
           <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
             {/* Browser Header Area - More like the mockup */}
-            <div className="bg-[#FF8A3D] pt-12 pb-4 px-4 flex flex-col gap-3">
+            <div className="bg-[#2ECC71] pt-12 pb-4 px-4 flex flex-col gap-3">
               <div className="flex items-center justify-between px-2 text-white">
                 <span className="text-[12px] font-bold">9:41</span>
                 <div className="flex items-center gap-1.5">
@@ -77,35 +78,36 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               
               <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
                 <Globe className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{url || "https://online-qr-generator.com"}</span>
+                <span className="text-[13px] text-white font-medium truncate flex-1">{url || "Ex: https://seusite.com"}</span>
               </div>
             </div>
             
             {/* Content Area */}
             <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-              <div className="p-4 space-y-4">
-                <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
-                   {value.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
-                    value.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
-                    value.type === 'video' ? <Video className="w-12 h-12 text-slate-400" /> :
-                    <Globe className="w-12 h-12 text-slate-400" />}
+              {!fullUrl ? (
+                <div className="p-4 space-y-4">
+                  <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
+                    {value.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
+                      value.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
+                      value.type === 'video' ? <Video className="w-12 h-12 text-slate-400" /> :
+                      <Globe className="w-12 h-12 text-slate-400" />}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-slate-100 rounded-full w-full"></div>
+                    <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
+                    <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
+                  </div>
+                  <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
+                    <div className="h-4 bg-slate-300 rounded-full w-32"></div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="h-4 bg-slate-100 rounded-full w-full"></div>
-                  <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
-                  <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
-                </div>
-                <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
-                   <div className="h-4 bg-slate-300 rounded-full w-32"></div>
-                </div>
-              </div>
-
-              {url && (
+              ) : (
                 <div className="absolute inset-0 bg-white">
                   <iframe 
-                    src={url.startsWith('http') ? url : `https://${url}`} 
+                    src={fullUrl} 
                     className="w-full h-full border-0"
                     title="Safari Preview"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
                   />
                 </div>
               )}

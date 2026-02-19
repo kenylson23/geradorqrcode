@@ -110,44 +110,25 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         form.setValue(fieldName, base64);
         setProgress(100);
       } else {
-        // Upload direto para o Cloudinary (Unsigned Upload)
+        // Usar o backend para upload em vez de upload direto para o Cloudinary no frontend
         setProgress(20);
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "unsigned_upload");
-        formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY || "");
 
-        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-        if (!cloudName) {
-          throw new Error("VITE_CLOUDINARY_CLOUD_NAME não configurado no frontend");
-        }
-
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`, {
+        const response = await fetch("/api/upload", {
           method: "POST",
           body: formData,
         });
 
         if (!response.ok) {
-          // Tentar 'auto' se 'raw' falhar (algumas configurações preferem auto)
-          const fallbackResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-            method: "POST",
-            body: formData,
-          });
-          
-          if (!fallbackResponse.ok) {
-            const errorData = await fallbackResponse.json().catch(() => ({}));
-            throw new Error(errorData.error?.message || `Erro no upload direto (Status: ${fallbackResponse.status})`);
-          }
-          const { secure_url } = await fallbackResponse.json();
-          setProgress(90);
-          form.setValue(fieldName, secure_url);
-          setProgress(100);
-        } else {
-          const { secure_url } = await response.json();
-          setProgress(90);
-          form.setValue(fieldName, secure_url);
-          setProgress(100);
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Erro no upload (Status: ${response.status})`);
         }
+
+        const { url: secure_url } = await response.json();
+        setProgress(90);
+        form.setValue(fieldName, secure_url);
+        setProgress(100);
       }
       
       onGenerate(form.getValues());

@@ -317,20 +317,20 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </Alert>
       )}
 
-      <div className="flex flex-col gap-3 w-full mt-4">
+      <div className="flex flex-col gap-3 w-full max-w-[320px] mt-4">
         <Button 
           onClick={onDownload} 
-          className="w-full h-12 rounded-xl font-bold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+          className="w-full h-14 rounded-2xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 text-base transition-all active:scale-[0.98]"
           disabled={isTooLong}
           data-testid="button-download-qr"
         >
-          <Download className="mr-2 h-5 w-5" />
+          <Download className="mr-2 h-6 w-6" />
           Baixar PNG
         </Button>
         <Button 
           variant="outline" 
           onClick={onReset} 
-          className="w-full h-12 rounded-xl font-bold border-2"
+          className="w-full h-12 rounded-xl font-bold border-2 text-slate-600 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98]"
           data-testid="button-reset-qr"
         >
           <RefreshCw className="mr-2 h-5 w-5" />

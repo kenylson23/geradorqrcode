@@ -15,10 +15,10 @@ export function Header({ currentStep }: HeaderProps) {
           </div>
           <div className="flex flex-col">
             <h1 className="text-lg font-bold text-foreground leading-tight">
-              Online
+              Ango
             </h1>
             <span className="text-lg font-bold text-foreground -mt-1">
-              QR Generator
+              QrCode
             </span>
           </div>
         </Link>

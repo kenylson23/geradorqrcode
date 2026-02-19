@@ -52,7 +52,7 @@ export function LinkTree({ title, description, links }: LinkTreeProps) {
       </div>
       
       <div className="mt-8 pt-4 border-t border-border w-full text-center">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por QR Code Angola</p>
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
       </div>
     </div>
   );

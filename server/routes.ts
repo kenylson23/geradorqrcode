@@ -15,19 +15,6 @@ export async function registerRoutes(
   // Register object storage routes for file uploads
   registerObjectStorageRoutes(app);
 
-  app.post("/api/upload", upload.single("file"), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: "Nenhum arquivo enviado" });
-      }
-      const url = await storage.uploadImage(req.file.buffer);
-      res.json({ url });
-    } catch (error: any) {
-      console.error("Erro no upload:", error);
-      res.status(500).json({ error: error.message || "Erro interno no servidor" });
-    }
-  });
-
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
   });

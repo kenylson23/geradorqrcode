@@ -19,18 +19,19 @@ interface UseUploadOptions {
 }
 
 /**
- * React hook for handling file uploads purely on theict side.
- * This avoids any backend dependency by converting files to Base64 strings.
- * Optimized for files up to 10MB.
+ * React hook for handling file uploads directly to Cloudinary from the client.
+ * Uses unsigned upload presets for Netlify/Static compatibility.
  */
 export function useUpload(options: UseUploadOptions = {}) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [progress, setProgress] = useState(0);
 
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
   /**
-   * Process a file locally by converting it to a Base64 string.
-   * Supports files up to 10MB as requested.
+   * Uploads a file directly to Cloudinary using an unsigned upload preset.
    */
   const uploadFile = useCallback(
     async (file: File): Promise<UploadResponse | null> => {
@@ -43,45 +44,58 @@ export function useUpload(options: UseUploadOptions = {}) {
         return null;
       }
 
+      if (!cloudName || !uploadPreset) {
+        const error = new Error("Configuração do Cloudinary ausente (VITE_CLOUDINARY_CLOUD_NAME ou VITE_CLOUDINARY_UPLOAD_PRESET).");
+        setError(error);
+        options.onError?.(error);
+        return null;
+      }
+
       setIsUploading(true);
       setError(null);
       setProgress(0);
 
       try {
-        setProgress(10);
-        
-        // Use FileReader to convert file to base64
-        const base64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          
-          reader.onprogress = (event) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+
+        const xhr = new XMLHttpRequest();
+        const promise = new Promise<UploadResponse>((resolve, reject) => {
+          xhr.upload.addEventListener("progress", (event) => {
             if (event.lengthComputable) {
-              const percent = Math.round((event.loaded / event.total) * 90);
+              const percent = Math.round((event.loaded / event.total) * 100);
               setProgress(percent);
             }
-          };
+          });
 
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = () => reject(new Error("Erro ao ler o arquivo localmente"));
-          reader.readAsDataURL(file);
+          xhr.addEventListener("load", () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const response = JSON.parse(xhr.responseText);
+              resolve({
+                uploadURL: response.secure_url,
+                objectPath: response.public_id,
+                metadata: {
+                  name: file.name,
+                  size: file.size,
+                  contentType: file.type || "application/octet-stream",
+                },
+              });
+            } else {
+              reject(new Error(`Erro no upload: ${xhr.statusText}`));
+            }
+          });
+
+          xhr.addEventListener("error", () => reject(new Error("Erro de rede no upload")));
+          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+          xhr.send(formData);
         });
 
-        setProgress(100);
-        
-        const response: UploadResponse = {
-          uploadURL: base64,
-          objectPath: file.name,
-          metadata: {
-            name: file.name,
-            size: file.size,
-            contentType: file.type || "application/octet-stream",
-          },
-        };
-
-        options.onSuccess?.(response);
-        return response;
+        const result = await promise;
+        options.onSuccess?.(result);
+        return result;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error("Falha no processamento do arquivo");
+        const error = err instanceof Error ? err : new Error("Falha no upload do arquivo");
         setError(error);
         options.onError?.(error);
         return null;
@@ -89,28 +103,33 @@ export function useUpload(options: UseUploadOptions = {}) {
         setIsUploading(false);
       }
     },
-    [options]
+    [options, cloudName, uploadPreset]
   );
 
   /**
-   * Simulated parameters for Uppy to handle files locally.
+   * Configures Uppy to upload directly to Cloudinary.
    */
   const getUploadParameters = useCallback(
     async (
       file: UppyFile<Record<string, unknown>, Record<string, unknown>>
     ): Promise<{
-      method: "PUT";
+      method: "POST";
       url: string;
-      headers?: Record<string, string>;
+      fields?: Record<string, string>;
     }> => {
-      // Mock URL for client-side only environments
+      if (!cloudName || !uploadPreset) {
+        throw new Error("Configuração do Cloudinary ausente.");
+      }
+
       return {
-        method: "PUT",
-        url: "blob:local",
-        headers: { "Content-Type": file.type || "application/octet-stream" },
+        method: "POST",
+        url: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        fields: {
+          upload_preset: uploadPreset,
+        },
       };
     },
-    []
+    [cloudName, uploadPreset]
   );
 
   return {

@@ -5,7 +5,7 @@ import type { UppyFile, UploadResult } from "@uppy/core";
 import DashboardModal from "@uppy/react/dashboard-modal";
 import "@uppy/core/css/style.min.css";
 import "@uppy/dashboard/css/style.min.css";
-import AwsS3 from "@uppy/aws-s3";
+import XHRUpload from "@uppy/xhr-upload";
 import { Button } from "@/components/ui/button";
 
 interface ObjectUploaderProps {
@@ -13,14 +13,13 @@ interface ObjectUploaderProps {
   maxFileSize?: number;
   /**
    * Function to get upload parameters for each file.
-   * IMPORTANT: This receives the file object - use file.name, file.size, file.type
-   * to request per-file presigned URLs from your backend.
    */
   onGetUploadParameters: (
     file: UppyFile<Record<string, unknown>, Record<string, unknown>>
   ) => Promise<{
-    method: "PUT";
+    method: "POST" | "PUT";
     url: string;
+    fields?: Record<string, string>;
     headers?: Record<string, string>;
   }>;
   onComplete?: (
@@ -33,31 +32,6 @@ interface ObjectUploaderProps {
 /**
  * A file upload component that renders as a button and provides a modal interface for
  * file management.
- *
- * Features:
- * - Renders as a customizable button that opens a file upload modal
- * - Provides a modal interface for:
- *   - File selection
- *   - File preview
- *   - Upload progress tracking
- *   - Upload status display
- *
- * The component uses Uppy v5 under the hood to handle all file upload functionality.
- * All file management features are automatically handled by the Uppy dashboard modal.
- *
- * @param props - Component props
- * @param props.maxNumberOfFiles - Maximum number of files allowed to be uploaded
- *   (default: 1)
- * @param props.maxFileSize - Maximum file size in bytes (default: 10MB)
- * @param props.onGetUploadParameters - Function to get upload parameters for each file.
- *   Receives the UppyFile object with file.name, file.size, file.type properties.
- *   Use these to request per-file presigned URLs from your backend. Returns method,
- *   url, and optional headers for the upload request.
- * @param props.onComplete - Callback function called when upload is complete. Typically
- *   used to make post-upload API calls to update server state and set object ACL
- *   policies.
- * @param props.buttonClassName - Optional CSS class name for the button
- * @param props.children - Content to be rendered inside the button
  */
 export function ObjectUploader({
   maxNumberOfFiles = 1,
@@ -76,9 +50,32 @@ export function ObjectUploader({
       },
       autoProceed: false,
     })
-      .use(AwsS3, {
-        shouldUseMultipart: false,
-        getUploadParameters: onGetUploadParameters,
+      .use(XHRUpload, {
+        endpoint: "https://api.cloudinary.com/v1_1/placeholder/image/upload", // Will be overridden
+        formData: true,
+        fieldName: "file",
+        async getResponseData(responseText) {
+          return JSON.parse(responseText);
+        },
+      })
+      .on("upload", async (data) => {
+        // Override parameters for each file
+        for (const fileID of data.fileIDs) {
+          const file = uppy.getFile(fileID);
+          const params = await onGetUploadParameters(file);
+          uppy.setFileState(fileID, {
+            xhrUpload: {
+              endpoint: params.url,
+              method: params.method,
+              formData: true,
+              fieldName: "file",
+              metaFields: Object.keys(params.fields || {}),
+            },
+          });
+          if (params.fields) {
+            uppy.setMeta(params.fields);
+          }
+        }
       })
       .on("complete", (result) => {
         onComplete?.(result);

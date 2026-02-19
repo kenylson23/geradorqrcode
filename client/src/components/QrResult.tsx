@@ -197,27 +197,108 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           </div>
         );
 
-      case 'pdf':
+      case 'vcard':
         return (
-          <div className="w-full h-full bg-slate-100 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-             <div className="bg-white pt-12 pb-4 px-4 flex items-center justify-between border-b">
-              <span className="text-[12px] font-bold">9:41</span>
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-red-500" />
-                <span className="text-[10px] font-bold text-slate-600 truncate max-w-[120px]">{value.url?.split('/').pop() || "documento.pdf"}</span>
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center">
+              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30">
+                <User className="w-12 h-12" />
               </div>
-              <Download className="w-3.5 h-3.5 text-primary" />
+              <h3 className="text-xl font-bold">{value.firstName} {value.lastName}</h3>
+              <p className="text-sm opacity-90">{value.jobTitle || value.profession}</p>
             </div>
-            <div className="flex-1 p-6 flex flex-col items-center justify-center gap-4">
-              <div className="w-44 h-64 bg-white shadow-xl rounded-sm flex flex-col p-4 gap-2 border">
-                <div className="w-full h-4 bg-slate-100 rounded-sm" />
-                <div className="w-3/4 h-3 bg-slate-50 rounded-sm" />
-                <div className="w-full h-2 bg-slate-50 rounded-sm" />
-                <div className="w-full h-2 bg-slate-50 rounded-sm" />
-                <div className="w-full h-2 bg-slate-50 rounded-sm" />
-                <div className="mt-auto w-12 h-12 self-center border-4 border-slate-100 rounded-full" />
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl">
+              <div className="space-y-4">
+                {value.phone && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Smartphone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Telemóvel</p>
+                      <p className="text-sm font-semibold">{value.phone}</p>
+                    </div>
+                  </div>
+                )}
+                {value.email && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
+                      <p className="text-sm font-semibold">{value.email}</p>
+                    </div>
+                  </div>
+                )}
+                {value.companyName && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Search className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Empresa</p>
+                      <p className="text-sm font-semibold">{value.companyName}</p>
+                    </div>
+                  </div>
+                )}
               </div>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">PDF Preview</p>
+              <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold">
+                Salvar Contacto
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'business':
+        return (
+          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="h-48 bg-slate-200 relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/20" />
+              <Search className="w-12 h-12 text-white/50" />
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900">{value.companyName || "Nome da Empresa"}</h3>
+                <p className="text-primary font-medium">{value.industry || "Ramo de Atividade"}</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-slate-600">
+                <Globe className="w-4 h-4" />
+                <span>{value.location || "Endereço da empresa"}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 pt-4">
+                <div className="p-4 bg-slate-50 rounded-2xl text-center">
+                  <MessageCircle className="w-6 h-6 mx-auto mb-2 text-primary" />
+                  <p className="text-[10px] font-bold uppercase">Ligar</p>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-2xl text-center">
+                  <Globe className="w-6 h-6 mx-auto mb-2 text-primary" />
+                  <p className="text-[10px] font-bold uppercase">Website</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'images':
+        return (
+          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="p-6 pt-12 flex items-center justify-between text-white">
+              <h3 className="text-lg font-bold">{value.title || "Galeria de Imagens"}</h3>
+              <MoreHorizontal className="w-6 h-6" />
+            </div>
+            <div className="flex-1 p-4 grid grid-cols-2 gap-2 overflow-y-auto">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-square bg-white/10 rounded-xl flex items-center justify-center">
+                  <ImageIcon className="w-8 h-8 text-white/20" />
+                </div>
+              ))}
+            </div>
+            <div className="p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <p className="text-sm text-white/70 mb-4">{value.description || "Descrição da galeria de fotos."}</p>
+              <Button className="w-full rounded-full bg-white text-black hover:bg-white/90">
+                Ver todas as fotos
+              </Button>
             </div>
           </div>
         );

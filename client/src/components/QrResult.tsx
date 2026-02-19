@@ -317,7 +317,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </Alert>
       )}
 
-      <div className="flex flex-col gap-2 w-full max-w-[280px] mt-4">
+      <div className="flex flex-col gap-2 w-full max-w-[280px] mt-2 mb-8">
         <Button 
           onClick={onDownload} 
           className="w-full h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 text-sm transition-all active:scale-[0.98]"

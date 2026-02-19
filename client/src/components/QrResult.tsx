@@ -29,7 +29,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Determine if it's a "real-time preview" (incomplete data)
   const isUrlType = value?.type === 'url' || value?.type === 'video' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
-  const hasMinData = isUrlType ? !!value?.url : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && value?.links[0].url) : true));
+  const hasMinData = isUrlType 
+    ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0)
+    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && value?.links[0].url) : true));
 
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {
@@ -167,6 +169,18 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       default:
+        // For simple types like text, email, phone, etc., if we have data, show a default simulation
+        if (hasMinData && value?.type) {
+          return (
+            <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
+              <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+                <Smartphone className="w-10 h-10 text-primary" />
+              </div>
+              <h4 className="text-lg font-bold text-slate-800 mb-2">Pronto para gerar</h4>
+              <p className="text-sm text-slate-500">Seus dados foram inseridos com sucesso. Visualize o Código QR na aba ao lado.</p>
+            </div>
+          );
+        }
         return (
           <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
             <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">

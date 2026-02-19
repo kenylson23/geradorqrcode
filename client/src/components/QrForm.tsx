@@ -187,7 +187,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         break;
     }
     form.reset(defaultValues);
-    // Initial generation with empty values
+    // Initial generation with empty values to clear previous state
     onGenerate(defaultValues);
   };
 

@@ -29,9 +29,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       {isLinkTree ? (
         <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
           <LinkTree 
-            title={value.title || "Título do Preview"} 
-            description={value.description || "Descrição do preview aparecerá aqui"} 
-            links={value.links && value.links.length > 0 && value.links[0].label ? value.links : [{ label: "Link de Exemplo", url: "#" }]} 
+            title={value.title} 
+            description={value.description} 
+            links={value.links || []} 
           />
         </div>
       ) : (

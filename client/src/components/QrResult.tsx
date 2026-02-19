@@ -30,7 +30,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {
       return (
-        <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
           <LinkTree 
             title={value.title} 
             description={value.description} 
@@ -46,81 +46,87 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'instagram':
       case 'video':
         const url = value.url || "";
-        const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || "seusite.com";
+        const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || "https://online-qr-generator.com";
         return (
-          <div className="w-full h-full bg-[#F2F2F7] flex flex-col rounded-[3rem] overflow-hidden border-[8px] border-slate-900 shadow-2xl animate-in fade-in duration-500">
-            {/* Safari Header Area */}
-            <div className="bg-[#F9F9F9]/90 backdrop-blur-md pt-10 pb-2 px-4 flex flex-col gap-2 border-b border-slate-200">
-              <div className="flex items-center justify-between px-2">
-                <span className="text-[12px] font-semibold">9:41</span>
+          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Browser Header Area - More like the mockup */}
+            <div className="bg-[#FF8A3D] pt-12 pb-4 px-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between px-2 text-white">
+                <span className="text-[12px] font-bold">9:41</span>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-4 h-4 rounded-full border border-black/20" />
-                  <div className="w-4 h-4 rounded-full border border-black/20" />
+                  <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
+                  </div>
+                  <div className="w-3.5 h-3.5 flex items-center justify-center">
+                    <div className="w-3 h-2 border border-white rounded-sm relative">
+                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
+                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="bg-slate-200/50 rounded-lg py-1.5 px-3 flex items-center justify-center gap-2">
-                <Search className="w-3 h-3 text-slate-500" />
-                <span className="text-[11px] text-slate-700 truncate max-w-[150px]">{displayUrl}</span>
+              
+              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
+                <Globe className="w-4 h-4 text-white" />
+                <span className="text-[13px] text-white font-medium truncate flex-1">{displayUrl}</span>
               </div>
             </div>
             
-            {/* Safari Content Area */}
-            <div className="flex-1 bg-white flex flex-col relative">
-              {url ? (
-                <iframe 
-                  src={url.startsWith('http') ? url : `https://${url}`} 
-                  className="w-full h-full border-0"
-                  title="Safari Preview"
-                />
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                    {value.type === 'facebook' ? <Facebook className="w-8 h-8 text-primary" /> : 
-                     value.type === 'instagram' ? <Instagram className="w-8 h-8 text-primary" /> :
-                     value.type === 'video' ? <Video className="w-8 h-8 text-primary" /> :
-                     <Globe className="w-8 h-8 text-primary" />}
-                  </div>
-                  <h4 className="font-bold text-slate-800 mb-2">Aguardando link...</h4>
-                  <p className="text-[10px] text-slate-400">Insira a URL para visualizar seu site no simulador.</p>
+            {/* Content Area */}
+            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
+              <div className="p-4 space-y-4">
+                <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
+                   {value.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
+                    value.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
+                    value.type === 'video' ? <Video className="w-12 h-12 text-slate-400" /> :
+                    <Globe className="w-12 h-12 text-slate-400" />}
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-slate-100 rounded-full w-full"></div>
+                  <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
+                  <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
+                </div>
+                <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
+                   <div className="h-4 bg-slate-300 rounded-full w-32"></div>
+                </div>
+              </div>
+
+              {url && (
+                <div className="absolute inset-0 bg-white">
+                  <iframe 
+                    src={url.startsWith('http') ? url : `https://${url}`} 
+                    className="w-full h-full border-0"
+                    title="Safari Preview"
+                  />
                 </div>
               )}
-            </div>
-
-            {/* Safari Toolbar */}
-            <div className="bg-[#F9F9F9]/90 backdrop-blur-md p-4 pb-8 flex justify-around border-t border-slate-200">
-              <div className="w-5 h-5 flex items-center justify-center">
-                <div className="w-3 h-3 border-l-2 border-b-2 border-primary -rotate-45" />
-              </div>
-              <div className="w-5 h-5 flex items-center justify-center">
-                <div className="w-3 h-3 border-r-2 border-t-2 border-primary -rotate-45" />
-              </div>
-              <Download className="w-5 h-5 text-primary" />
-              <Search className="w-5 h-5 text-primary" />
-              <div className="w-4 h-4 border-2 border-primary rounded-sm" />
             </div>
           </div>
         );
 
       case 'whatsapp':
         return (
-          <div className="w-full h-full bg-[#E5DDD5] flex flex-col rounded-2xl overflow-hidden animate-in fade-in duration-500">
-            <div className="bg-[#075E54] p-4 flex items-center gap-3 text-white">
+          <div className="w-full h-full bg-[#E5DDD5] flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="bg-[#075E54] pt-12 pb-4 px-4 flex items-center gap-3 text-white">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <User className="w-5 h-5" />
               </div>
               <div className="flex-1 overflow-hidden">
-                <p className="font-bold text-xs truncate">{value.phone || "Número WhatsApp"}</p>
-                <p className="text-[10px] opacity-80">visto por último hoje às 12:00</p>
+                <p className="font-bold text-xs truncate">{value.phone || "WhatsApp"}</p>
+                <p className="text-[10px] opacity-80">online</p>
               </div>
               <Video className="w-4 h-4" />
             </div>
-            <div className="flex-1 p-4 flex flex-col justify-end gap-2">
+            <div className="flex-1 p-4 flex flex-col justify-end gap-2 overflow-y-auto">
               <div className="self-end bg-[#DCF8C6] p-3 rounded-lg rounded-tr-none shadow-sm max-w-[80%]">
                 <p className="text-[11px] text-slate-800">{value.message || "Olá! Gostaria de mais informações."}</p>
                 <p className="text-[9px] text-slate-500 text-right mt-1">12:01</p>
               </div>
             </div>
-            <div className="bg-white p-3 flex items-center gap-2">
+            <div className="bg-white p-3 pb-8 flex items-center gap-2">
               <div className="flex-1 bg-slate-100 rounded-full h-8 px-4 flex items-center">
                 <span className="text-[10px] text-slate-400">Mensagem</span>
               </div>
@@ -133,16 +139,17 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
       case 'pdf':
         return (
-          <div className="w-full h-full bg-slate-200 flex flex-col rounded-2xl overflow-hidden animate-in fade-in duration-500">
-            <div className="bg-slate-800 p-3 flex items-center justify-between text-white">
+          <div className="w-full h-full bg-slate-100 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+             <div className="bg-white pt-12 pb-4 px-4 flex items-center justify-between border-b">
+              <span className="text-[12px] font-bold">9:41</span>
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-red-500" />
-                <span className="text-[10px] font-medium truncate max-w-[120px]">{value.url?.split('/').pop() || "documento.pdf"}</span>
+                <span className="text-[10px] font-bold text-slate-600 truncate max-w-[120px]">{value.url?.split('/').pop() || "documento.pdf"}</span>
               </div>
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-primary" />
             </div>
-            <div className="flex-1 p-6 flex flex-col items-center justify-center gap-4 bg-slate-500/10">
-              <div className="w-40 h-56 bg-white shadow-lg rounded-sm flex flex-col p-4 gap-2">
+            <div className="flex-1 p-6 flex flex-col items-center justify-center gap-4">
+              <div className="w-44 h-64 bg-white shadow-xl rounded-sm flex flex-col p-4 gap-2 border">
                 <div className="w-full h-4 bg-slate-100 rounded-sm" />
                 <div className="w-3/4 h-3 bg-slate-50 rounded-sm" />
                 <div className="w-full h-2 bg-slate-50 rounded-sm" />
@@ -150,14 +157,14 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 <div className="w-full h-2 bg-slate-50 rounded-sm" />
                 <div className="mt-auto w-12 h-12 self-center border-4 border-slate-100 rounded-full" />
               </div>
-              <p className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Visualização de PDF</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">PDF Preview</p>
             </div>
           </div>
         );
 
       default:
         return (
-          <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500">
+          <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
             <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
               <Smartphone className="w-10 h-10 text-primary/40" />
             </div>
@@ -169,50 +176,71 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full h-full">
-      <div className="flex-1 w-full relative group">
-        <div className={`w-full h-full flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+    <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
+      {/* Top Tabs - Mockup Style */}
+      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[240px] border border-slate-200 mt-2">
+        <button
+          onClick={() => setShowQr(false)}
+          className={`flex-1 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-sm' : 'text-[#2ECC71]'}`}
+        >
+          Pré-visualização
+        </button>
+        <button
+          onClick={() => setShowQr(true)}
+          className={`flex-1 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-sm' : 'text-[#2ECC71]'}`}
+        >
+          Código QR
+        </button>
+      </div>
+
+      <div className="flex-1 w-full relative">
+        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
           {renderSimulation()}
         </div>
 
         <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${showQr ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-          <div id="qr-code-element" className="bg-white p-6 rounded-3xl shadow-xl border border-border">
-            {isTooLong ? (
-              <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
-                <AlertTriangle className="w-10 h-10 mb-2" />
-                <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
+          <div className="pt-12 flex flex-col items-center gap-8 w-full h-full bg-white">
+             <div className="flex items-center justify-between px-6 w-full text-slate-900">
+                <span className="text-[12px] font-bold">9:41</span>
+                <div className="flex items-center gap-1.5">
+                   <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 h-1 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-1.5 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-2 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-2.5 bg-slate-900/40 rounded-full"></div>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
-                <QRCodeSVG
-                  value={hasMinData ? qrValue : "https://replit.com"}
-                  size={200}
-                  level="M"
-                  includeMargin={true}
-                  imageSettings={{
-                    src: "/logo.png",
-                    x: undefined,
-                    y: undefined,
-                    height: 40,
-                    width: 40,
-                    excavate: true,
-                  }}
-                />
+
+              <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
+                {isTooLong ? (
+                  <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
+                    <AlertTriangle className="w-10 h-10 mb-2" />
+                    <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
+                  </div>
+                ) : (
+                  <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
+                    <QRCodeSVG
+                      value={hasMinData ? qrValue : "https://replit.com"}
+                      size={200}
+                      level="M"
+                      includeMargin={true}
+                      imageSettings={{
+                        src: "/logo.png",
+                        x: undefined,
+                        y: undefined,
+                        height: 40,
+                        width: 40,
+                        excavate: true,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            )}
           </div>
         </div>
-        
-        {/* Toggle View Button */}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setShowQr(!showQr)}
-          className="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full h-8 px-4 text-[10px] font-bold uppercase tracking-wider shadow-lg hover-elevate z-10"
-        >
-          {showQr ? "Ver Simulação" : "Ver Código QR"}
-        </Button>
       </div>
+
 
       {isTooLong && (
         <Alert variant="destructive" className="border-2 mt-4">

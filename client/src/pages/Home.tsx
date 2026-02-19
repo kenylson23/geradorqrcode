@@ -32,12 +32,18 @@ export default function Home() {
 
             {/* Right Column: Mobile Preview */}
             <div className="lg:col-span-4 sticky top-24">
-              <div className="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-2xl">
-                <div className="h-[32px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -left-[17px] top-[72px] rounded-l-lg"></div>
-                <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
-                <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -left-[17px] top-[178px] rounded-l-lg"></div>
-                <div className="h-[64px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
-                <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white flex flex-col items-center justify-center text-center">
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[12px] rounded-[3.5rem] h-[720px] w-[340px] shadow-2xl overflow-visible">
+                {/* iPhone Frame Elements */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-2xl z-50 flex items-center justify-center">
+                  <div className="w-12 h-3 bg-[#111] rounded-full"></div>
+                </div>
+                
+                <div className="h-[32px] w-[3px] bg-gray-800 absolute -left-[15px] top-[100px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[50px] w-[3px] bg-gray-800 absolute -left-[15px] top-[160px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[50px] w-[3px] bg-gray-800 absolute -left-[15px] top-[220px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[80px] w-[3px] bg-gray-800 absolute -right-[15px] top-[180px] rounded-r-lg border-r border-white/10"></div>
+
+                <div className="rounded-[2.8rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
                   {qrData ? (
                     <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
                       <QrResult 
@@ -47,7 +53,7 @@ export default function Home() {
                       />
                     </div>
                   ) : (
-                    <div className="space-y-6">
+                    <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-6 text-center">
                       <div className="w-48 h-48 mx-auto border-2 border-dashed border-muted rounded-2xl flex items-center justify-center bg-muted/20">
                         <div className="text-muted-foreground text-sm flex flex-col items-center gap-2">
                           <div className="w-24 h-24 opacity-20 bg-foreground rounded-lg"></div>
@@ -62,6 +68,9 @@ export default function Home() {
                       </p>
                     </div>
                   )}
+
+                  {/* Home Indicator */}
+                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
                 </div>
               </div>
             </div>

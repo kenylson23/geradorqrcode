@@ -19,7 +19,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   
   // Extract the raw URL for the preview (before any processing like mailto: or tel:)
   // This ensures we show exactly what the user typed in the browser simulation
-  const previewUrl = typeof value === 'object' ? (value.url || value.fileUrl || "") : value;
+  const previewUrl = typeof value === 'object' ? (value.url || value.fileUrl || (value.type === 'instagram' && value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value;
   
   const generateQrValue = (data: any) => {
     if (!data) return "";

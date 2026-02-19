@@ -31,7 +31,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   const isUrlType = value?.type === 'url' || value?.type === 'video' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = isUrlType 
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0)
-    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && value?.links[0].url) : true));
+    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : true));
 
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {

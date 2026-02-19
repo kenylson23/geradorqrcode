@@ -11,12 +11,24 @@ export type QrType = typeof qrTypes[number];
 // Schema for URL QR Code (Used for site, facebook, instagram)
 export const urlQrSchema = z.object({
   type: z.enum(["url", "facebook", "instagram"]),
-  url: z.string().min(1, "URL is required").optional(),
+  url: z.string().optional(),
+  instagramUser: z.string().optional(),
   fileUrl: z.string().optional(),
   photoUrl: z.string().optional(),
   companyName: z.string().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
+});
+
+// For form validation, we use this refined version
+export const urlQrFormSchema = urlQrSchema.refine(data => {
+  if (data.type === 'instagram') {
+    return !!data.url || !!data.instagramUser;
+  }
+  return !!data.url || !!data.fileUrl;
+}, {
+  message: "URL ou Nome de usuário é obrigatório",
+  path: ["url"]
 });
 
 // Schema for Text QR Code

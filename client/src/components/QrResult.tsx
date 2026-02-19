@@ -31,6 +31,10 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case "instagram":
       case "pdf":
         let urlValue = data.fileUrl || (data.url || "");
+        if (data.type === "instagram" && data.instagramUser && !urlValue) {
+          const username = data.instagramUser.startsWith('@') ? data.instagramUser.slice(1) : data.instagramUser;
+          urlValue = `instagram.com/${username}`;
+        }
         if (urlValue && !urlValue.startsWith('http') && !urlValue.startsWith('mailto:') && !urlValue.startsWith('tel:')) {
           urlValue = `https://${urlValue}`;
         }
@@ -81,7 +85,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   // Determine if it's a "real-time preview" (incomplete data)
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = isUrlType 
-    ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0)
+    ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
     : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : true));
 
   const renderSimulation = () => {

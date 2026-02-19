@@ -87,6 +87,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     defaultValues: {
       type: "url",
       url: "",
+      instagramUser: "",
     },
     mode: "onChange"
   });
@@ -154,9 +155,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     switch (type) {
       case "url":
       case "facebook":
-      case "instagram":
       case "pdf":
         defaultValues = { ...defaultValues, url: "" };
+        break;
+      case "instagram":
+        defaultValues = { ...defaultValues, url: "", instagramUser: "" };
         break;
       case "text":
         defaultValues = { ...defaultValues, text: "" };
@@ -475,7 +478,45 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              {(activeType === "url" || activeType === "facebook" || activeType === "instagram") && (
+              {activeType === "instagram" && (
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="instagramUser"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold text-foreground">Nome de Usuário (@)</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">@</span>
+                            <Input placeholder="seu_usuario" {...field} value={field.value || ''} className="h-12 pl-8 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+                    <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-muted-foreground font-semibold">ou use uma URL</span></div>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold text-foreground">URL do Perfil</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://instagram.com/seu_usuario" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {(activeType === "url" || activeType === "facebook") && (
                 <div className="space-y-4">
                   <FormField
                     control={form.control}

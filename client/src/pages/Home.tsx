@@ -50,6 +50,10 @@ export default function Home() {
       });
 
       if (!res.ok) {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("text/html")) {
+          throw new Error("O servidor retornou uma página HTML em vez de JSON. Verifique se a rota /api/cloudinary-upload está configurada no Netlify.");
+        }
         const error = await res.json();
         throw new Error(error.error || "Falha no upload");
       }

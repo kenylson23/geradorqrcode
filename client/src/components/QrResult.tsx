@@ -240,22 +240,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
-      {/* Top Tabs - Mockup Style */}
-      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[240px] border border-slate-200 mt-2">
-        <button
-          onClick={() => setShowQr(false)}
-          className={`flex-1 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-sm' : 'text-[#2ECC71]'}`}
-        >
-          Pré-visualização
-        </button>
-        <button
-          onClick={() => setShowQr(true)}
-          className={`flex-1 py-1.5 px-3 rounded-full text-[11px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-sm' : 'text-[#2ECC71]'}`}
-        >
-          Código QR
-        </button>
-      </div>
-
       <div className="flex-1 w-full relative">
         <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
           {renderSimulation()}
@@ -304,6 +288,23 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         </div>
       </div>
 
+      {/* Control Tabs - Moved outside simulation */}
+      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
+        <button
+          onClick={() => setShowQr(false)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-preview"
+        >
+          Pré-visualização
+        </button>
+        <button
+          onClick={() => setShowQr(true)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-qr"
+        >
+          Código QR
+        </button>
+      </div>
 
       {isTooLong && (
         <Alert variant="destructive" className="border-2 mt-4">

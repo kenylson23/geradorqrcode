@@ -115,6 +115,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "unsigned_upload");
+        formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY || "");
 
         const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
         if (!cloudName) {

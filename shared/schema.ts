@@ -11,7 +11,7 @@ export type QrType = typeof qrTypes[number];
 // Schema for URL QR Code (Used for site, video, facebook, instagram)
 export const urlQrSchema = z.object({
   type: z.enum(["url", "video", "facebook", "instagram"]),
-  url: z.string().url({ message: "Please enter a valid URL" }).optional(),
+  url: z.string().min(1, "URL is required").optional(),
   fileUrl: z.string().optional(),
   photoUrl: z.string().optional(),
   companyName: z.string().optional(),

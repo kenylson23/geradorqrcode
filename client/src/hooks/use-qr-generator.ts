@@ -16,7 +16,11 @@ export function useQrGenerator() {
       case "facebook":
       case "instagram":
       case "pdf":
-        value = (data as any).fileUrl || ((data as any).url || "");
+        let urlValue = (data as any).fileUrl || ((data as any).url || "");
+        if (urlValue && !urlValue.startsWith('http') && !urlValue.startsWith('mailto:') && !urlValue.startsWith('tel:')) {
+          urlValue = `https://${urlValue}`;
+        }
+        value = urlValue;
         break;
       case "text":
         value = data.text;

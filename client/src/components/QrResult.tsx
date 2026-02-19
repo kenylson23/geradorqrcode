@@ -252,52 +252,111 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
       case 'business':
         return (
-          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            <div className="h-48 bg-slate-200 relative flex items-center justify-center">
-              <div className="absolute inset-0 bg-black/20" />
-              <Search className="w-12 h-12 text-white/50" />
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-black/10" />
+              <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10">
+                {value.photoUrl ? (
+                  <img src={value.photoUrl} className="w-full h-full object-cover rounded-full" alt="Logo" />
+                ) : (
+                  <Search className="w-12 h-12 text-primary/20" />
+                )}
+              </div>
+              <h3 className="text-xl font-bold relative z-10">{value.companyName || "Nome da Empresa"}</h3>
+              <p className="text-sm opacity-90 relative z-10">{value.industry || "Ramo de Atividade"}</p>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">{value.companyName || "Nome da Empresa"}</h3>
-                <p className="text-primary font-medium">{value.industry || "Ramo de Atividade"}</p>
+            
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+              {value.caption && (
+                <p className="text-sm text-slate-600 text-center italic">{value.caption}</p>
+              )}
+              
+              <div className="space-y-3">
+                {value.phone && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Smartphone className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Telefone</p>
+                      <p className="text-sm font-semibold truncate">{value.phone}</p>
+                    </div>
+                  </div>
+                )}
+                {value.email && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
+                      <p className="text-sm font-semibold truncate">{value.email}</p>
+                    </div>
+                  </div>
+                )}
+                {value.website && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
+                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                    </div>
+                  </div>
+                )}
+                {value.location && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Search className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Endereço</p>
+                      <p className="text-sm font-semibold truncate">{value.location}</p>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <Globe className="w-4 h-4" />
-                <span>{value.location || "Endereço da empresa"}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-3 pt-4">
-                <div className="p-4 bg-slate-50 rounded-2xl text-center">
-                  <MessageCircle className="w-6 h-6 mx-auto mb-2 text-primary" />
-                  <p className="text-[10px] font-bold uppercase">Ligar</p>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-2xl text-center">
-                  <Globe className="w-6 h-6 mx-auto mb-2 text-primary" />
-                  <p className="text-[10px] font-bold uppercase">Website</p>
-                </div>
+              
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <Button className="rounded-2xl bg-primary font-bold h-12">
+                  Contato
+                </Button>
+                <Button variant="outline" className="rounded-2xl border-2 font-bold h-12">
+                  Visitar
+                </Button>
               </div>
             </div>
           </div>
         );
 
       case 'images':
+        const galleryImages = value.fileUrls || [];
         return (
           <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 overflow-hidden">
             <div className="p-6 pt-12 flex items-center justify-between text-white">
-              <h3 className="text-lg font-bold">{value.title || "Galeria de Imagens"}</h3>
+              <h3 className="text-lg font-bold truncate flex-1">{value.title || "Galeria de Imagens"}</h3>
               <MoreHorizontal className="w-6 h-6" />
             </div>
             <div className="flex-1 p-4 grid grid-cols-2 gap-2 overflow-y-auto">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square bg-white/10 rounded-xl flex items-center justify-center">
-                  <ImageIcon className="w-8 h-8 text-white/20" />
-                </div>
-              ))}
+              {galleryImages.length > 0 ? (
+                galleryImages.map((url: string, i: number) => (
+                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-white/10">
+                    <img src={url} className="w-full h-full object-cover" alt={`Gallery ${i}`} />
+                  </div>
+                ))
+              ) : (
+                [1, 2, 3, 4].map((i) => (
+                  <div key={i} className="aspect-square bg-white/10 rounded-xl flex items-center justify-center">
+                    <ImageIcon className="w-8 h-8 text-white/20" />
+                  </div>
+                ))
+              )}
             </div>
             <div className="p-6 bg-gradient-to-t from-black/80 to-transparent">
-              <p className="text-sm text-white/70 mb-4">{value.description || "Descrição da galeria de fotos."}</p>
-              <Button className="w-full rounded-full bg-white text-black hover:bg-white/90">
-                Ver todas as fotos
+              <p className="text-sm text-white/70 mb-4 line-clamp-2">{value.description || "Adicione fotos para sua galeria personalizada."}</p>
+              <Button className="w-full rounded-full bg-white text-black hover:bg-white/90 font-bold">
+                Ver todas ({galleryImages.length})
               </Button>
             </div>
           </div>

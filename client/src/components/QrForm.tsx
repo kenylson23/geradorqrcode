@@ -615,15 +615,71 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
-                  <div className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer bg-slate-50/50"
-                    onClick={() => document.getElementById('image-upload')?.click()}>
-                    <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                    <span className="text-sm font-medium">Clique para adicionar imagens</span>
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Uma breve descrição da sua galeria..." className="min-h-[80px]" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="space-y-3">
+                    <FormLabel>Imagens da Galeria</FormLabel>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {form.getValues("fileUrls")?.map((url: string, idx: number) => (
+                        <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border">
+                          <img src={url} className="w-full h-full object-cover" alt={`Preview ${idx}`} />
+                          <button 
+                            type="button"
+                            className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-black/70"
+                            onClick={() => {
+                              const current = form.getValues("fileUrls") || [];
+                              form.setValue("fileUrls", current.filter((_: any, i: number) => i !== idx));
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                      <div 
+                        className="aspect-square border-2 border-dashed border-border rounded-lg flex items-center justify-center hover:border-primary/50 transition-colors cursor-pointer bg-slate-50/50"
+                        onClick={() => document.getElementById('image-upload')?.click()}
+                      >
+                        <Plus className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                    </div>
                     <input id="image-upload" type="file" accept="image/*" multiple className="hidden" 
                       onChange={async (e) => {
                         const files = Array.from(e.target.files || []);
                         for (const file of files) {
-                          await handleFileUpload(file, "photoUrl"); // simplified for now
+                          // Using a temporary field name to handle multiple uploads
+                          // In a real app we'd append to an array field
+                          const currentUrls = form.getValues("fileUrls") || [];
+                          // This is a bit of a hack since handleFileUpload is designed for single fields
+                          // but it works for our MVP demonstration
+                          try {
+                            setIsUploading(true);
+                            const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+                            const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+                            const formData = new FormData();
+                            formData.append("file", file);
+                            formData.append("upload_preset", uploadPreset);
+                            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+                              method: "POST",
+                              body: formData,
+                            });
+                            const result = await response.json();
+                            if (result.secure_url) {
+                              form.setValue("fileUrls", [...currentUrls, result.secure_url]);
+                            }
+                          } finally {
+                            setIsUploading(false);
+                          }
                         }
                       }} 
                     />
@@ -633,6 +689,29 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
               {activeType === "business" && (
                 <div className="space-y-4">
+                  <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-border rounded-xl bg-slate-50/50 hover:border-primary/50 transition-colors cursor-pointer"
+                    onClick={() => document.getElementById('business-photo-upload')?.click()}>
+                    {form.getValues("photoUrl") ? (
+                      <div className="relative w-20 h-20">
+                        <img src={form.getValues("photoUrl")} className="w-full h-full object-cover rounded-full border-2 border-white shadow-md" alt="Preview" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full opacity-0 hover:opacity-100 transition-opacity">
+                          <RefreshCw className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                        <span className="text-xs font-medium text-muted-foreground">Foto da Empresa</span>
+                      </>
+                    )}
+                    <input id="business-photo-upload" type="file" accept="image/*" className="hidden" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFileUpload(file, "photoUrl");
+                      }} 
+                    />
+                  </div>
+
                   <FormField
                     control={form.control}
                     name="companyName"
@@ -659,6 +738,47 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Telefone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="923 000 000" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Site</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://www.empresa.com" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="location"
@@ -667,6 +787,19 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                         <FormLabel>Localização</FormLabel>
                         <FormControl>
                           <Input placeholder="Rua exemplo, Luanda" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="caption"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sobre a Empresa</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Uma breve descrição da sua empresa..." className="min-h-[80px]" {...field} value={field.value || ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

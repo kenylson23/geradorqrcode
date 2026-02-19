@@ -214,7 +214,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;
     if (watchedStr !== lastEmitted && activeType) {
       setLastEmitted(watchedStr);
-      onGenerate(prepareData(watchedValues));
+      // Special handling for URL types to update preview even if invalid URL
+      const dataToGenerate = prepareData(watchedValues);
+      onGenerate(dataToGenerate);
     }
   }, [watchedValues, selectedCountryCode, activeType, lastEmitted, onGenerate]);
 

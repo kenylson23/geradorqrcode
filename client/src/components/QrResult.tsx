@@ -25,10 +25,10 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Determine if it's a "real-time preview" (incomplete data)
   const isUrlType = value?.type === 'url' || value?.type === 'video' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
-  const hasMinData = isUrlType ? !!value?.url : (value?.type === 'whatsapp' ? !!value?.phone : true);
+  const hasMinData = isUrlType ? !!value?.url : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && value?.links[0].url) : true));
 
   const renderSimulation = () => {
-    if (isLinkTree) {
+    if (isLinkTree && hasMinData) {
       return (
         <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
           <LinkTree 
@@ -45,8 +45,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'facebook':
       case 'instagram':
       case 'video':
-        const url = value.url || "google.com";
-        const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0];
+        const url = value.url;
+        const displayUrl = url ? url.replace(/^https?:\/\//, '').split('/')[0] : "google.com";
         return (
           <div className="w-full h-full bg-slate-100 flex flex-col rounded-2xl overflow-hidden animate-in fade-in duration-500">
             <div className="bg-slate-200/80 p-3 flex items-center gap-2 border-b border-slate-300">
@@ -69,7 +69,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               </div>
               <h4 className="font-bold text-slate-800 mb-2 truncate w-full px-4">{value.url ? "Carregando site..." : "Aguardando URL..."}</h4>
               <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
-                <div className="w-1/2 h-full bg-primary/40 animate-pulse" />
+                <div className={`h-full bg-primary/40 ${value.url ? 'w-1/2 animate-pulse' : 'w-0'}`} />
               </div>
               <p className="text-[10px] text-slate-400">Preview simulador de navegador</p>
             </div>

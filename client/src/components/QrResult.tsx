@@ -17,6 +17,10 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   // If value is an object with type 'links', we show LinkTree preview
   const isLinkTree = typeof value === 'object' && value?.type === 'links';
   
+  // Extract the raw URL for the preview (before any processing like mailto: or tel:)
+  // This ensures we show exactly what the user typed in the browser simulation
+  const previewUrl = typeof value === 'object' ? (value.url || value.fileUrl || "") : value;
+  
   const qrValue = typeof value === 'string' ? value : JSON.stringify(value);
   
   // QR Code standard limit is around 4296 characters for alphanumeric
@@ -45,7 +49,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'facebook':
       case 'instagram':
       case 'video':
-        const url = value.url || "";
+        const url = previewUrl || "";
         const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || "https://online-qr-generator.com";
         return (
           <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
@@ -71,7 +75,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               
               <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
                 <Globe className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{displayUrl}</span>
+                <span className="text-[13px] text-white font-medium truncate flex-1">{url || "https://online-qr-generator.com"}</span>
               </div>
             </div>
             

@@ -32,6 +32,7 @@ export class DatabaseStorage implements IStorage {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: "app_uploads",
+          resource_type: "auto",
         },
         (error, result) => {
           if (error) return reject(error);

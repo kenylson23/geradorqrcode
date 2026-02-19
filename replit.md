@@ -78,6 +78,8 @@ shared/               # Shared between client and server
 
 ## External Dependencies
 
+- **Cloudinary Integration**: Used for persistent file storage (PDFs, images). Required secrets: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
+- **Netlify Deployment Note**: Since core upload functionality depends on a Node.js backend (`/api/upload`), a static deployment on Netlify will not support file uploads unless migrated to Netlify Functions or a separate backend.
 - **PostgreSQL**: Required database (via `DATABASE_URL` env var). Used by Drizzle ORM for storage. Not critical for core QR generation but required for the server to start.
 - **Google Fonts**: DM Sans, Outfit, Fira Code, Geist Mono loaded via CDN in `index.html`
 - **No external APIs**: Core functionality is entirely client-side. No third-party API keys needed for QR generation.

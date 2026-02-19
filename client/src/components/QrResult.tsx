@@ -21,7 +21,50 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   // This ensures we show exactly what the user typed in the browser simulation
   const previewUrl = typeof value === 'object' ? (value.url || value.fileUrl || "") : value;
   
-  const qrValue = typeof value === 'string' ? value : JSON.stringify(value);
+  const generateQrValue = (data: any) => {
+    if (!data) return "";
+    if (typeof data === 'string') return data;
+    
+    switch (data.type) {
+      case "url":
+      case "video":
+      case "facebook":
+      case "instagram":
+      case "pdf":
+        let urlValue = data.fileUrl || (data.url || "");
+        if (urlValue && !urlValue.startsWith('http') && !urlValue.startsWith('mailto:') && !urlValue.startsWith('tel:')) {
+          urlValue = `https://${urlValue}`;
+        }
+        return urlValue;
+      case "text":
+        return data.text || "";
+      case "whatsapp":
+        const phone = (data.phone || "").replace(/\D/g, "");
+        const message = data.message ? `?text=${encodeURIComponent(data.message)}` : "";
+        return phone ? `https://wa.me/${phone}${message}` : "";
+      case "email":
+        const subject = data.subject ? `&subject=${encodeURIComponent(data.subject)}` : "";
+        const body = data.body ? `&body=${encodeURIComponent(data.body)}` : "";
+        return data.email ? `mailto:${data.email}?${subject.slice(1)}${body}` : "";
+      case "phone":
+        return data.phone ? `tel:${data.phone}` : "";
+      case "links":
+        return (data.links || []).map((l: any) => `${l.label}: ${l.url}`).join("\n");
+      case "vcard":
+        const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";
+        const website = data.website ? `\nURL:${data.website}` : "";
+        const location = data.location ? `\nADR:;;${data.location};;;;` : "";
+        const org = data.companyName ? `\nORG:${data.companyName}` : (data.organization ? `\nORG:${data.organization}` : "");
+        const title = data.profession ? `\nTITLE:${data.profession}` : (data.jobTitle ? `\nTITLE:${data.jobTitle}` : "");
+        const summary = data.summary ? `\nNOTE:${data.summary}` : "";
+        const social = (data.socialLinks || []).map((s: any) => `\nX-SOCIAL-PROFILE;TYPE=${s.platform}:${s.url}`).join("");
+        return `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName || ""};${data.firstName || ""}\nFN:${data.firstName || ""} ${data.lastName || ""}\nTEL:${data.phone || ""}\nEMAIL:${data.email || ""}${org}${title}${photo}${website}${location}${summary}${social}\nEND:VCARD`;
+      default:
+        return JSON.stringify(data);
+    }
+  };
+
+  const qrValue = generateQrValue(value);
   
   // QR Code standard limit is around 4296 characters for alphanumeric
   // Base64 encoded PDFs can easily exceed this.

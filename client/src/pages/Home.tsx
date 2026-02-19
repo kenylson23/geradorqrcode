@@ -44,7 +44,7 @@ export default function Home() {
                 <div className="h-[80px] w-[3px] bg-gray-800 absolute -right-[15px] top-[180px] rounded-r-lg border-r border-white/10"></div>
 
                 <div className="rounded-[2.8rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
-                  {qrData && (qrData.type !== 'url' || qrData.url) ? (
+                  {qrData ? (
                     <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
                       <QrResult 
                         value={qrData} 

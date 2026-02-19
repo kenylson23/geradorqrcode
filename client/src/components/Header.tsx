@@ -1,6 +1,6 @@
 import { HelpCircle, Menu } from "lucide-react";
 import { Link } from "wouter";
-import logoPngPath from "@assets/a-minimalist-logo-design-featuring-the-t_nBAXclrzTMSUXjQGrYGJ__1771525669705.png";
+import logoPngPath from "@assets/image_1771526445503.png";
 
 interface HeaderProps {
   currentStep: number;
@@ -14,7 +14,7 @@ export function Header({ currentStep }: HeaderProps) {
           <img 
             src={logoPngPath} 
             alt="Ango QrCode Logo" 
-            className="h-14 w-auto object-contain"
+            className="h-10 w-auto object-contain"
           />
         </Link>
         

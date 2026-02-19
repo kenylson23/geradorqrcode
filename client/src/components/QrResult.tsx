@@ -45,38 +45,58 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'facebook':
       case 'instagram':
       case 'video':
-        const url = value.url;
-        const displayUrl = url ? url.replace(/^https?:\/\//, '').split('/')[0] : "google.com";
+        const url = value.url || "";
+        const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || "seusite.com";
         return (
-          <div className="w-full h-full bg-slate-100 flex flex-col rounded-2xl overflow-hidden animate-in fade-in duration-500">
-            <div className="bg-slate-200/80 p-3 flex items-center gap-2 border-b border-slate-300">
-              <div className="flex gap-1.5 mr-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-                <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+          <div className="w-full h-full bg-[#F2F2F7] flex flex-col rounded-[3rem] overflow-hidden border-[8px] border-slate-900 shadow-2xl animate-in fade-in duration-500">
+            {/* Safari Header Area */}
+            <div className="bg-[#F9F9F9]/90 backdrop-blur-md pt-10 pb-2 px-4 flex flex-col gap-2 border-b border-slate-200">
+              <div className="flex items-center justify-between px-2">
+                <span className="text-[12px] font-semibold">9:41</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-4 rounded-full border border-black/20" />
+                  <div className="w-4 h-4 rounded-full border border-black/20" />
+                </div>
               </div>
-              <div className="flex-1 bg-white rounded-md py-1 px-3 flex items-center justify-between shadow-sm">
-                <span className="text-[10px] text-slate-500 truncate">{displayUrl}</span>
-                <RefreshCw className="w-2.5 h-2.5 text-slate-400" />
+              <div className="bg-slate-200/50 rounded-lg py-1.5 px-3 flex items-center justify-center gap-2">
+                <Search className="w-3 h-3 text-slate-500" />
+                <span className="text-[11px] text-slate-700 truncate max-w-[150px]">{displayUrl}</span>
               </div>
             </div>
-            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white text-center">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                {value.type === 'facebook' ? <Facebook className="w-8 h-8 text-primary" /> : 
-                 value.type === 'instagram' ? <Instagram className="w-8 h-8 text-primary" /> :
-                 value.type === 'video' ? <Video className="w-8 h-8 text-primary" /> :
-                 <Globe className="w-8 h-8 text-primary" />}
-              </div>
-              <h4 className="font-bold text-slate-800 mb-2 truncate w-full px-4">{value.url ? "Carregando site..." : "Aguardando URL..."}</h4>
-              <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden mb-2">
-                <div className={`h-full bg-primary/40 ${value.url ? 'w-1/2 animate-pulse' : 'w-0'}`} />
-              </div>
-              <p className="text-[10px] text-slate-400">Preview simulador de navegador</p>
+            
+            {/* Safari Content Area */}
+            <div className="flex-1 bg-white flex flex-col relative">
+              {url ? (
+                <iframe 
+                  src={url.startsWith('http') ? url : `https://${url}`} 
+                  className="w-full h-full border-0"
+                  title="Safari Preview"
+                />
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
+                    {value.type === 'facebook' ? <Facebook className="w-8 h-8 text-primary" /> : 
+                     value.type === 'instagram' ? <Instagram className="w-8 h-8 text-primary" /> :
+                     value.type === 'video' ? <Video className="w-8 h-8 text-primary" /> :
+                     <Globe className="w-8 h-8 text-primary" />}
+                  </div>
+                  <h4 className="font-bold text-slate-800 mb-2">Aguardando link...</h4>
+                  <p className="text-[10px] text-slate-400">Insira a URL para visualizar seu site no simulador.</p>
+                </div>
+              )}
             </div>
-            <div className="bg-slate-100 p-3 flex justify-around border-t border-slate-200">
-              <Search className="w-4 h-4 text-slate-400" />
-              <div className="w-4 h-4 rounded-sm border border-slate-400" />
-              <MoreHorizontal className="w-4 h-4 text-slate-400" />
+
+            {/* Safari Toolbar */}
+            <div className="bg-[#F9F9F9]/90 backdrop-blur-md p-4 pb-8 flex justify-around border-t border-slate-200">
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 border-l-2 border-b-2 border-primary -rotate-45" />
+              </div>
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3 h-3 border-r-2 border-t-2 border-primary -rotate-45" />
+              </div>
+              <Download className="w-5 h-5 text-primary" />
+              <Search className="w-5 h-5 text-primary" />
+              <div className="w-4 h-4 border-2 border-primary rounded-sm" />
             </div>
           </div>
         );

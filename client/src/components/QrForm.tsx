@@ -42,6 +42,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
+import { useUpload } from "@/hooks/use-upload";
+
 interface QrFormProps {
   onGenerate: (data: QrCodeForm) => void;
   onStepChange: (step: number) => void;
@@ -88,18 +90,13 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     mode: "onChange"
   });
 
-  const handleFileUpload = async (file: File, fieldName: any) => {
-    if (file.size > 10 * 1024 * 1024) {
-      alert("O arquivo excede o limite de 10MB.");
-      return;
-    }
+  const { uploadFile, progress: uploadProgress, isUploading: hookIsUploading } = useUpload();
 
-    setIsUploading(true);
-    setProgress(10);
+  const handleFileUpload = async (file: File, fieldName: any) => {
     try {
       // Para arquivos pequenos (< 3KB), podemos embutir no QR (base64)
-      // Para arquivos maiores, precisamos de uma URL (Object Storage)
       if (file.size <= 3 * 1024) {
+        setIsUploading(true);
         setProgress(20);
         const base64 = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
@@ -110,25 +107,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         form.setValue(fieldName, base64);
         setProgress(100);
       } else {
-        // Usar o backend para upload em vez de upload direto para o Cloudinary no frontend
-        setProgress(20);
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || `Erro no upload (Status: ${response.status})`);
+        // Usar o hook useUpload que faz o upload direto para o Cloudinary
+        const result = await uploadFile(file);
+        if (result) {
+          form.setValue(fieldName, result.uploadURL);
         }
-
-        const { url: secure_url } = await response.json();
-        setProgress(90);
-        form.setValue(fieldName, secure_url);
-        setProgress(100);
       }
       
       onGenerate(form.getValues());
@@ -322,7 +305,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                             >
                               <Upload className="w-8 h-8 text-muted-foreground" />
                               <span className="text-sm font-medium text-slate-600">
-                                {isUploading ? "Enviando..." : (form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF")}
+                                {isUploading || hookIsUploading ? "Enviando..." : (form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF")}
                               </span>
                               <span className="text-[10px] text-muted-foreground">PDF até 10MB</span>
                               <input 
@@ -338,9 +321,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                                 }}
                               />
                             </div>
-                            {isUploading && (
+                            {(isUploading || hookIsUploading) && (
                               <div className="space-y-2">
-                                <Progress value={progress} className="h-1" />
+                                <Progress value={progress || uploadProgress} className="h-1" />
                                 <p className="text-[10px] text-center text-muted-foreground animate-pulse">Enviando arquivo...</p>
                               </div>
                             )}

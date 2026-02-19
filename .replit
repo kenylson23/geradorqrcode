@@ -45,5 +45,5 @@ integrations = ["javascript_object_storage:2.0.0"]
 
 [userenv.shared]
 VITE_CLOUDINARY_CLOUD_NAME = "dn3r5msu7"
-VITE_CLOUDINARY_UPLOAD_PRESET = "**********"
+VITE_CLOUDINARY_UPLOAD_PRESET = "z5liqmxp"
 VITE_CLOUDINARY_API_KEY = "277455463151546"

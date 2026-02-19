@@ -40,27 +40,30 @@ export default function Home() {
 
     setUploading(true);
     try {
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+      if (!cloudName || !uploadPreset) {
+        throw new Error("Configurações do Cloudinary não encontradas.");
+      }
+
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
 
-      // Using the new Cloudinary endpoint (Netlify Function-like)
-      const res = await fetch("/api/cloudinary-upload", {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("text/html")) {
-          throw new Error("O servidor retornou uma página HTML em vez de JSON. Verifique se a rota /api/cloudinary-upload está configurada no Netlify.");
-        }
-        const error = await res.json();
-        throw new Error(error.error || "Falha no upload");
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || "Falha no upload");
       }
 
-      const { url } = await res.json();
+      const { secure_url } = await res.json();
 
-      setObjectPath(url);
+      setObjectPath(secure_url);
       toast({
         title: "Sucesso!",
         description: "Arquivo enviado com sucesso para o Cloudinary.",

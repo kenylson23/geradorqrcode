@@ -97,31 +97,34 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       setIsUploading(true);
       setProgress(10);
       
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+      if (!cloudName || !uploadPreset) {
+        throw new Error("Configurações do Cloudinary (Cloud Name ou Upload Preset) não encontradas.");
+      }
+
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
 
-      const response = await fetch("/api/cloudinary-upload", {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("text/html")) {
-          throw new Error("O servidor retornou uma página HTML em vez de JSON. Verifique se a rota /api/cloudinary-upload está configurada no Netlify.");
-        }
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao fazer upload para o Cloudinary");
+        throw new Error(errorData.error?.message || "Erro ao fazer upload para o Cloudinary");
       }
 
       const result = await response.json();
       setProgress(100);
       
-      if (result.url) {
-        form.setValue(fieldName, result.url);
-        // Also update the general 'url' field for QR generation if it's a PDF
+      if (result.secure_url) {
+        form.setValue(fieldName, result.secure_url);
         if (activeType === "pdf") {
-          form.setValue("url", result.url);
+          form.setValue("url", result.secure_url);
         }
       }
       

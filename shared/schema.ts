@@ -137,6 +137,17 @@ export const qrCodeFormSchema = z.discriminatedUnion("type", [
 
 export type QrCodeForm = z.infer<typeof qrCodeFormSchema>;
 
+export const linkTreeSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  links: z.array(z.object({
+    label: z.string(),
+    url: z.string(),
+  })),
+});
+
+export type LinkTreeData = z.infer<typeof linkTreeSchema>;
+
 // No database tables needed for this static MVP, but keeping the file structure valid.
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),

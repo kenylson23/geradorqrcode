@@ -49,7 +49,16 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case "phone":
         return data.phone ? `tel:${data.phone}` : "";
       case "links":
-        return (data.links || []).map((l: any) => `${l.label}: ${l.url}`).join("\n");
+        const linkTreeData = {
+          title: data.title,
+          description: data.description,
+          links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
+            label: l.label,
+            url: l.url
+          }))
+        };
+        const encodedData = btoa(JSON.stringify(linkTreeData));
+        return `${window.location.origin}/l#${encodedData}`;
       case "vcard":
         const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";
         const website = data.website ? `\nURL:${data.website}` : "";

@@ -597,6 +597,45 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="profession"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Profissão / Cargo</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Desenvolvedor Full Stack" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Website</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://meusite.com" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="summary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Resumo Profissional</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Breve biografia ou resumo..." {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               )}
 

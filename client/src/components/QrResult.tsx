@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw, AlertTriangle, Globe, MessageCircle, FileText, User, Video, Instagram, Facebook, Smartphone, Search, MoreHorizontal } from "lucide-react";
+import { Download, RefreshCw, AlertTriangle, Globe, MessageCircle, FileText, User, Video, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState } from "react";
@@ -234,12 +234,29 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 {value.companyName && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Search className="w-5 h-5" />
+                      <Briefcase className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Empresa</p>
                       <p className="text-sm font-semibold">{value.companyName}</p>
                     </div>
+                  </div>
+                )}
+                {value.website && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Website</p>
+                      <p className="text-sm font-semibold">{value.website}</p>
+                    </div>
+                  </div>
+                )}
+                {value.summary && (
+                  <div className="p-4 bg-slate-50 rounded-2xl">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Sobre</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{value.summary}</p>
                   </div>
                 )}
               </div>

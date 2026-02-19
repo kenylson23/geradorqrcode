@@ -20,14 +20,18 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   // Base64 encoded PDFs can easily exceed this.
   const isTooLong = qrValue.length > 2953; // Alphanumeric limit for level M is ~2.9k
 
+  // Determine if it's a "real-time preview" (incomplete data)
+  const isUrlType = value?.type === 'url' || value?.type === 'video' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
+  const hasMinData = isUrlType ? !!value?.url : (value?.type === 'whatsapp' ? !!value?.phone : true);
+
   return (
     <div className="flex flex-col items-center gap-6 w-full">
       {isLinkTree ? (
         <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
           <LinkTree 
-            title={value.title} 
-            description={value.description} 
-            links={value.links || []} 
+            title={value.title || "Título do Preview"} 
+            description={value.description || "Descrição do preview aparecerá aqui"} 
+            links={value.links && value.links.length > 0 && value.links[0].label ? value.links : [{ label: "Link de Exemplo", url: "#" }]} 
           />
         </div>
       ) : (
@@ -38,20 +42,22 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
             </div>
           ) : (
-            <QRCodeSVG
-              value={qrValue}
-              size={200}
-              level="M"
-              includeMargin={true}
-              imageSettings={{
-                src: "/logo.png",
-                x: undefined,
-                y: undefined,
-                height: 40,
-                width: 40,
-                excavate: true,
-              }}
-            />
+            <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
+              <QRCodeSVG
+                value={hasMinData ? qrValue : "https://replit.com"}
+                size={200}
+                level="M"
+                includeMargin={true}
+                imageSettings={{
+                  src: "/logo.png",
+                  x: undefined,
+                  y: undefined,
+                  height: 40,
+                  width: 40,
+                  excavate: true,
+                }}
+              />
+            </div>
           )}
         </div>
       )}

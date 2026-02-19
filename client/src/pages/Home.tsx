@@ -23,7 +23,7 @@ export default function Home() {
                 <QrForm 
                   onGenerate={(data) => {
                     generate(data);
-                    setCurrentStep(3);
+                    if (currentStep < 2) setCurrentStep(2);
                   }} 
                   onStepChange={setCurrentStep}
                 />

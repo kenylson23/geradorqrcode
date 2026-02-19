@@ -36,9 +36,12 @@ import {
   Instagram, 
   MessageCircle,
   Upload,
-  RefreshCw
+  RefreshCw,
+  Plus,
+  Trash2
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useFieldArray } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
@@ -91,6 +94,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   });
 
   const { uploadFile, progress: uploadProgress, isUploading: hookIsUploading } = useUpload();
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "links" as never,
+  });
 
   const handleFileUpload = async (file: File, fieldName: any) => {
     try {
@@ -251,6 +259,92 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               transition={{ duration: 0.2 }}
               className="bg-white p-6 rounded-2xl border border-border shadow-sm min-h-[300px]"
             >
+              {activeType === "links" && (
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold text-foreground">Título da Página</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Meu Linktree" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-base font-semibold text-foreground">Descrição (Opcional)</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Confira meus links importantes" className="min-h-[80px] resize-none rounded-xl border-2 border-border" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="space-y-3">
+                    <FormLabel className="text-base font-semibold text-foreground">Links</FormLabel>
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="flex flex-col gap-2 p-4 border-2 border-border rounded-xl bg-slate-50/50">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-bold text-muted-foreground uppercase">Link {index + 1}</span>
+                          {fields.length > 1 && (
+                            <Button 
+                              type="button" 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => remove(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name={`links.${index}.label` as any}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder="Rótulo (ex: Instagram)" {...field} className="h-10 rounded-lg border-border" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        )}
+                        <FormField
+                          control={form.control}
+                          name={`links.${index}.url` as any}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input placeholder="URL (ex: https://instagram.com/user)" {...field} className="h-10 rounded-lg border-border" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        )}
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-10 rounded-xl border-dashed border-2 hover:border-primary/50 hover:bg-primary/5 text-primary"
+                      onClick={() => append({ label: "", url: "" })}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar Link
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {activeType === "whatsapp" && (
                 <div className="space-y-4">
                   <FormField

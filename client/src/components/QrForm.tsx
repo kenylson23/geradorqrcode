@@ -565,7 +565,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                         <FormItem>
                           <FormLabel className="text-sm font-bold text-slate-600">Texto do Botão</FormLabel>
                           <FormControl>
-                            <Input placeholder="Exemplo: Visualizar PDF" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
+                            <Input placeholder="Download PDF" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

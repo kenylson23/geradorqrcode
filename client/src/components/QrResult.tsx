@@ -207,7 +207,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
               <div className="pt-4">
                 <Button className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold ${!hasPdfData ? 'opacity-50' : ''}`}>
-                  {value.buttonLabel || "Visualizar PDF"}
+                  {value.buttonLabel || "Download PDF"}
                 </Button>
                 {!hasPdfData && (
                   <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>

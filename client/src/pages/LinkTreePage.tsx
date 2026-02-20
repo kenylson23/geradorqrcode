@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import type { LinkTreeData } from "@shared/schema";
 import { FileText, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function LinkTreePage() {
   const [location] = useLocation();
@@ -65,14 +66,25 @@ export default function LinkTreePage() {
           )}
 
           <div className="pt-8">
-            <a
-              href={data.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Button
+              onClick={() => {
+                if (data.fileUrl) {
+                  const link = document.createElement('a');
+                  link.href = data.fileUrl;
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  // Force download or at least try to name the file
+                  const fileName = (data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf';
+                  link.setAttribute('download', fileName);
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }
+              }}
               className="w-full h-16 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center text-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98]"
             >
               {data.buttonLabel || "Visualizar PDF"}
-            </a>
+            </Button>
           </div>
         </div>
       </div>

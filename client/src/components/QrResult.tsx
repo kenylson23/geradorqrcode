@@ -212,7 +212,15 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all ${!hasPdfData ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  onClick={(e) => !hasPdfData && e.preventDefault()}
+                  onClick={(e) => {
+                    if (!hasPdfData) {
+                      e.preventDefault();
+                      return;
+                    }
+                    // For Cloudinary URLs, we often need to ensure the link works for download
+                    // If it's a direct URL, target="_blank" handles it, but some browsers 
+                    // block 'download' attribute for cross-origin URLs.
+                  }}
                 >
                   {value.buttonLabel || "Download PDF"}
                 </a>

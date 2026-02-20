@@ -129,9 +129,11 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       setProgress(100);
       
       if (result.secure_url) {
-        form.setValue(fieldName, result.secure_url);
+        // Force download for Cloudinary URLs by adding fl_attachment flag
+        const downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
+        form.setValue(fieldName, downloadUrl);
         if (activeType === "pdf") {
-          form.setValue("url", result.secure_url);
+          form.setValue("url", downloadUrl);
         }
       }
       

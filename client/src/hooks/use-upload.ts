@@ -57,14 +57,10 @@ export function useUpload(options: UseUploadOptions = {}) {
 
       try {
         const isRaw = file.type === "application/pdf" || !file.type.startsWith("image/");
-        const uploadEndpoint = isRaw ? "raw" : "image";
         
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
-        // Do not append resource_type "auto" here if it causes issues, 
-        // but the endpoint /auto/upload requires it or handles it.
-        // Actually, Cloudinary recommends resource_type: "auto" for flexibility.
 
         const xhr = new XMLHttpRequest();
         const promise = new Promise<UploadResponse>((resolve, reject) => {
@@ -78,6 +74,7 @@ export function useUpload(options: UseUploadOptions = {}) {
           xhr.addEventListener("load", () => {
             if (xhr.status >= 200 && xhr.status < 300) {
               const response = JSON.parse(xhr.responseText);
+              // Cloudinary returns the correct URL for the resource type
               resolve({
                 uploadURL: response.secure_url,
                 objectPath: response.public_id,
@@ -93,7 +90,12 @@ export function useUpload(options: UseUploadOptions = {}) {
           });
 
           xhr.addEventListener("error", () => reject(new Error("Erro de rede no upload")));
-          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`);
+          
+          // Use the specific endpoint based on file type
+          // 'raw' for PDFs and other non-image files
+          // 'image' for images
+          const resourceType = isRaw ? "raw" : "image";
+          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`);
           xhr.send(formData);
         });
 
@@ -128,11 +130,11 @@ export function useUpload(options: UseUploadOptions = {}) {
       }
 
       const isRaw = file.type === "application/pdf" || !file.type?.startsWith("image/");
-      const uploadEndpoint = isRaw ? "raw" : "image";
+      const resourceType = isRaw ? "raw" : "image";
 
       return {
         method: "POST",
-        url: `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+        url: `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
         fields: {
           upload_preset: uploadPreset,
         },

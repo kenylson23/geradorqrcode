@@ -65,28 +65,16 @@ export default function LinkTreePage() {
             </div>
           )}
 
-          <div className="pt-8">
-            <Button
-              onClick={() => {
-                if (data.fileUrl) {
-                  const link = document.createElement('a');
-                  link.href = data.fileUrl;
-                  link.target = '_blank';
-                  link.rel = 'noopener noreferrer';
-                  // Use the public Cloudinary URL but try to force download via attribute
-                  // If Cloudinary is configured with specific headers, this might still 401
-                  // but we'll try to provide a better name
-                  const fileName = (data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf';
-                  link.setAttribute('download', fileName);
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                }
-              }}
-              className="w-full h-16 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center text-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98]"
+          <div className="pt-8 text-center">
+            <a
+              href={data.fileUrl}
+              download={(data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full h-16 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center text-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98] no-underline"
             >
               {data.buttonLabel || "Download PDF"}
-            </Button>
+            </a>
           </div>
         </div>
       </div>

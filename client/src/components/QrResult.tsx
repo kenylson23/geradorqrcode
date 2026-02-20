@@ -206,9 +206,16 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               </div>
 
               <div className="pt-4">
-                <Button className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold ${!hasPdfData ? 'opacity-50' : ''}`}>
+                <a 
+                  href={hasPdfData ? (value.fileUrl || value.url) : "#"}
+                  download={(value.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all ${!hasPdfData ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={(e) => !hasPdfData && e.preventDefault()}
+                >
                   {value.buttonLabel || "Download PDF"}
-                </Button>
+                </a>
                 {!hasPdfData && (
                   <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>
                 )}

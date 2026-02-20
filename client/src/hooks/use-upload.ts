@@ -62,6 +62,9 @@ export function useUpload(options: UseUploadOptions = {}) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
+        // Do not append resource_type "auto" here if it causes issues, 
+        // but the endpoint /auto/upload requires it or handles it.
+        // Actually, Cloudinary recommends resource_type: "auto" for flexibility.
 
         const xhr = new XMLHttpRequest();
         const promise = new Promise<UploadResponse>((resolve, reject) => {
@@ -90,7 +93,7 @@ export function useUpload(options: UseUploadOptions = {}) {
           });
 
           xhr.addEventListener("error", () => reject(new Error("Erro de rede no upload")));
-          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/${uploadEndpoint}/upload`);
+          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`);
           xhr.send(formData);
         });
 
@@ -129,7 +132,7 @@ export function useUpload(options: UseUploadOptions = {}) {
 
       return {
         method: "POST",
-        url: `https://api.cloudinary.com/v1_1/${cloudName}/${uploadEndpoint}/upload`,
+        url: `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
         fields: {
           upload_preset: uploadPreset,
         },

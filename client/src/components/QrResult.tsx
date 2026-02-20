@@ -30,15 +30,17 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case "facebook":
       case "instagram":
       case "pdf":
-        let urlValue = data.fileUrl || (data.url || "");
-        if (data.type === "instagram" && data.instagramUser && !urlValue) {
-          const username = data.instagramUser.startsWith('@') ? data.instagramUser.slice(1) : data.instagramUser;
-          urlValue = `instagram.com/${username}`;
-        }
-        if (urlValue && !urlValue.startsWith('http') && !urlValue.startsWith('mailto:') && !urlValue.startsWith('tel:')) {
-          urlValue = `https://${urlValue}`;
-        }
-        return urlValue;
+        const pdfData = {
+          type: "pdf",
+          title: data.title,
+          companyName: data.companyName,
+          description: data.description,
+          website: data.website,
+          buttonLabel: data.buttonLabel,
+          fileUrl: data.fileUrl || data.url
+        };
+        const encodedPdfData = btoa(unescape(encodeURIComponent(JSON.stringify(pdfData))));
+        return `${window.location.origin}/l#${encodedPdfData}`;
       case "text":
         return data.text || "";
       case "whatsapp":

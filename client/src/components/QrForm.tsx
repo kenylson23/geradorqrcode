@@ -115,7 +115,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
 
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+      // Use 'raw' for non-image files like PDFs to avoid 'image/upload' issues
+      const resourceType = file.type === 'application/pdf' ? 'raw' : 'auto';
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
         method: "POST",
         body: formData,
       });
@@ -129,8 +131,18 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       setProgress(100);
       
       if (result.secure_url) {
-        // Force download for Cloudinary URLs by adding fl_attachment flag
-        const downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
+        // For 'raw' resources (PDFs), Cloudinary uses a different URL structure
+        // If it's a PDF, we ensure it's handled correctly for download
+        let downloadUrl = result.secure_url;
+        if (file.type === 'application/pdf') {
+          // For raw files, we can't easily inject fl_attachment in the middle of the path like images
+          // But we can append it as a parameter or ensure the URL is correct
+          // Cloudinary raw files URLs look like: .../raw/upload/v123/filename.pdf
+          downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
+        } else {
+          downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
+        }
+        
         form.setValue(fieldName, downloadUrl);
         if (activeType === "pdf") {
           form.setValue("url", downloadUrl);

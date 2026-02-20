@@ -168,6 +168,53 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           </div>
         );
 
+      case 'pdf':
+        const hasPdfData = value.fileUrl || value.url;
+        return (
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-black/10" />
+              <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
+                <FileText className="w-10 h-10" />
+              </div>
+              <h3 className="text-lg font-bold relative z-10">{value.title || "Documento PDF"}</h3>
+              <p className="text-xs opacity-90 relative z-10">{value.companyName || "Visualizador de PDF"}</p>
+            </div>
+            
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+              <div className="space-y-4">
+                {value.description && (
+                  <div className="p-4 bg-slate-50 rounded-2xl">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Descrição</p>
+                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-4">{value.description}</p>
+                  </div>
+                )}
+                
+                {value.website && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
+                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-4">
+                <Button className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold ${!hasPdfData ? 'opacity-50' : ''}`}>
+                  {value.buttonLabel || "Visualizar PDF"}
+                </Button>
+                {!hasPdfData && (
+                  <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
       case 'whatsapp':
         return (
           <div className="w-full h-full bg-[#E5DDD5] flex flex-col animate-in fade-in duration-500 overflow-hidden">

@@ -396,85 +396,182 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               )}
 
               {activeType === "pdf" && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="fileUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Upload de PDF</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col gap-4">
-                            <div 
-                              className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer bg-slate-50/50"
-                              onClick={() => {
-                                if (!isUploading) {
-                                  document.getElementById('pdf-upload')?.click();
-                                }
-                              }}
-                            >
-                              <Upload className="w-8 h-8 text-muted-foreground" />
-                              <span className="text-sm font-medium text-slate-600">
-                                {isUploading || hookIsUploading ? "Enviando..." : (form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF")}
-                              </span>
-                              <span className="text-[10px] text-muted-foreground">PDF até 10MB</span>
-                              <input 
-                                id="pdf-upload"
-                                type="file" 
-                                accept=".pdf" 
-                                className="hidden" 
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    handleFileUpload(file, "fileUrl");
+                <div className="space-y-8">
+                  <div className="bg-slate-50/50 p-6 rounded-2xl border-2 border-border space-y-4">
+                    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-foreground">Arquivo PDF</h3>
+                        <p className="text-xs text-muted-foreground">Faça upload ou insira o link do seu documento</p>
+                      </div>
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="fileUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="flex flex-col gap-4">
+                              <div 
+                                className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center gap-2 hover:border-primary/50 transition-colors cursor-pointer bg-white"
+                                onClick={() => {
+                                  if (!isUploading) {
+                                    document.getElementById('pdf-upload')?.click();
                                   }
                                 }}
-                              />
+                              >
+                                <Upload className="w-8 h-8 text-muted-foreground" />
+                                <span className="text-sm font-medium text-slate-600">
+                                  {isUploading || hookIsUploading ? "Enviando..." : (form.getValues("fileUrl") ? "PDF carregado com sucesso" : "Clique para fazer upload do PDF")}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground">PDF até 10MB</span>
+                                <input 
+                                  id="pdf-upload"
+                                  type="file" 
+                                  accept=".pdf" 
+                                  className="hidden" 
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      handleFileUpload(file, "fileUrl");
+                                    }
+                                  }}
+                                />
+                              </div>
+                              {(isUploading || hookIsUploading) && (
+                                <div className="space-y-2">
+                                  <Progress value={progress || uploadProgress} className="h-1" />
+                                  <p className="text-[10px] text-center text-muted-foreground animate-pulse">Enviando arquivo...</p>
+                                </div>
+                              )}
+                              {field.value && (
+                                <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/10">
+                                  <FileText className="w-4 h-4 text-primary" />
+                                  <span className="text-xs text-slate-600 truncate flex-1">{field.value.split('/').pop()}</span>
+                                  <Button 
+                                    type="button" 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-7 w-7 p-0" 
+                                    onClick={() => form.setValue("fileUrl", "")}
+                                  >
+                                    <RefreshCw className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              )}
                             </div>
-                            {(isUploading || hookIsUploading) && (
-                              <div className="space-y-2">
-                                <Progress value={progress || uploadProgress} className="h-1" />
-                                <p className="text-[10px] text-center text-muted-foreground animate-pulse">Enviando arquivo...</p>
-                              </div>
-                            )}
-                            {field.value && (
-                              <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/10">
-                                <FileText className="w-4 h-4 text-primary" />
-                                <span className="text-xs text-slate-600 truncate flex-1">{field.value.split('/').pop()}</span>
-                                <Button 
-                                  type="button" 
-                                  variant="ghost" 
-                                  size="sm" 
-                                  className="h-7 w-7 p-0" 
-                                  onClick={() => form.setValue("fileUrl", "")}
-                                >
-                                  <RefreshCw className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-                    <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-muted-foreground font-semibold">ou use uma URL</span></div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="relative py-2">
+                      <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+                      <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider"><span className="bg-slate-50 px-2 text-muted-foreground">ou use uma URL</span></div>
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="url"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="https://example.com/documento.pdf" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20 bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">URL do PDF</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com/documento.pdf" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
+                  <div className="bg-slate-50/50 p-6 rounded-2xl border-2 border-border space-y-6">
+                    <div className="flex items-center gap-3 pb-2 border-b border-border/50">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Plus className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-foreground">Informações em PDF</h3>
+                        <p className="text-xs text-muted-foreground">Adicione algum contexto ao seu PDF.</p>
+                      </div>
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-slate-600">Empresa</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Exemplo: Minha Empresa" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-slate-600">Título do PDF</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Exemplo: Relatório Anual" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex justify-between items-center">
+                            <FormLabel className="text-sm font-bold text-slate-600">Descrição</FormLabel>
+                            <span className="text-[10px] text-muted-foreground">{(field.value || '').length} / 4000</span>
+                          </div>
+                          <FormControl>
+                            <Textarea placeholder="Exemplo: Relatório Anual da Minha Empresa" className="min-h-[100px] resize-none rounded-xl border-2 border-border bg-white" {...field} value={field.value || ''} maxLength={4000} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-slate-600">Site</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Exemplo: https://www.myfirm.com/" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="buttonLabel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-bold text-slate-600">Botão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Exemplo: Visualizar PDF" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border bg-white" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               )}
 

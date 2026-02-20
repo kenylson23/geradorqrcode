@@ -42,6 +42,11 @@ export const pdfQrSchema = z.object({
   type: z.literal("pdf"),
   url: z.string().url({ message: "Please enter a valid PDF URL" }).optional(),
   fileUrl: z.string().optional(),
+  companyName: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  website: z.string().optional(),
+  buttonLabel: z.string().optional(),
 });
 
 // Schema for Links List QR Code

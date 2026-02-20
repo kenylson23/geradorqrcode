@@ -135,10 +135,12 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         // If it's a PDF, we ensure it's handled correctly for download
         let downloadUrl = result.secure_url;
         if (file.type === 'application/pdf') {
-          // For raw files, we can't easily inject fl_attachment in the middle of the path like images
-          // But we can append it as a parameter or ensure the URL is correct
-          // Cloudinary raw files URLs look like: .../raw/upload/v123/filename.pdf
-          downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
+          // Cloudinary 'raw' resources do not support 'fl_attachment' in the URL path.
+          // Instead, we use 'attachment' in the 'flags' parameter during upload (not possible here without signing)
+          // or we can use the 'dl' parameter if the delivery is through a specific Cloudinary configuration.
+          // However, the most reliable way for raw files is to just use the secure_url and let the browser handle it,
+          // OR use a query parameter if the Cloudinary account supports it.
+          downloadUrl = result.secure_url;
         } else {
           downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
         }

@@ -69,16 +69,8 @@ export default function LinkTreePage() {
             <Button
               onClick={() => {
                 if (data.fileUrl) {
-                  const link = document.createElement('a');
-                  link.href = data.fileUrl;
-                  link.target = '_blank';
-                  link.rel = 'noopener noreferrer';
-                  // Force download or at least try to name the file
-                  const fileName = (data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf';
-                  link.setAttribute('download', fileName);
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                  // Direct window.open instead of hidden anchor to avoid 401/CORS issues with forced downloads
+                  window.open(data.fileUrl, '_blank', 'noopener,noreferrer');
                 }
               }}
               className="w-full h-16 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center text-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98]"

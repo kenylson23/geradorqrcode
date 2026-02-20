@@ -56,6 +56,9 @@ export function useUpload(options: UseUploadOptions = {}) {
       setProgress(0);
 
       try {
+        const isRaw = file.type === "application/pdf" || !file.type.startsWith("image/");
+        const uploadEndpoint = isRaw ? "raw" : "image";
+        
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", uploadPreset);
@@ -87,7 +90,7 @@ export function useUpload(options: UseUploadOptions = {}) {
           });
 
           xhr.addEventListener("error", () => reject(new Error("Erro de rede no upload")));
-          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+          xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/${uploadEndpoint}/upload`);
           xhr.send(formData);
         });
 
@@ -121,9 +124,12 @@ export function useUpload(options: UseUploadOptions = {}) {
         throw new Error("Configuração do Cloudinary ausente.");
       }
 
+      const isRaw = file.type === "application/pdf" || !file.type?.startsWith("image/");
+      const uploadEndpoint = isRaw ? "raw" : "image";
+
       return {
         method: "POST",
-        url: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        url: `https://api.cloudinary.com/v1_1/${cloudName}/${uploadEndpoint}/upload`,
         fields: {
           upload_preset: uploadPreset,
         },

@@ -8,7 +8,13 @@ export function useQrGenerator() {
   const [generatedType, setGeneratedType] = useState<string | null>(null);
 
   const generate = (data: QrCodeForm) => {
-    setQrData(data);
+    if (data.type === "images") {
+      const baseUrl = window.location.origin;
+      const encodedData = encodeURIComponent(JSON.stringify(data));
+      setQrData(`${baseUrl}/i/${encodedData}`);
+    } else {
+      setQrData(data);
+    }
     setGeneratedType(data.type);
   };
 

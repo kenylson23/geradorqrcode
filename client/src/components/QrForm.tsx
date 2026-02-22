@@ -924,106 +924,118 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                     />
                   </div>
                 </div>
-              )}
-
-              {activeType === "business" && (
-                <div className="space-y-4">
-                  <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-border rounded-xl bg-slate-50/50 hover:border-primary/50 transition-colors cursor-pointer"
-                    onClick={() => document.getElementById('business-photo-upload')?.click()}>
-                    {form.getValues("photoUrl") ? (
-                      <div className="relative w-20 h-20">
-                        <img src={form.getValues("photoUrl")} className="w-full h-full object-cover rounded-full border-2 border-white shadow-md" alt="Preview" />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full opacity-0 hover:opacity-100 transition-opacity">
-                          <RefreshCw className="w-5 h-5 text-white" />
+              {activeType === "images" && (
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <FormLabel className="text-sm font-medium text-gray-700">Informações da imagem</FormLabel>
+                    <div className="grid grid-cols-1 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Título da galeria de imagens/álbum</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Exemplo: Minha galeria" {...field} value={field.value || "" 
+} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Descrição da galeria de imagens/álbum</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Por exemplo, fotos de verão" 
+                                {...field} 
+                                value={field.value || "" 
+} 
+                                className="min-h-[100px] resize-none"
+                              />
+                            </FormControl>
+                            <div className="text-[10px] text-right text-muted-foreground">
+                              {(field.value || "").length} / 4000
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <div className="space-y-2">
+                        <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Upload da Imagem</FormLabel>
+                        <div 
+                          className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                          onClick={() => document.getElementById("image-upload")?.click()}
+                        >
+                          <input
+                            id="image-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleFileUpload(file, "fileUrl");
+                            }}
+                          />
+                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-sm font-medium text-gray-700">Clique para carregar imagem</p>
+                          <p className="text-xs text-gray-400 mt-1">PNG, JPG ou GIF até 10MB</p>
+                          
+                          {isUploading && (
+                            <div className="w-full max-w-[200px] mt-4">
+                              <Progress value={progress} className="h-1" />
+                            </div>
+                          )}
+                          
+                          {(watchedValues as any).fileUrl && !isUploading && (
+                            <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-100 flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                              <span className="text-[10px] font-medium text-green-700">Upload concluído</span>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                        <span className="text-xs font-medium text-muted-foreground">Foto da Empresa</span>
-                      </>
-                    )}
-                    <input id="business-photo-upload" type="file" accept="image/*" className="hidden" 
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleFileUpload(file, "photoUrl");
-                      }} 
-                    />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="companyName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Nome da Empresa</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Minha Empresa Lda" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="industry"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ramo de Atividade</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Tecnologia, Restauração, etc." {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telefone</FormLabel>
-                          <FormControl>
-                            <Input placeholder="923 000 000" {...field} value={field.value || ''} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Site</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Exemplo: https://www.mypictures.com/" {...field} value={field.value || "" 
+} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="buttonLabel"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Texto do Botão</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Exemplo: Ver mais" {...field} value={field.value || "" 
+} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="website"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Site</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://www.empresa.com" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Localização</FormLabel>
+                </div>
+              )}
                         <FormControl>
                           <Input placeholder="Rua exemplo, Luanda" {...field} value={field.value || ''} />
                         </FormControl>

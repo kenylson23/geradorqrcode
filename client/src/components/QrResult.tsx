@@ -80,7 +80,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           title: data.title,
           description: data.description,
           website: data.website,
-          url: data.url,
+          fileUrl: data.fileUrl,
           buttonLabel: data.buttonLabel
         } : {
           type: 'links',

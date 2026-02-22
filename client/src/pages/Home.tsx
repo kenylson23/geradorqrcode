@@ -13,12 +13,12 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans pb-24">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* Left Column: Form and Selection */}
-            <div className="lg:col-span-8 space-y-8">
+            <div className="lg:col-span-7 space-y-6">
               <QrForm 
                 onGenerate={(data) => {
                   generate(data);
@@ -29,21 +29,21 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="lg:col-span-4 sticky top-24">
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[12px] rounded-[3.5rem] h-[720px] w-[340px] shadow-2xl overflow-visible">
+            <div className="lg:col-span-5 sticky top-24">
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[640px] w-[300px] shadow-2xl overflow-visible">
                 {/* iPhone Frame Elements */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-2xl z-50 flex items-center justify-center">
-                  <div className="w-12 h-3 bg-[#111] rounded-full"></div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
+                  <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
                 </div>
                 
-                <div className="h-[32px] w-[3px] bg-gray-800 absolute -left-[15px] top-[100px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[50px] w-[3px] bg-gray-800 absolute -left-[15px] top-[160px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[50px] w-[3px] bg-gray-800 absolute -left-[15px] top-[220px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[80px] w-[3px] bg-gray-800 absolute -right-[15px] top-[180px] rounded-r-lg border-r border-white/10"></div>
+                <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[90px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[145px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[200px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[165px] rounded-r-lg border-r border-white/10"></div>
 
-                <div className="rounded-[2.8rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
+                <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
                   {qrData ? (
-                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
                       <QrResult 
                         value={qrData} 
                         onDownload={() => download("qr-code-element")}

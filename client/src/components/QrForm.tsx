@@ -232,21 +232,21 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
   if (!activeType) {
     return (
-      <div className="bg-white rounded-3xl p-8 border border-border shadow-sm space-y-6">
-        <h2 className="text-2xl font-bold text-foreground mb-8">1. Selecione um tipo de código QR</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="bg-white rounded-3xl p-6 border border-border shadow-sm space-y-4">
+        <h2 className="text-xl font-bold text-foreground mb-6">1. Selecione um tipo de código QR</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {qrOptions.map((option, index) => (
             <button
               key={index}
               onClick={() => handleTypeSelect(option.type)}
-              className="group flex flex-col items-center p-6 bg-white rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+              className="group flex flex-col items-center p-4 bg-white rounded-xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
               data-testid={`button-qr-type-${option.type}-${index}`}
             >
-              <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-                <option.icon className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+                <option.icon className="w-5 h-5 text-primary" />
               </div>
-              <span className="font-bold text-foreground text-center mb-1">{option.label}</span>
-              <span className="text-[10px] text-muted-foreground text-center leading-tight">{option.description}</span>
+              <span className="font-bold text-foreground text-center text-sm mb-0.5">{option.label}</span>
+              <span className="text-[9px] text-muted-foreground text-center leading-tight">{option.description}</span>
             </button>
           ))}
         </div>
@@ -265,24 +265,24 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
-              className="bg-white p-8 rounded-2xl border border-gray-200 shadow-lg min-h-[300px]"
+              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px]"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                   {qrOptions.find(o => o.type === activeType)?.icon && (
                     <div className="text-primary">
                       {(() => {
                         const Icon = qrOptions.find(o => o.type === activeType)!.icon;
-                        return <Icon className="w-5 h-5" />;
+                        return <Icon className="w-4 h-4" />;
                       })()}
                     </div>
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">
+                  <h3 className="text-base font-bold text-foreground">
                     {qrOptions.find(o => o.type === activeType)?.label}
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground">
                     {qrOptions.find(o => o.type === activeType)?.description}
                   </p>
                 </div>

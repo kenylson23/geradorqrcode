@@ -29,6 +29,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case "url":
       case "facebook":
       case "instagram":
+        return data.url ? (data.url.startsWith('http') ? data.url : `https://${data.url}`) : "";
       case "pdf":
         const pdfData = {
           type: "pdf",

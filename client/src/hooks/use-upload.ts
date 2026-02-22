@@ -56,7 +56,8 @@ export function useUpload(options: UseUploadOptions = {}) {
       setProgress(0);
 
       try {
-        const isRaw = file.type === "application/pdf" || !file.type.startsWith("image/");
+        const isPdf = file.type === "application/pdf";
+        const isRaw = isPdf || !file.type.startsWith("image/");
         
         const formData = new FormData();
         formData.append("file", file);
@@ -85,7 +86,12 @@ export function useUpload(options: UseUploadOptions = {}) {
                 },
               });
             } else {
-              reject(new Error(`Erro no upload: ${xhr.statusText}`));
+              try {
+                const errorResponse = JSON.parse(xhr.responseText);
+                reject(new Error(errorResponse.error?.message || `Erro no upload: ${xhr.statusText}`));
+              } catch (e) {
+                reject(new Error(`Erro no upload: ${xhr.statusText}`));
+              }
             }
           });
 

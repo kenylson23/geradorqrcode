@@ -62,7 +62,20 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case "phone":
         return data.phone ? `tel:${data.phone}` : "";
       case "links":
-        const linkTreeData = {
+      case "business":
+        const isBusiness = data.type === 'business';
+        const pageData = isBusiness ? {
+          type: 'business',
+          companyName: data.companyName,
+          industry: data.industry,
+          phone: data.phone,
+          email: data.email,
+          website: data.website,
+          location: data.location,
+          caption: data.caption,
+          photoUrl: data.photoUrl
+        } : {
+          type: 'links',
           title: data.title,
           description: data.description,
           links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
@@ -70,7 +83,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             url: l.url
           }))
         };
-        const encodedData = btoa(JSON.stringify(linkTreeData));
+        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(pageData))));
         return `${window.location.origin}/l#${encodedData}`;
       case "vcard":
         const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";

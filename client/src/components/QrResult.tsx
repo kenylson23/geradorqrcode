@@ -25,6 +25,13 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     if (!data) return "";
     if (typeof data === 'string') return data;
     
+    // Check if we have minimum data for the specific type
+    const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' 
+      ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0)
+      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : true));
+
+    if (!hasData) return "";
+
     switch (data.type) {
       case "url":
       case "facebook":

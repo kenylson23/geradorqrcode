@@ -269,139 +269,128 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
-              className="bg-white p-6 rounded-2xl border border-border shadow-sm min-h-[300px]"
+              className="bg-white p-8 rounded-2xl border border-gray-200 shadow-lg min-h-[300px]"
             >
-              {activeType === "links" && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Título da Página</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Meu Linktree" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Descrição (Opcional)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Confira meus links importantes" className="min-h-[80px] resize-none rounded-xl border-2 border-border" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="space-y-3">
-                    <FormLabel className="text-base font-semibold text-foreground">Links</FormLabel>
-                    {fields.map((field, index) => (
-                      <div key={field.id} className="flex flex-col gap-2 p-4 border-2 border-border rounded-xl bg-slate-50/50">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs font-bold text-muted-foreground uppercase">Link {index + 1}</span>
-                          {fields.length > 1 && (
-                            <Button 
-                              type="button" 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                              onClick={() => remove(index)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </div>
+              {activeType === "url" && (
+                <div className="space-y-5">
+                  <div>
+                    <FormLabel className="text-sm font-medium text-gray-700">URL do Site</FormLabel>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <FormField
+                        control={form.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem className="flex-1 space-y-0">
+                            <FormControl>
+                              <Input 
+                                placeholder="https://exemplo.com" 
+                                {...field} 
+                                value={field.value || ''} 
+                                className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "instagram" && (
+                <div className="space-y-5">
+                  <div>
+                    <FormLabel className="text-sm font-medium text-gray-700">Usuário do Instagram</FormLabel>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                      <Instagram className="w-4 h-4 text-gray-400" />
+                      <FormField
+                        control={form.control}
+                        name="instagramUser"
+                        render={({ field }) => (
+                          <FormItem className="flex-1 space-y-0">
+                            <FormControl>
+                              <Input 
+                                placeholder="seu.usuario" 
+                                {...field} 
+                                value={field.value || ''} 
+                                className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "whatsapp" && (
+                <div className="space-y-5">
+                  <div>
+                    <FormLabel className="text-sm font-medium text-gray-700">Número do WhatsApp</FormLabel>
+                    <div className="flex gap-2 mt-1.5">
+                      <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                        <SelectTrigger className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white">
+                          <SelectValue placeholder="+" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countryCodes.map((c) => (
+                            <SelectItem key={c.code} value={c.code}>
+                              <span className="flex items-center gap-2">
+                                <span>{c.flag}</span>
+                                <span>+{c.code}</span>
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex-1 flex items-center gap-2 border rounded-lg px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                        <MessageCircle className="w-4 h-4 text-gray-400" />
                         <FormField
                           control={form.control}
-                          name={`links.${index}.label` as any}
+                          name="phone"
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="flex-1 space-y-0">
                               <FormControl>
-                                <Input placeholder="Rótulo (ex: Instagram)" {...field} className="h-10 rounded-lg border-border" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`links.${index}.url` as any}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input placeholder="URL (ex: https://instagram.com/user)" {...field} className="h-10 rounded-lg border-border" />
+                                <Input 
+                                  placeholder="923 000 000" 
+                                  {...field} 
+                                  value={field.value || ''} 
+                                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
-                    ))}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="w-full h-10 rounded-xl border-dashed border-2 hover:border-primary/50 hover:bg-primary/5 text-primary"
-                      onClick={() => append({ label: "", url: "" })}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Adicionar Link
-                    </Button>
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {activeType === "whatsapp" && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Número do WhatsApp</FormLabel>
-                        <div className="flex gap-2">
-                          <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
-                            <SelectTrigger className="w-[120px] h-12 rounded-xl border-2 border-border">
-                              <SelectValue placeholder="Código" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {countryCodes.map((c) => (
-                                <SelectItem key={c.code} value={c.code}>
-                                  <span className="flex items-center gap-2">
-                                    <span>{c.flag}</span>
-                                    <span>+{c.code}</span>
-                                  </span>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormControl>
-                            <Input placeholder="923 000 000" className="h-12 rounded-xl border-2 border-border flex-1" {...field} value={field.value || ''} />
-                          </FormControl>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Mensagem (Opcional)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Olá, gostaria de mais informações..." className="min-h-[120px] resize-none rounded-xl border-2 border-border" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div>
+                    <FormLabel className="text-sm font-medium text-gray-700">Mensagem (Opcional)</FormLabel>
+                    <div className="mt-1.5">
+                      <FormField
+                        control={form.control}
+                        name="message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Olá, gostaria de mais informações..." 
+                                className="min-h-[100px] resize-none rounded-lg border border-gray-200 focus-visible:ring-2 focus-visible:ring-primary/20 bg-white shadow-none" 
+                                {...field} 
+                                value={field.value || ''} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 

@@ -63,8 +63,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         return data.phone ? `tel:${data.phone}` : "";
       case "links":
       case "business":
-        const isBusiness = data.type === 'business';
-        const pageData = isBusiness ? {
+      case "images":
+        const pageType = data.type;
+        const pageData = pageType === 'business' ? {
           type: 'business',
           companyName: data.companyName,
           industry: data.industry,
@@ -74,6 +75,13 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           location: data.location,
           caption: data.caption,
           photoUrl: data.photoUrl
+        } : pageType === 'images' ? {
+          type: 'images',
+          title: data.title,
+          description: data.description,
+          website: data.website,
+          url: data.url,
+          buttonLabel: data.buttonLabel
         } : {
           type: 'links',
           title: data.title,

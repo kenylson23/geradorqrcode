@@ -80,6 +80,50 @@ export default function LinkTreePage() {
     );
   }
 
+  if (data.type === 'images') {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center">
+        <div className="w-full max-w-md bg-white min-h-screen flex flex-col shadow-xl overflow-hidden">
+          {data.url && (
+            <div className="w-full aspect-square relative bg-slate-100">
+              <img src={data.url} className="w-full h-full object-cover" alt={data.title} />
+            </div>
+          )}
+          
+          <div className="flex-1 p-8 space-y-6">
+            <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-slate-900">{data.title || "Imagem"}</h1>
+              {data.description && (
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{data.description}</p>
+              )}
+            </div>
+
+            {(data.buttonLabel || data.website) && (
+              <div className="pt-4">
+                <Button 
+                  asChild
+                  className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-white font-bold text-lg shadow-lg transition-all"
+                >
+                  <a 
+                    href={data.website ? (data.website.startsWith('http') ? data.website : `https://${data.website}`) : "#"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    {data.buttonLabel || "Ver mais"}
+                  </a>
+                </Button>
+              </div>
+            )}
+            
+            <div className="pt-8 mt-auto border-t border-slate-100 text-center">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (data.type === 'business') {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center">

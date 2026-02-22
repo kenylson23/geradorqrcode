@@ -189,9 +189,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       case "vcard":
         defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", socialLinks: [] };
         break;
-      case "images":
-        defaultValues = { ...defaultValues, title: "", description: "", urls: [""], buttons: [] };
-        break;
+    case "images":
+      defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "" };
+      break;
       case "business":
         defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
         break;

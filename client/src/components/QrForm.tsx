@@ -232,7 +232,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
   if (!activeType) {
     return (
-      <div className="space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-border shadow-sm space-y-6">
         <h2 className="text-2xl font-bold text-foreground mb-8">1. Selecione um tipo de código QR</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {qrOptions.map((option, index) => (
@@ -256,10 +256,6 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
   return (
     <div className="w-full">
-      <Button variant="ghost" onClick={() => { setActiveType(null); onStepChange(1); }} className="mb-4 text-muted-foreground hover:text-primary">
-        ← Voltar para seleção
-      </Button>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <AnimatePresence mode="wait">
@@ -271,6 +267,26 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               transition={{ duration: 0.2 }}
               className="bg-white p-8 rounded-2xl border border-gray-200 shadow-lg min-h-[300px]"
             >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  {qrOptions.find(o => o.type === activeType)?.icon && (
+                    <div className="text-primary">
+                      {(() => {
+                        const Icon = qrOptions.find(o => o.type === activeType)!.icon;
+                        return <Icon className="w-5 h-5" />;
+                      })()}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">
+                    {qrOptions.find(o => o.type === activeType)?.label}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {qrOptions.find(o => o.type === activeType)?.description}
+                  </p>
+                </div>
+              </div>
               {activeType === "url" && (
                 <div className="space-y-5">
                   <div>
@@ -900,10 +916,24 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              <div className="mt-8 flex justify-end">
-                <Button type="submit" size="lg" className="h-12 px-8 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
-                  Gerar QR Code
-                </Button>
+              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4 z-50">
+                <div className="max-w-7xl mx-auto flex justify-between items-center px-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => { setActiveType(null); onStepChange(1); }}
+                    className="rounded-xl px-8 h-12 font-medium border-primary text-primary hover:bg-primary/5"
+                  >
+                    ← Voltar
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="rounded-xl px-8 h-12 font-medium bg-primary hover:bg-primary/90 text-white shadow-md flex items-center gap-2"
+                    data-testid="button-qr-generate"
+                  >
+                    Próximo →
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>

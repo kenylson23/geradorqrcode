@@ -10,7 +10,7 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans pb-24">
       <Header currentStep={currentStep} />
 
       <main className="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -19,15 +19,13 @@ export default function Home() {
             
             {/* Left Column: Form and Selection */}
             <div className="lg:col-span-8 space-y-8">
-              <div className="bg-white rounded-3xl p-8 border border-border shadow-sm">
-                <QrForm 
-                  onGenerate={(data) => {
-                    generate(data);
-                    if (currentStep < 2) setCurrentStep(2);
-                  }} 
-                  onStepChange={setCurrentStep}
-                />
-              </div>
+              <QrForm 
+                onGenerate={(data) => {
+                  generate(data);
+                  if (currentStep < 2) setCurrentStep(2);
+                }} 
+                onStepChange={setCurrentStep}
+              />
             </div>
 
             {/* Right Column: Mobile Preview */}

@@ -116,7 +116,8 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       formData.append("upload_preset", uploadPreset);
 
       // Use 'raw' for non-image files like PDFs to avoid 'image/upload' issues
-      const isPdf = file.type === 'application/pdf';
+      // Important: PDFs must be uploaded as 'raw' resource type in Cloudinary
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
       const resourceType = isPdf ? 'raw' : 'auto';
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
         method: "POST",

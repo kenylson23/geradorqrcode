@@ -56,7 +56,7 @@ export function useUpload(options: UseUploadOptions = {}) {
       setProgress(0);
 
       try {
-        const isPdf = file.type === "application/pdf";
+        const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
         const isRaw = isPdf || !file.type.startsWith("image/");
         
         const formData = new FormData();
@@ -135,7 +135,8 @@ export function useUpload(options: UseUploadOptions = {}) {
         throw new Error("Configuração do Cloudinary ausente.");
       }
 
-      const isRaw = file.type === "application/pdf" || !file.type?.startsWith("image/");
+      const isPdf = file.type === "application/pdf" || file.name?.toLowerCase().endsWith(".pdf");
+      const isRaw = isPdf || !file.type?.startsWith("image/");
       const resourceType = isRaw ? "raw" : "image";
 
       return {

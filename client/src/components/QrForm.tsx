@@ -327,8 +327,38 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex-1 space-y-0">
                             <FormControl>
+                              <div className="relative flex items-center w-full">
+                                <span className="text-gray-400 font-medium">@</span>
+                                <Input 
+                                  placeholder="seu.usuario" 
+                                  {...field} 
+                                  value={field.value || ''} 
+                                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0 ml-1 w-full" 
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="relative py-2">
+                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-100" /></div>
+                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider"><span className="bg-white px-2 text-gray-400">ou use uma URL</span></div>
+                  </div>
+                  <div>
+                    <FormLabel className="text-sm font-medium text-gray-700">URL do Perfil</FormLabel>
+                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                      <Globe className="w-4 h-4 text-gray-400" />
+                      <FormField
+                        control={form.control}
+                        name="url"
+                        render={({ field }) => (
+                          <FormItem className="flex-1 space-y-0">
+                            <FormControl>
                               <Input 
-                                placeholder="seu.usuario" 
+                                placeholder="https://instagram.com/seu.usuario" 
                                 {...field} 
                                 value={field.value || ''} 
                                 className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
@@ -338,6 +368,192 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                           </FormItem>
                         )}
                       />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "links" && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Título da Página</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Meus Links" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Confira minhas redes sociais" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-base font-bold text-foreground">Links</FormLabel>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ label: "", url: "" })}
+                        className="flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Adicionar Link
+                      </Button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {fields.map((item, index) => (
+                        <div key={item.id} className="flex gap-3 items-start p-4 bg-gray-50 rounded-xl border border-gray-100 group">
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <FormField
+                              control={form.control}
+                              name={`links.${index}.label`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                  <FormControl>
+                                    <Input placeholder="Nome (ex: Instagram)" {...field} value={field.value || ''} className="bg-white" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`links.${index}.url`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                  <FormControl>
+                                    <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {fields.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => remove(index)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeType === "links" && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Título da Página</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Meus Links" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Confira minhas redes sociais" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-base font-bold text-foreground">Links</FormLabel>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ label: "", url: "" })}
+                        className="flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Adicionar Link
+                      </Button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {fields.map((item, index) => (
+                        <div key={item.id} className="flex gap-3 items-start p-4 bg-gray-50 rounded-xl border border-gray-100 group">
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <FormField
+                              control={form.control}
+                              name={`links.${index}.label`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                  <FormControl>
+                                    <Input placeholder="Nome (ex: Instagram)" {...field} value={field.value || ''} className="bg-white" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`links.${index}.url`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-1">
+                                  <FormControl>
+                                    <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {fields.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => remove(index)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -509,61 +725,6 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              {activeType === "instagram" && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="instagramUser"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">Nome de Usuário (@)</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">@</span>
-                            <Input placeholder="seu_usuario" {...field} value={field.value || ''} className="h-12 pl-8 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-                    <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-muted-foreground font-semibold">ou use uma URL</span></div>
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">URL do Perfil</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://instagram.com/seu_usuario" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-
-              {(activeType === "url" || activeType === "facebook") && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base font-semibold text-foreground">URL do Link</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com" {...field} value={field.value || ''} className="h-12 rounded-xl border-2 border-border focus-visible:ring-primary/20" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
 
               {activeType === "phone" && (
                 <FormField

@@ -318,36 +318,6 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
               {activeType === "instagram" && (
                 <div className="space-y-5">
                   <div>
-                    <FormLabel className="text-sm font-medium text-gray-700">Usuário do Instagram</FormLabel>
-                    <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                      <Instagram className="w-4 h-4 text-gray-400" />
-                      <FormField
-                        control={form.control}
-                        name="instagramUser"
-                        render={({ field }) => (
-                          <FormItem className="flex-1 space-y-0">
-                            <FormControl>
-                              <div className="relative flex items-center w-full">
-                                <span className="text-gray-400 font-medium">@</span>
-                                <Input 
-                                  placeholder="seu.usuario" 
-                                  {...field} 
-                                  value={field.value || ''} 
-                                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0 ml-1 w-full" 
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="relative py-2">
-                    <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-100" /></div>
-                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider"><span className="bg-white px-2 text-gray-400">ou use uma URL</span></div>
-                  </div>
-                  <div>
                     <FormLabel className="text-sm font-medium text-gray-700">URL do Perfil</FormLabel>
                     <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                       <Globe className="w-4 h-4 text-gray-400" />

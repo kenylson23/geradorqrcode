@@ -461,7 +461,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             </div>
 
             {/* Content Section */}
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
               <div className="space-y-4">
                 {value.fileUrl ? (
                   <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">

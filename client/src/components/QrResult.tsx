@@ -28,7 +28,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     // Check if we have minimum data for the specific type
     const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' 
       ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0)
-      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : true));
+      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? !!data.fileUrl : true)));
 
     if (!hasData) return "";
 
@@ -93,6 +93,17 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         };
         const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(pageData))));
         return `${window.location.origin}/l#${encodedData}`;
+      case "images":
+        const imagesData = {
+          type: "images",
+          title: data.title,
+          description: data.description,
+          website: data.website,
+          buttonLabel: data.buttonLabel,
+          fileUrl: data.fileUrl
+        };
+        const encodedImagesData = btoa(unescape(encodeURIComponent(JSON.stringify(imagesData))));
+        return `${window.location.origin}/i/${encodedImagesData}`;
       case "vcard":
         const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";
         const website = data.website ? `\nURL:${data.website}` : "";
@@ -117,7 +128,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = isUrlType 
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
-    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : true));
+    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? !!value?.fileUrl : true)));
 
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {
@@ -442,33 +453,52 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       case 'images':
-        const galleryImages = value.fileUrls || [];
         return (
-          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            <div className="p-6 pt-12 flex items-center justify-between text-white">
-              <h3 className="text-lg font-bold truncate flex-1">{value.title || "Galeria de Imagens"}</h3>
-              <MoreHorizontal className="w-6 h-6" />
+          <div className="w-full h-full bg-gray-50 flex flex-col animate-in fade-in duration-500 overflow-y-auto pb-10">
+            <div className="w-full bg-white border-b border-gray-100 p-4 sticky top-0 z-10 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Visualização ao vivo</span>
+              </div>
             </div>
-            <div className="flex-1 p-4 grid grid-cols-2 gap-2 overflow-y-auto">
-              {galleryImages.length > 0 ? (
-                galleryImages.map((url: string, i: number) => (
-                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-white/10">
-                    <img src={url} className="w-full h-full object-cover" alt={`Gallery ${i}`} />
-                  </div>
-                ))
+
+            <div className="p-4 space-y-6">
+              {value.fileUrl ? (
+                <div className="rounded-2xl overflow-hidden shadow-md bg-white border border-gray-100 aspect-video relative">
+                  <img 
+                    src={value.fileUrl} 
+                    className="w-full h-full object-cover" 
+                    alt="Preview" 
+                  />
+                </div>
               ) : (
-                [1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-square bg-white/10 rounded-xl flex items-center justify-center">
-                    <ImageIcon className="w-8 h-8 text-white/20" />
-                  </div>
-                ))
+                <div className="rounded-2xl border-2 border-dashed border-gray-200 aspect-video flex flex-col items-center justify-center bg-gray-100/50 text-gray-400">
+                  <ImageIcon className="w-8 h-8 mb-2 opacity-20" />
+                  <span className="text-[10px] font-medium">Aguardando imagem...</span>
+                </div>
               )}
-            </div>
-            <div className="p-6 bg-gradient-to-t from-black/80 to-transparent">
-              <p className="text-sm text-white/70 mb-4 line-clamp-2">{value.description || "Adicione fotos para sua galeria personalizada."}</p>
-              <Button className="w-full rounded-full bg-white text-black hover:bg-white/90 font-bold">
-                Ver todas ({galleryImages.length})
-              </Button>
+
+              <div className="space-y-2 px-1">
+                <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                  {value.title || "Título da Imagem"}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                  {value.description || "Sua descrição aparecerá aqui quando você começar a digitar."}
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <div className="w-full h-12 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 opacity-90">
+                  {value.buttonLabel || "Ver mais"}
+                </div>
+              </div>
+              
+              {value.website && (
+                <div className="flex items-center gap-2 justify-center text-[10px] text-gray-400">
+                  <Globe className="w-3 h-3" />
+                  <span className="truncate max-w-[150px]">{value.website}</span>
+                </div>
+              )}
             </div>
           </div>
         );

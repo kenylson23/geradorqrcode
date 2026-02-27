@@ -122,6 +122,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
     : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? (!!value?.fileUrl || !!value?.title || !!value?.description || !!value?.website || !!value?.buttonLabel) : (value?.type === 'pdf' ? (!!value?.fileUrl || !!value?.url || !!value?.title) : (value?.type === 'business' ? (!!value?.companyName || !!value?.industry) : true)))));
 
+  console.log("QrResult Render:", { type: value?.type, hasMinData, value });
+
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {
       return (

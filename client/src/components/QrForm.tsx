@@ -220,6 +220,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
   useEffect(() => {
     const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;
     if (watchedStr !== lastEmitted && activeType) {
+      console.log("Form update detected, emitting:", watchedValues);
       setLastEmitted(watchedStr);
       const dataToGenerate = prepareData(watchedValues);
       onGenerate(dataToGenerate);

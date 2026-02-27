@@ -447,65 +447,58 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       case 'images':
-        const hasImagesData = !!value.fileUrl || !!value.title;
+        const hasImagesData = !!value.fileUrl || !!value.title || !!value.description || !!value.url;
         return (
           <div className="w-full h-full bg-gray-50 flex flex-col animate-in fade-in duration-500 overflow-y-auto pb-10">
             {/* Header / Title Section */}
-            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+            <div className="bg-[#2ECC71] pt-12 pb-16 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10" />
               <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
                 <ImageIcon className="w-10 h-10" />
               </div>
-              <h3 className="text-lg font-bold relative z-10">{value.title || "Galeria de Imagens"}</h3>
-              <p className="text-xs opacity-90 relative z-10">{value.description || "Visualize as imagens abaixo"}</p>
+              <h3 className="text-lg font-bold relative z-10 truncate w-full px-4">{value.title || "Galeria de Imagens"}</h3>
             </div>
 
-            {/* Content Section */}
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+            <div className="flex-1 bg-white -mt-8 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20">
+              {value.fileUrl && (
+                <div className="w-full aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                  <img 
+                    src={value.fileUrl} 
+                    alt={value.title || "Imagem"} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
               <div className="space-y-4">
-                {value.fileUrl ? (
-                  <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                    <img 
-                      src={value.fileUrl} 
-                      alt={value.title || "Imagem"} 
-                      className="w-full h-auto object-cover max-h-[300px]"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full aspect-video bg-gray-100 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-gray-200">
-                    <ImageIcon className="w-12 h-12 text-gray-300 mb-2" />
-                    <p className="text-xs text-gray-400">Nenhuma imagem carregada</p>
+                {value.description && (
+                  <div className="p-4 bg-slate-50 rounded-2xl">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1 text-left">Descrição</p>
+                    <p className="text-sm text-slate-600 leading-relaxed text-left">{value.description}</p>
                   </div>
                 )}
-
-                {value.website && (
+                
+                {value.url && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold text-left">Link Relacionado</p>
+                      <p className="text-sm font-semibold truncate text-left">{value.url}</p>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="pt-4">
-                {(value.url || value.website) ? (
-                  <a 
-                    href={value.url || (value.website?.startsWith('http') ? value.website : `https://${value.website}`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all"
-                  >
-                    {value.buttonLabel || "Visitar Site"}
-                  </a>
-                ) : null}
-                {!hasImagesData && (
-                  <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando dados da galeria...</p>
-                )}
-              </div>
+              {!hasImagesData && (
+                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground space-y-4">
+                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
+                    <ImageIcon className="w-8 h-8 opacity-20" />
+                  </div>
+                  <p className="text-xs italic">Complete as informações para ver o preview</p>
+                </div>
+              )}
             </div>
           </div>
         );

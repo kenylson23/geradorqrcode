@@ -94,7 +94,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           buttonLabel: data.buttonLabel,
           fileUrl: data.fileUrl
         };
-        const encodedImagesData = btoa(unescape(encodeURIComponent(JSON.stringify(imagesData))));
+        const encodedImagesData = encodeURIComponent(JSON.stringify(imagesData));
         return `${window.location.origin}/i/${encodedImagesData}`;
       case "vcard":
         const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";

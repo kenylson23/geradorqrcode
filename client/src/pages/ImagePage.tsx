@@ -12,7 +12,13 @@ interface ImagePageProps {
 export default function ImagePage({ params }: ImagePageProps) {
   let data: any = {};
   try {
-    data = JSON.parse(decodeURIComponent(params.data));
+    const decoded = decodeURIComponent(params.data);
+    if (decoded.startsWith('{')) {
+      data = JSON.parse(decoded);
+    } else {
+      // Fallback for old base64 format if any exists
+      data = JSON.parse(decodeURIComponent(escape(atob(params.data))));
+    }
   } catch (e) {
     console.error("Failed to parse image data", e);
   }

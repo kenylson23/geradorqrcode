@@ -132,14 +132,16 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
       
       if (result.secure_url) {
         let downloadUrl = result.secure_url;
-        if (!isPdf) {
-          downloadUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment/');
-        }
+        // Don't force attachment for preview/display, Cloudinary handles images well
         
         form.setValue(fieldName, downloadUrl);
         if (activeType === "pdf") {
           form.setValue("url", downloadUrl);
         }
+        
+        // Ensure we trigger a generation update with the new URL
+        const currentValues = form.getValues();
+        onGenerate({ ...currentValues, [fieldName]: downloadUrl });
       }
       
       onGenerate(form.getValues());

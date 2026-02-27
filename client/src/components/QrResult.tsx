@@ -125,7 +125,10 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   console.log("QrResult Render:", { type: value?.type, hasMinData, value });
 
   const renderSimulation = () => {
-    if (isLinkTree && hasMinData) {
+    // Force hasMinData to true for debugging if it's the right type
+    const effectiveHasMinData = hasMinData || (value?.type === 'images' && (value?.title || value?.description));
+
+    if (isLinkTree && effectiveHasMinData) {
       return (
         <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
           <LinkTree 
@@ -251,9 +254,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                       e.preventDefault();
                       return;
                     }
-                    // For Cloudinary URLs, we often need to ensure the link works for download
-                    // If it's a direct URL, target="_blank" handles it, but some browsers 
-                    // block 'download' attribute for cross-origin URLs.
                   }}
                 >
                   {value.buttonLabel || "Download PDF"}
@@ -450,7 +450,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         const hasImagesData = !!value.fileUrl || !!value.title || !!value.description || !!value.url;
         return (
           <div className="w-full h-full bg-gray-50 flex flex-col animate-in fade-in duration-500 overflow-y-auto pb-10">
-            {/* Header / Title Section */}
             <div className="bg-[#2ECC71] pt-12 pb-16 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10" />
               <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
@@ -491,7 +490,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 )}
               </div>
 
-              {!hasImagesData && (
+              {!effectiveHasMinData && (
                 <div className="flex flex-col items-center justify-center py-12 text-muted-foreground space-y-4">
                   <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
                     <ImageIcon className="w-8 h-8 opacity-20" />
@@ -504,7 +503,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       default:
-        // For simple types like text, email, phone, etc., if we have data, show a default simulation
         if (hasMinData && value?.type) {
           return (
             <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
@@ -530,102 +528,85 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
-      <div className="flex-1 w-full relative">
-        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
-          {renderSimulation()}
-        </div>
-
-        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${showQr ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-          <div className="pt-12 flex flex-col items-center gap-8 w-full h-full bg-white">
-             <div className="flex items-center justify-between px-6 w-full text-slate-900">
-                <span className="text-[12px] font-bold">9:41</span>
-                <div className="flex items-center gap-1.5">
-                   <div className="flex gap-0.5 items-end h-3">
-                    <div className="w-0.5 h-1 bg-slate-900 rounded-full"></div>
-                    <div className="w-0.5 h-1.5 bg-slate-900 rounded-full"></div>
-                    <div className="w-0.5 h-2 bg-slate-900 rounded-full"></div>
-                    <div className="w-0.5 h-2.5 bg-slate-900/40 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
-                {isTooLong ? (
-                  <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
-                    <AlertTriangle className="w-10 h-10 mb-2" />
-                    <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
-                  </div>
-                ) : (
-                  <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
-                    <QRCodeSVG
-                      value={hasMinData ? qrValue : "https://replit.com"}
-                      size={200}
-                      level="M"
-                      includeMargin={true}
-                      imageSettings={{
-                        src: "/logo.png",
-                        x: undefined,
-                        y: undefined,
-                        height: 40,
-                        width: 40,
-                        excavate: true,
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Control Tabs - Moved outside simulation */}
-      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
-        <button
+      <div className="flex w-full gap-4 p-1 bg-slate-100 rounded-xl">
+        <Button 
+          variant={!showQr ? "default" : "ghost"} 
+          className="flex-1 rounded-lg h-9 text-xs font-bold"
           onClick={() => setShowQr(false)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
-          data-testid="button-tab-preview"
         >
-          Pré-visualização
-        </button>
-        <button
+          Simulação
+        </Button>
+        <Button 
+          variant={showQr ? "default" : "ghost"} 
+          className="flex-1 rounded-lg h-9 text-xs font-bold"
           onClick={() => setShowQr(true)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
-          data-testid="button-tab-qr"
         >
           Código QR
-        </button>
+        </Button>
       </div>
 
-      {isTooLong && (
-        <Alert variant="destructive" className="border-2 mt-4">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Erro: Arquivo muito grande</AlertTitle>
-          <AlertDescription className="text-xs">
-            O conteúdo deste arquivo excede o limite de um QR Code (máx ~3KB). 
-            Tente usar um arquivo menor ou use a opção de "URL" para arquivos na nuvem.
-          </AlertDescription>
-        </Alert>
-      )}
+      <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
+        {!showQr ? (
+          <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.9] origin-center">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center gap-1.5 pt-1">
+              <div className="w-8 h-1.5 bg-slate-800 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>
+            </div>
+            <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
+              {renderSimulation()}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-300">
+            {qrValue ? (
+              <>
+                <div className="p-6 bg-white rounded-[2rem] shadow-xl border-4 border-slate-50">
+                  <QRCodeSVG 
+                    value={qrValue} 
+                    size={200}
+                    level="M"
+                    includeMargin={true}
+                  />
+                </div>
+                
+                {isTooLong && (
+                  <Alert variant="destructive" className="max-w-[300px]">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Dados em excesso</AlertTitle>
+                    <AlertDescription>
+                      O arquivo ou texto é muito grande para um código QR. Tente reduzir o tamanho.
+                    </AlertDescription>
+                  </Alert>
+                )}
 
-      <div className="flex flex-col gap-2 w-full max-w-[280px] mt-2 mb-8">
-        <Button 
-          onClick={onDownload} 
-          className="w-full h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 text-sm transition-all active:scale-[0.98]"
-          disabled={isTooLong}
-          data-testid="button-download-qr"
-        >
-          <Download className="mr-2 h-5 w-5" />
-          Baixar PNG
-        </Button>
-        <Button 
-          variant="outline" 
-          onClick={onReset} 
-          className="w-full h-10 rounded-lg font-bold border-2 text-slate-500 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98] text-xs"
-          data-testid="button-reset-qr"
-        >
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Criar outro
-        </Button>
+                <div className="flex flex-col gap-3 w-full max-w-[240px]">
+                  <Button 
+                    onClick={onDownload} 
+                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white"
+                  >
+                    <Download className="w-4 h-4" />
+                    Baixar QR Code
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={onReset}
+                    className="w-full h-12 rounded-2xl border-2 font-bold gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Criar Outro
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center p-8 space-y-4">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+                  <AlertTriangle className="w-8 h-8 text-slate-300" />
+                </div>
+                <p className="text-slate-500 text-sm">Insira os dados à esquerda para gerar o Código QR.</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

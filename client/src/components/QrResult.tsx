@@ -28,7 +28,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     // Check if we have minimum data for the specific type
     const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' 
       ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0)
-      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? !!data.fileUrl : true)));
+      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? (!!data.fileUrl || !!data.title || !!data.description) : true)));
 
     if (!hasData) return "";
 
@@ -126,9 +126,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Determine if it's a "real-time preview" (incomplete data)
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
-  const hasMinData = isUrlType 
+    const hasMinData = isUrlType 
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
-    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? !!value?.fileUrl : true)));
+    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? (!!value?.fileUrl || !!value?.title || !!value?.description) : true)));
 
   const renderSimulation = () => {
     if (isLinkTree && hasMinData) {

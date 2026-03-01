@@ -547,7 +547,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
       <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
         {!showQr ? (
-          <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.9] origin-center">
+          <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.85] origin-center">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center gap-1.5 pt-1">
               <div className="w-8 h-1.5 bg-slate-800 rounded-full"></div>
               <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>

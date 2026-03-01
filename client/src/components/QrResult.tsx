@@ -448,51 +448,63 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
       case 'images':
         return (
-          <div className="w-full h-full bg-gray-50 flex flex-col animate-in fade-in duration-500 overflow-y-auto pb-10">
-            <div className="w-full bg-white border-b border-gray-100 p-4 sticky top-0 z-10 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Visualização ao vivo</span>
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Header / Banner Area */}
+            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-black/10" />
+              <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10 shadow-lg">
+                {value.fileUrl ? (
+                  <img src={value.fileUrl} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
+                ) : (
+                  <ImageIcon className="w-10 h-10 text-white" />
+                )}
               </div>
+              <h3 className="text-lg font-bold relative z-10 drop-shadow-sm">{value.title || "Galeria de Imagens"}</h3>
+              <p className="text-xs opacity-90 relative z-10 max-w-[200px] line-clamp-1">{value.companyName || "Portfolio Digital"}</p>
             </div>
-
-            <div className="p-4 space-y-6">
-              {value.fileUrl ? (
-                <div className="rounded-2xl overflow-hidden shadow-md bg-white border border-gray-100 aspect-video relative">
-                  <img 
-                    src={value.fileUrl} 
-                    className="w-full h-full object-cover" 
-                    alt="Preview" 
-                  />
+            
+            {/* Content Area */}
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+              <div className="space-y-4">
+                {value.description && (
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/50">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1 tracking-wider">Sobre a Galeria</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{value.description}</p>
+                  </div>
+                )}
+                
+                {/* Main Image Grid Simulation */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200">
+                      {i === 1 && value.fileUrl ? (
+                        <img src={value.fileUrl} className="w-full h-full object-cover" alt="Uploaded" />
+                      ) : (
+                        <ImageIcon className="w-6 h-6 text-slate-300" />
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <div className="rounded-2xl border-2 border-dashed border-gray-200 aspect-video flex flex-col items-center justify-center bg-gray-100/50 text-gray-400">
-                  <ImageIcon className="w-8 h-8 mb-2 opacity-20" />
-                  <span className="text-[10px] font-medium">Aguardando imagem...</span>
-                </div>
-              )}
 
-              <div className="space-y-2 px-1">
-                <h3 className="text-xl font-bold text-gray-900 leading-tight">
-                  {value.title || "Título da Imagem"}
-                </h3>
-                <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                  {value.description || "Sua descrição aparecerá aqui quando você começar a digitar."}
-                </p>
+                {value.website && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100/50">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Website</p>
+                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
+              {/* Action Button */}
               <div className="pt-2">
-                <div className="w-full h-12 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 opacity-90">
-                  {value.buttonLabel || "Ver mais"}
-                </div>
+                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold shadow-md transition-all active:scale-[0.98]">
+                  {value.buttonLabel || "Ver Galeria Completa"}
+                </Button>
               </div>
-              
-              {value.website && (
-                <div className="flex items-center gap-2 justify-center text-[10px] text-gray-400">
-                  <Globe className="w-3 h-3" />
-                  <span className="truncate max-w-[150px]">{value.website}</span>
-                </div>
-              )}
             </div>
           </div>
         );

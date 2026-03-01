@@ -23,11 +23,17 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   
   const generateQrValue = (data: any) => {
     if (!data) return "";
+    
+    // Check if data is already a URL string (from LinkTree/Images preview)
+    if (typeof data === 'string' && (data.startsWith('http') || data.includes('/i/') || data.includes('/l#'))) {
+      return data;
+    }
+
     if (typeof data === 'string') return data;
     
     // Check if we have minimum data for the specific type
-    const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' 
-      ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0)
+    const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' || data.type === 'images'
+      ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0) || (data.type === 'images')
       : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? (!!data.fileUrl || !!data.title || !!data.description || !!data.website || !!data.buttonLabel) : true)));
 
     if (!hasData) return "";
@@ -123,23 +129,42 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   console.log("QrResult Render:", { type: value?.type, hasMinData, value });
 
   const renderSimulation = () => {
-    if (isLinkTree && hasMinData) {
+    // If value is a string, it might be an encoded URL from LinkTree or Images
+    // We need to decode it to show the simulation, or just skip if it's already a full URL
+    let data = value;
+    if (typeof value === 'string') {
+      try {
+        if (value.includes('/i/')) {
+          const encoded = value.split('/i/')[1];
+          data = JSON.parse(decodeURIComponent(encoded));
+        } else if (value.includes('/l#')) {
+          const encoded = value.split('/l#')[1];
+          data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        }
+      } catch (e) {
+        // Not a JSON string we can decode, use as is
+      }
+    }
+
+    const isLinkTreeData = typeof data === 'object' && data?.type === 'links';
+
+    if (isLinkTreeData && hasMinData) {
       return (
         <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
           <LinkTree 
-            title={value.title} 
-            description={value.description} 
-            links={value.links || []} 
+            title={data.title} 
+            description={data.description} 
+            links={data.links || []} 
           />
         </div>
       );
     }
 
-    switch (value?.type) {
+    switch (data?.type) {
       case 'url':
       case 'facebook':
       case 'instagram':
-        const url = previewUrl || "";
+        const url = (typeof value === 'object' ? (value.url || value.fileUrl || (value.type === 'instagram' && value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value) || "";
         const fullUrl = url ? (url.startsWith('http') ? url : `https://${url}`) : "";
 
         return (
@@ -175,8 +200,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               {!fullUrl ? (
                 <div className="p-4 space-y-4">
                   <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
-                    {value.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
-                      value.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
+                    {data.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
+                      data.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
                       <Globe className="w-12 h-12 text-slate-400" />}
                   </div>
                   <div className="space-y-2">
@@ -203,7 +228,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       case 'pdf':
-        const hasPdfData = value.fileUrl || value.url;
+        const hasPdfData = data.fileUrl || data.url;
         return (
           <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
             <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
@@ -211,27 +236,27 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
                 <FileText className="w-10 h-10" />
               </div>
-              <h3 className="text-lg font-bold relative z-10">{value.title || "Documento PDF"}</h3>
-              <p className="text-xs opacity-90 relative z-10">{value.companyName || "Visualizador de PDF"}</p>
+              <h3 className="text-lg font-bold relative z-10">{data.title || "Documento PDF"}</h3>
+              <p className="text-xs opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
             </div>
             
             <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
               <div className="space-y-4">
-                {value.description && (
+                {data.description && (
                   <div className="p-4 bg-slate-50 rounded-2xl">
                     <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Descrição</p>
-                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-4">{value.description}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-4">{data.description}</p>
                   </div>
                 )}
                 
-                {value.website && (
+                {data.website && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                      <p className="text-sm font-semibold truncate">{data.website}</p>
                     </div>
                   </div>
                 )}
@@ -239,22 +264,13 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
               <div className="pt-4">
                 <a 
-                  href={hasPdfData ? (value.fileUrl || value.url) : "#"}
-                  download={(value.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
+                  href={hasPdfData ? (data.fileUrl || data.url) : "#"}
+                  download={(data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all ${!hasPdfData ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  onClick={(e) => {
-                    if (!hasPdfData) {
-                      e.preventDefault();
-                      return;
-                    }
-                    // For Cloudinary URLs, we often need to ensure the link works for download
-                    // If it's a direct URL, target="_blank" handles it, but some browsers 
-                    // block 'download' attribute for cross-origin URLs.
-                  }}
                 >
-                  {value.buttonLabel || "Download PDF"}
+                  {data.buttonLabel || "Download PDF"}
                 </a>
                 {!hasPdfData && (
                   <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>
@@ -272,14 +288,14 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 <User className="w-5 h-5" />
               </div>
               <div className="flex-1 overflow-hidden">
-                <p className="font-bold text-xs truncate">{value.phone || "WhatsApp"}</p>
+                <p className="font-bold text-xs truncate">{data.phone || "WhatsApp"}</p>
                 <p className="text-[10px] opacity-80">online</p>
               </div>
               <Video className="w-4 h-4" />
             </div>
             <div className="flex-1 p-4 flex flex-col justify-end gap-2 overflow-y-auto">
               <div className="self-end bg-[#DCF8C6] p-3 rounded-lg rounded-tr-none shadow-sm max-w-[80%]">
-                <p className="text-[11px] text-slate-800">{value.message || "Olá! Gostaria de mais informações."}</p>
+                <p className="text-[11px] text-slate-800">{data.message || "Olá! Gostaria de mais informações."}</p>
                 <p className="text-[9px] text-slate-500 text-right mt-1">12:01</p>
               </div>
             </div>
@@ -301,59 +317,59 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30">
                 <User className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-bold">{value.firstName} {value.lastName}</h3>
-              <p className="text-sm opacity-90">{value.jobTitle || value.profession}</p>
+              <h3 className="text-xl font-bold">{data.firstName} {data.lastName}</h3>
+              <p className="text-sm opacity-90">{data.jobTitle || data.profession}</p>
             </div>
             <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl">
               <div className="space-y-4">
-                {value.phone && (
+                {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Smartphone className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Telemóvel</p>
-                      <p className="text-sm font-semibold">{value.phone}</p>
+                      <p className="text-sm font-semibold">{data.phone}</p>
                     </div>
                   </div>
                 )}
-                {value.email && (
+                {data.email && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
-                      <p className="text-sm font-semibold">{value.email}</p>
+                      <p className="text-sm font-semibold">{data.email}</p>
                     </div>
                   </div>
                 )}
-                {value.companyName && (
+                {data.companyName && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Briefcase className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Empresa</p>
-                      <p className="text-sm font-semibold">{value.companyName}</p>
+                      <p className="text-sm font-semibold">{data.companyName}</p>
                     </div>
                   </div>
                 )}
-                {value.website && (
+                {data.website && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Website</p>
-                      <p className="text-sm font-semibold">{value.website}</p>
+                      <p className="text-sm font-semibold">{data.website}</p>
                     </div>
                   </div>
                 )}
-                {value.summary && (
+                {data.summary && (
                   <div className="p-4 bg-slate-50 rounded-2xl">
                     <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Sobre</p>
-                    <p className="text-sm text-slate-600 leading-relaxed">{value.summary}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{data.summary}</p>
                   </div>
                 )}
               </div>
@@ -370,63 +386,63 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10" />
               <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10">
-                {value.photoUrl ? (
-                  <img src={value.photoUrl} className="w-full h-full object-cover rounded-full" alt="Logo" />
+                {data.photoUrl ? (
+                  <img src={data.photoUrl} className="w-full h-full object-cover rounded-full" alt="Logo" />
                 ) : (
                   <Search className="w-12 h-12 text-primary/20" />
                 )}
               </div>
-              <h3 className="text-xl font-bold relative z-10">{value.companyName || "Nome da Empresa"}</h3>
-              <p className="text-sm opacity-90 relative z-10">{value.industry || "Ramo de Atividade"}</p>
+              <h3 className="text-xl font-bold relative z-10">{data.companyName || "Nome da Empresa"}</h3>
+              <p className="text-sm opacity-90 relative z-10">{data.industry || "Ramo de Atividade"}</p>
             </div>
             
             <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
-              {value.caption && (
-                <p className="text-sm text-slate-600 text-center italic">{value.caption}</p>
+              {data.caption && (
+                <p className="text-sm text-slate-600 text-center italic">{data.caption}</p>
               )}
               
               <div className="space-y-3">
-                {value.phone && (
+                {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Smartphone className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Telefone</p>
-                      <p className="text-sm font-semibold truncate">{value.phone}</p>
+                      <p className="text-sm font-semibold truncate">{data.phone}</p>
                     </div>
                   </div>
                 )}
-                {value.email && (
+                {data.email && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
-                      <p className="text-sm font-semibold truncate">{value.email}</p>
+                      <p className="text-sm font-semibold truncate">{data.email}</p>
                     </div>
                   </div>
                 )}
-                {value.website && (
+                {data.website && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                      <p className="text-sm font-semibold truncate">{data.website}</p>
                     </div>
                   </div>
                 )}
-                {value.location && (
+                {data.location && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Search className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Endereço</p>
-                      <p className="text-sm font-semibold truncate">{value.location}</p>
+                      <p className="text-sm font-semibold truncate">{data.location}</p>
                     </div>
                   </div>
                 )}
@@ -451,23 +467,23 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
             <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10" />
               <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10 shadow-lg">
-                {value.fileUrl ? (
-                  <img src={value.fileUrl} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
+                {data.fileUrl ? (
+                  <img src={data.fileUrl} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
                 ) : (
                   <ImageIcon className="w-10 h-10 text-white" />
                 )}
               </div>
-              <h3 className="text-lg font-bold relative z-10 drop-shadow-sm">{value.title || "Galeria de Imagens"}</h3>
-              <p className="text-xs opacity-90 relative z-10 max-w-[200px] line-clamp-1">{value.companyName || "Portfolio Digital"}</p>
+              <h3 className="text-lg font-bold relative z-10 drop-shadow-sm">{data.title || "Galeria de Imagens"}</h3>
+              <p className="text-xs opacity-90 relative z-10 max-w-[200px] line-clamp-1">{data.companyName || "Portfolio Digital"}</p>
             </div>
             
             {/* Content Area */}
             <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
               <div className="space-y-4">
-                {value.description && (
+                {data.description && (
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/50">
                     <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1 tracking-wider">Sobre a Galeria</p>
-                    <p className="text-sm text-slate-600 leading-relaxed">{value.description}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed">{data.description}</p>
                   </div>
                 )}
                 
@@ -475,8 +491,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 <div className="grid grid-cols-2 gap-3">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200">
-                      {i === 1 && value.fileUrl ? (
-                        <img src={value.fileUrl} className="w-full h-full object-cover" alt="Uploaded" />
+                      {i === 1 && data.fileUrl ? (
+                        <img src={data.fileUrl} className="w-full h-full object-cover" alt="Uploaded" />
                       ) : (
                         <ImageIcon className="w-6 h-6 text-slate-300" />
                       )}
@@ -484,14 +500,14 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                   ))}
                 </div>
 
-                {value.website && (
+                {data.website && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100/50">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Globe className="w-5 h-5" />
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Website</p>
-                      <p className="text-sm font-semibold truncate">{value.website}</p>
+                      <p className="text-sm font-semibold truncate">{data.website}</p>
                     </div>
                   </div>
                 )}
@@ -500,7 +516,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               {/* Action Button */}
               <div className="pt-2">
                 <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold shadow-md transition-all active:scale-[0.98]">
-                  {value.buttonLabel || "Ver Galeria Completa"}
+                  {data.buttonLabel || "Ver Galeria Completa"}
                 </Button>
               </div>
             </div>
@@ -509,7 +525,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
       default:
         // For simple types like text, email, phone, etc., if we have data, show a default simulation
-        if (hasMinData && value?.type) {
+        if (hasMinData && data?.type) {
           return (
             <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
               <div className="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">

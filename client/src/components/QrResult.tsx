@@ -118,9 +118,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   // Determine if it's a "real-time preview" (incomplete data)
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
-  const hasMinData = isUrlType 
-    ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
-    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? (!!value?.fileUrl || !!value?.title || !!value?.description || !!value?.website || !!value?.buttonLabel) : (value?.type === 'pdf' ? (!!value?.fileUrl || !!value?.url || !!value?.title) : (value?.type === 'business' ? (!!value?.companyName || !!value?.industry) : true)))));
+  const hasMinData = true; // Always show simulation during filling
 
   console.log("QrResult Render:", { type: value?.type, hasMinData, value });
 

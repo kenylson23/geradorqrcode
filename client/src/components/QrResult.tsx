@@ -528,85 +528,103 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
-      <div className="flex w-full gap-4 p-1 bg-slate-100 rounded-xl">
-        <Button 
-          variant={!showQr ? "default" : "ghost"} 
-          className="flex-1 rounded-lg h-9 text-xs font-bold"
-          onClick={() => setShowQr(false)}
-        >
-          Simulação
-        </Button>
-        <Button 
-          variant={showQr ? "default" : "ghost"} 
-          className="flex-1 rounded-lg h-9 text-xs font-bold"
-          onClick={() => setShowQr(true)}
-        >
-          Código QR
-        </Button>
-      </div>
-
       <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
-        {!showQr ? (
-          <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.85] origin-center">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center gap-1.5 pt-1">
-              <div className="w-8 h-1.5 bg-slate-800 rounded-full"></div>
-              <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>
-            </div>
-            <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative">
-              {renderSimulation()}
-            </div>
+        <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.85] origin-center">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center gap-1.5 pt-1">
+            <div className="w-8 h-1.5 bg-slate-800 rounded-full"></div>
+            <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-300">
-            {qrValue ? (
-              <div className="p-6 bg-white rounded-[2rem] shadow-xl border-4 border-slate-50">
-                <QRCodeSVG 
-                  value={qrValue} 
-                  size={200}
-                  level="M"
-                  includeMargin={true}
-                />
-              </div>
-            ) : (
-              <div className="text-center p-8 space-y-4">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-                  <AlertTriangle className="w-8 h-8 text-slate-300" />
+          <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative flex flex-col">
+            {/* Status Bar */}
+            <div className="flex items-center justify-between px-6 pt-4 pb-2 text-black w-full">
+              <span className="text-[12px] font-bold">9:41</span>
+              <div className="flex items-center gap-1">
+                <div className="flex gap-0.5 items-end h-2.5">
+                  <div className="w-0.5 h-1 bg-black rounded-full"></div>
+                  <div className="w-0.5 h-1.5 bg-black rounded-full"></div>
+                  <div className="w-0.5 h-2 bg-black rounded-full"></div>
                 </div>
-                <p className="text-slate-500 text-sm">Insira os dados à esquerda para gerar o Código QR.</p>
               </div>
-            )}
+            </div>
 
-            {qrValue && isTooLong && (
-              <Alert variant="destructive" className="max-w-[300px]">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Dados em excesso</AlertTitle>
-                <AlertDescription>
-                  O arquivo ou texto é muito grande para um código QR. Tente reduzir o tamanho.
-                </AlertDescription>
-              </Alert>
-            )}
+            <div className="flex-1 w-full overflow-hidden relative flex flex-col items-center">
+              {!showQr ? (
+                renderSimulation()
+              ) : (
+                <div className="flex-1 w-full flex flex-col items-center px-4 pt-10">
+                  {qrValue ? (
+                    <>
+                      <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 mb-6">
+                        <QRCodeSVG 
+                          value={qrValue} 
+                          size={160}
+                          level="M"
+                          includeMargin={true}
+                        />
+                      </div>
+                      
+                      {isTooLong && (
+                        <Alert variant="destructive" className="mb-4 py-2 scale-90">
+                          <AlertTriangle className="h-3 w-3" />
+                          <AlertDescription className="text-[10px]">
+                            Dados em excesso.
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center p-4 space-y-2 mt-10">
+                      <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+                        <AlertTriangle className="w-6 h-6 text-slate-300" />
+                      </div>
+                      <p className="text-slate-500 text-[10px]">Insira os dados para gerar.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
-            {qrValue && (
-              <div className="flex flex-col gap-3 w-full max-w-[240px]">
+            {/* Navigation and Action Buttons - Inside the iPhone Frame */}
+            <div className="p-4 bg-white space-y-3 pb-8">
+              <div className="flex w-full gap-1 p-1 bg-slate-100 rounded-2xl">
                 <Button 
-                  onClick={onDownload} 
-                  className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white"
+                  variant={!showQr ? "secondary" : "ghost"} 
+                  className={`flex-1 rounded-xl h-10 text-[11px] font-bold ${!showQr ? 'bg-white shadow-sm' : ''}`}
+                  onClick={() => setShowQr(false)}
                 >
-                  <Download className="w-4 h-4" />
-                  Baixar QR Code
+                  Pré-visualização
                 </Button>
                 <Button 
-                  variant="outline" 
-                  onClick={onReset}
-                  className="w-full h-12 rounded-2xl border-2 font-bold gap-2"
+                  variant={showQr ? "default" : "ghost"} 
+                  className={`flex-1 rounded-xl h-10 text-[11px] font-bold ${showQr ? 'bg-[#2ECC71] hover:bg-[#27ae60] text-white' : ''}`}
+                  onClick={() => setShowQr(true)}
                 >
-                  <RefreshCw className="w-4 h-4" />
-                  Criar Outro
+                  Código QR
                 </Button>
               </div>
-            )}
+
+              {showQr && qrValue && (
+                <div className="flex flex-col gap-2 w-full">
+                  <Button 
+                    onClick={onDownload} 
+                    className="w-full h-12 rounded-xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white text-xs"
+                  >
+                    <Download className="w-4 h-4" />
+                    Baixar PNG
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={onReset}
+                    className="w-full h-12 rounded-xl border-slate-200 font-bold gap-2 text-xs text-slate-600"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Criar outro
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

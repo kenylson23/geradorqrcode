@@ -28,7 +28,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
     // Check if we have minimum data for the specific type
     const hasData = data.type === 'url' || data.type === 'facebook' || data.type === 'instagram' 
       ? (data.url && data.url.length > 0) || (data.type === 'instagram' && data.instagramUser && data.instagramUser.length > 0)
-      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? (!!data.fileUrl || !!data.title || !!data.description || !!data.website || !!data.buttonLabel || !!data.url) : true)));
+      : (data.type === 'whatsapp' ? !!data.phone : (data.type === 'links' ? !!data.title || (data.links && data.links.length > 0 && (data.links[0].url || data.links[0].label)) : (data.type === 'images' ? (!!data.fileUrl || !!data.title || !!data.description || !!data.website || !!data.buttonLabel) : true)));
 
     if (!hasData) return "";
 
@@ -120,15 +120,12 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = isUrlType 
     ? (value?.url && value.url.length > 0) || (value?.fileUrl && value.fileUrl.length > 0) || (value?.type === 'instagram' && value?.instagramUser && value.instagramUser.length > 0)
-    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? (!!value?.fileUrl || !!value?.title || !!value?.description || !!value?.website || !!value?.buttonLabel || !!value?.url) : (value?.type === 'pdf' ? (!!value?.fileUrl || !!value?.url || !!value?.title) : (value?.type === 'business' ? (!!value?.companyName || !!value?.industry) : true)))));
+    : (value?.type === 'whatsapp' ? !!value?.phone : (value?.type === 'links' ? !!value?.title || (value?.links && value?.links.length > 0 && (value?.links[0].url || value?.links[0].label)) : (value?.type === 'images' ? (!!value?.fileUrl || !!value?.title || !!value?.description || !!value?.website || !!value?.buttonLabel) : (value?.type === 'pdf' ? (!!value?.fileUrl || !!value?.url || !!value?.title) : (value?.type === 'business' ? (!!value?.companyName || !!value?.industry) : true)))));
 
   console.log("QrResult Render:", { type: value?.type, hasMinData, value });
 
   const renderSimulation = () => {
-    // Force hasMinData to true for debugging if it's the right type
-    const effectiveHasMinData = hasMinData || (value?.type === 'images' && (value?.title || value?.description));
-
-    if (isLinkTree && effectiveHasMinData) {
+    if (isLinkTree && hasMinData) {
       return (
         <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
           <LinkTree 
@@ -254,6 +251,9 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                       e.preventDefault();
                       return;
                     }
+                    // For Cloudinary URLs, we often need to ensure the link works for download
+                    // If it's a direct URL, target="_blank" handles it, but some browsers 
+                    // block 'download' attribute for cross-origin URLs.
                   }}
                 >
                   {value.buttonLabel || "Download PDF"}
@@ -447,55 +447,50 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       case 'images':
-        const hasImagesData = !!value.fileUrl || !!value.title || !!value.description || !!value.url;
         return (
           <div className="w-full h-full bg-gray-50 flex flex-col animate-in fade-in duration-500 overflow-y-auto pb-10">
-            <div className="bg-[#2ECC71] pt-12 pb-16 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-black/10" />
-              <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
-                <ImageIcon className="w-10 h-10" />
+            <div className="w-full bg-white border-b border-gray-100 p-4 sticky top-0 z-10 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Visualização ao vivo</span>
               </div>
-              <h3 className="text-lg font-bold relative z-10 truncate w-full px-4">{value.title || "Galeria de Imagens"}</h3>
             </div>
 
-            <div className="flex-1 bg-white -mt-8 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20">
-              {value.fileUrl && (
-                <div className="w-full aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+            <div className="p-4 space-y-6">
+              {value.fileUrl ? (
+                <div className="rounded-2xl overflow-hidden shadow-md bg-white border border-gray-100 aspect-video relative">
                   <img 
                     src={value.fileUrl} 
-                    alt={value.title || "Imagem"} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover" 
+                    alt="Preview" 
                   />
+                </div>
+              ) : (
+                <div className="rounded-2xl border-2 border-dashed border-gray-200 aspect-video flex flex-col items-center justify-center bg-gray-100/50 text-gray-400">
+                  <ImageIcon className="w-8 h-8 mb-2 opacity-20" />
+                  <span className="text-[10px] font-medium">Aguardando imagem...</span>
                 </div>
               )}
 
-              <div className="space-y-4">
-                {value.description && (
-                  <div className="p-4 bg-slate-50 rounded-2xl">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1 text-left">Descrição</p>
-                    <p className="text-sm text-slate-600 leading-relaxed text-left">{value.description}</p>
-                  </div>
-                )}
-                
-                {value.url && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold text-left">Link Relacionado</p>
-                      <p className="text-sm font-semibold truncate text-left">{value.url}</p>
-                    </div>
-                  </div>
-                )}
+              <div className="space-y-2 px-1">
+                <h3 className="text-xl font-bold text-gray-900 leading-tight">
+                  {value.title || "Título da Imagem"}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                  {value.description || "Sua descrição aparecerá aqui quando você começar a digitar."}
+                </p>
               </div>
 
-              {!effectiveHasMinData && (
-                <div className="flex flex-col items-center justify-center py-12 text-muted-foreground space-y-4">
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
-                    <ImageIcon className="w-8 h-8 opacity-20" />
-                  </div>
-                  <p className="text-xs italic">Complete as informações para ver o preview</p>
+              <div className="pt-2">
+                <div className="w-full h-12 rounded-xl bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20 opacity-90">
+                  {value.buttonLabel || "Ver mais"}
+                </div>
+              </div>
+              
+              {value.website && (
+                <div className="flex items-center gap-2 justify-center text-[10px] text-gray-400">
+                  <Globe className="w-3 h-3" />
+                  <span className="truncate max-w-[150px]">{value.website}</span>
                 </div>
               )}
             </div>
@@ -503,6 +498,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         );
 
       default:
+        // For simple types like text, email, phone, etc., if we have data, show a default simulation
         if (hasMinData && value?.type) {
           return (
             <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-500 bg-white">
@@ -528,103 +524,102 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
-      <div className="flex-1 w-full flex items-center justify-center overflow-hidden">
-        <div className="relative w-[280px] h-[580px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl border-[6px] border-slate-800 scale-[0.85] origin-center">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-30 flex items-center justify-center gap-1.5 pt-1">
-            <div className="w-8 h-1.5 bg-slate-800 rounded-full"></div>
-            <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>
-          </div>
-          <div className="w-full h-full bg-white rounded-[2.2rem] overflow-hidden relative flex flex-col">
-            {/* Status Bar */}
-            <div className="flex items-center justify-between px-6 pt-4 pb-2 text-black w-full">
-              <span className="text-[12px] font-bold">9:41</span>
-              <div className="flex items-center gap-1">
-                <div className="flex gap-0.5 items-end h-2.5">
-                  <div className="w-0.5 h-1 bg-black rounded-full"></div>
-                  <div className="w-0.5 h-1.5 bg-black rounded-full"></div>
-                  <div className="w-0.5 h-2 bg-black rounded-full"></div>
+      <div className="flex-1 w-full relative">
+        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+          {renderSimulation()}
+        </div>
+
+        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${showQr ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+          <div className="pt-12 flex flex-col items-center gap-8 w-full h-full bg-white">
+             <div className="flex items-center justify-between px-6 w-full text-slate-900">
+                <span className="text-[12px] font-bold">9:41</span>
+                <div className="flex items-center gap-1.5">
+                   <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 h-1 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-1.5 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-2 bg-slate-900 rounded-full"></div>
+                    <div className="w-0.5 h-2.5 bg-slate-900/40 rounded-full"></div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex-1 w-full overflow-hidden relative flex flex-col items-center">
-              {!showQr ? (
-                renderSimulation()
-              ) : (
-                <div className="flex-1 w-full flex flex-col items-center px-4 pt-10">
-                  {qrValue ? (
-                    <>
-                      <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-100 mb-6">
-                        <QRCodeSVG 
-                          value={qrValue} 
-                          size={160}
-                          level="M"
-                          includeMargin={true}
-                        />
-                      </div>
-                      
-                      {isTooLong && (
-                        <Alert variant="destructive" className="mb-4 py-2 scale-90">
-                          <AlertTriangle className="h-3 w-3" />
-                          <AlertDescription className="text-[10px]">
-                            Dados em excesso.
-                          </AlertDescription>
-                        </Alert>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center p-4 space-y-2 mt-10">
-                      <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-                        <AlertTriangle className="w-6 h-6 text-slate-300" />
-                      </div>
-                      <p className="text-slate-500 text-[10px]">Insira os dados para gerar.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Navigation and Action Buttons - Inside the iPhone Frame */}
-            <div className="p-4 bg-white space-y-3 pb-8">
-              <div className="flex w-full gap-1 p-1 bg-slate-100 rounded-2xl">
-                <Button 
-                  variant={!showQr ? "secondary" : "ghost"} 
-                  className={`flex-1 rounded-xl h-10 text-[11px] font-bold ${!showQr ? 'bg-white shadow-sm' : ''}`}
-                  onClick={() => setShowQr(false)}
-                >
-                  Pré-visualização
-                </Button>
-                <Button 
-                  variant={showQr ? "default" : "ghost"} 
-                  className={`flex-1 rounded-xl h-10 text-[11px] font-bold ${showQr ? 'bg-[#2ECC71] hover:bg-[#27ae60] text-white' : ''}`}
-                  onClick={() => setShowQr(true)}
-                >
-                  Código QR
-                </Button>
+              <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
+                {isTooLong ? (
+                  <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
+                    <AlertTriangle className="w-10 h-10 mb-2" />
+                    <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
+                  </div>
+                ) : (
+                  <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
+                    <QRCodeSVG
+                      value={hasMinData ? qrValue : "https://replit.com"}
+                      size={200}
+                      level="M"
+                      includeMargin={true}
+                      imageSettings={{
+                        src: "/logo.png",
+                        x: undefined,
+                        y: undefined,
+                        height: 40,
+                        width: 40,
+                        excavate: true,
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-
-              {showQr && qrValue && (
-                <div className="flex flex-col gap-2 w-full">
-                  <Button 
-                    onClick={onDownload} 
-                    className="w-full h-12 rounded-xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white text-xs"
-                  >
-                    <Download className="w-4 h-4" />
-                    Baixar PNG
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={onReset}
-                    className="w-full h-12 rounded-xl border-slate-200 font-bold gap-2 text-xs text-slate-600"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    Criar outro
-                  </Button>
-                </div>
-              )}
-            </div>
           </div>
         </div>
+      </div>
+
+      {/* Control Tabs - Moved outside simulation */}
+      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
+        <button
+          onClick={() => setShowQr(false)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-preview"
+        >
+          Pré-visualização
+        </button>
+        <button
+          onClick={() => setShowQr(true)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-qr"
+        >
+          Código QR
+        </button>
+      </div>
+
+      {isTooLong && (
+        <Alert variant="destructive" className="border-2 mt-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Erro: Arquivo muito grande</AlertTitle>
+          <AlertDescription className="text-xs">
+            O conteúdo deste arquivo excede o limite de um QR Code (máx ~3KB). 
+            Tente usar um arquivo menor ou use a opção de "URL" para arquivos na nuvem.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="flex flex-col gap-2 w-full max-w-[280px] mt-2 mb-8">
+        <Button 
+          onClick={onDownload} 
+          className="w-full h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 text-sm transition-all active:scale-[0.98]"
+          disabled={isTooLong}
+          data-testid="button-download-qr"
+        >
+          <Download className="mr-2 h-5 w-5" />
+          Baixar PNG
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={onReset} 
+          className="w-full h-10 rounded-lg font-bold border-2 text-slate-500 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98] text-xs"
+          data-testid="button-reset-qr"
+        >
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Criar outro
+        </Button>
       </div>
     </div>
   );

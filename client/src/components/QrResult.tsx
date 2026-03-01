@@ -559,50 +559,50 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         ) : (
           <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-300">
             {qrValue ? (
-              <>
-                <div className="p-6 bg-white rounded-[2rem] shadow-xl border-4 border-slate-50">
-                  <QRCodeSVG 
-                    value={qrValue} 
-                    size={200}
-                    level="M"
-                    includeMargin={true}
-                  />
-                </div>
-                
-                {isTooLong && (
-                  <Alert variant="destructive" className="max-w-[300px]">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle>Dados em excesso</AlertTitle>
-                    <AlertDescription>
-                      O arquivo ou texto é muito grande para um código QR. Tente reduzir o tamanho.
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="flex flex-col gap-3 w-full max-w-[240px]">
-                  <Button 
-                    onClick={onDownload} 
-                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white"
-                  >
-                    <Download className="w-4 h-4" />
-                    Baixar QR Code
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={onReset}
-                    className="w-full h-12 rounded-2xl border-2 font-bold gap-2"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    Criar Outro
-                  </Button>
-                </div>
-              </>
+              <div className="p-6 bg-white rounded-[2rem] shadow-xl border-4 border-slate-50">
+                <QRCodeSVG 
+                  value={qrValue} 
+                  size={200}
+                  level="M"
+                  includeMargin={true}
+                />
+              </div>
             ) : (
               <div className="text-center p-8 space-y-4">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
                   <AlertTriangle className="w-8 h-8 text-slate-300" />
                 </div>
                 <p className="text-slate-500 text-sm">Insira os dados à esquerda para gerar o Código QR.</p>
+              </div>
+            )}
+
+            {qrValue && isTooLong && (
+              <Alert variant="destructive" className="max-w-[300px]">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Dados em excesso</AlertTitle>
+                <AlertDescription>
+                  O arquivo ou texto é muito grande para um código QR. Tente reduzir o tamanho.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {qrValue && (
+              <div className="flex flex-col gap-3 w-full max-w-[240px]">
+                <Button 
+                  onClick={onDownload} 
+                  className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold gap-2 text-white"
+                >
+                  <Download className="w-4 h-4" />
+                  Baixar QR Code
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={onReset}
+                  className="w-full h-12 rounded-2xl border-2 font-bold gap-2"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Criar Outro
+                </Button>
               </div>
             )}
           </div>

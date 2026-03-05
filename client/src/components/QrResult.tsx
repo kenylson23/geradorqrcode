@@ -137,6 +137,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
         if (value.includes('/i/')) {
           const encoded = value.split('/i/')[1];
           data = JSON.parse(decodeURIComponent(encoded));
+          // Log decoded data to debug
+          console.log("Decoded Images Data:", data);
         } else if (value.includes('/l#')) {
           const encoded = value.split('/l#')[1];
           data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
@@ -481,8 +483,8 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -ml-12 -mb-12 blur-xl" />
               
-              <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/40 relative z-10 shadow-2xl overflow-hidden group">
-                {data.fileUrl ? (
+            <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/40 relative z-10 shadow-2xl overflow-hidden group">
+                {data.fileUrl && (data.fileUrl.match(/\.(jpg|jpeg|png|gif|webp|avif)$/i) || !data.fileUrl.toLowerCase().endsWith('.pdf')) ? (
                   <img src={data.fileUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Preview" />
                 ) : (
                   <ImageIcon className="w-12 h-12 text-white/80" />
@@ -515,7 +517,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
                 <div className="grid grid-cols-2 gap-4">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="group aspect-square bg-slate-50 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#2ECC71]/30">
-                      {i === 1 && data.fileUrl ? (
+                      {i === 1 && data.fileUrl && (data.fileUrl.match(/\.(jpg|jpeg|png|gif|webp|avif)$/i) || !data.fileUrl.toLowerCase().endsWith('.pdf')) ? (
                         <img src={data.fileUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Uploaded" />
                       ) : (
                         <div className="flex flex-col items-center gap-1 opacity-30">

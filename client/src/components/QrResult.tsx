@@ -463,61 +463,92 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
       case 'images':
         return (
           <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Status Bar simulation */}
+            <div className="absolute top-0 inset-x-0 h-12 flex items-center justify-between px-6 z-30 text-white pointer-events-none">
+              <span className="text-[12px] font-bold">9:41</span>
+              <div className="flex items-center gap-1.5">
+                <div className="flex gap-0.5 items-end h-3">
+                  <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                  <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
+                  <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                  <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
             {/* Header / Banner Area */}
-            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-black/10" />
-              <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10 shadow-lg">
+            <div className="bg-gradient-to-br from-[#2ECC71] to-[#27ae60] pt-16 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -ml-12 -mb-12 blur-xl" />
+              
+              <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/40 relative z-10 shadow-2xl overflow-hidden group">
                 {data.fileUrl ? (
-                  <img src={data.fileUrl} className="w-full h-full object-cover rounded-2xl" alt="Preview" />
+                  <img src={data.fileUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Preview" />
                 ) : (
-                  <ImageIcon className="w-10 h-10 text-white" />
+                  <ImageIcon className="w-12 h-12 text-white/80" />
                 )}
               </div>
-              <h3 className="text-lg font-bold relative z-10 drop-shadow-sm">{data.title || "Galeria de Imagens"}</h3>
-              <p className="text-xs opacity-90 relative z-10 max-w-[200px] line-clamp-1">{data.companyName || "Portfolio Digital"}</p>
+              <h3 className="text-xl font-extrabold relative z-10 drop-shadow-md tracking-tight uppercase">{data.title || "Galeria de Imagens"}</h3>
+              <div className="flex items-center gap-2 mt-1 opacity-90 relative z-10">
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                <p className="text-[11px] font-medium tracking-wide">{data.companyName || "Portfolio Digital"}</p>
+              </div>
             </div>
             
             {/* Content Area */}
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+            <div className="flex-1 bg-white -mt-10 rounded-t-[40px] p-6 space-y-8 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] relative z-20 overflow-y-auto">
+              {data.description && (
+                <div className="relative">
+                  <div className="absolute -left-2 top-0 bottom-0 w-1 bg-[#2ECC71]/20 rounded-full" />
+                  <p className="text-[10px] text-muted-foreground uppercase font-black mb-2 tracking-[0.1em] px-2">Sobre a Galeria</p>
+                  <p className="text-sm text-slate-600 leading-relaxed px-2 font-medium">{data.description}</p>
+                </div>
+              )}
+              
               <div className="space-y-4">
-                {data.description && (
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/50">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1 tracking-wider">Sobre a Galeria</p>
-                    <p className="text-sm text-slate-600 leading-relaxed">{data.description}</p>
-                  </div>
-                )}
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.1em]">Explorar Fotos</p>
+                  <span className="text-[9px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold">4 ITENS</span>
+                </div>
                 
                 {/* Main Image Grid Simulation */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden border border-slate-200">
+                    <div key={i} className="group aspect-square bg-slate-50 rounded-2xl flex items-center justify-center overflow-hidden border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#2ECC71]/30">
                       {i === 1 && data.fileUrl ? (
-                        <img src={data.fileUrl} className="w-full h-full object-cover" alt="Uploaded" />
+                        <img src={data.fileUrl} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Uploaded" />
                       ) : (
-                        <ImageIcon className="w-6 h-6 text-slate-300" />
+                        <div className="flex flex-col items-center gap-1 opacity-30">
+                          <ImageIcon className="w-6 h-6 text-slate-400" />
+                          <span className="text-[8px] font-bold text-slate-400">IMG_{i}</span>
+                        </div>
                       )}
                     </div>
                   ))}
                 </div>
-
-                {data.website && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100/50">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Website</p>
-                      <p className="text-sm font-semibold truncate">{data.website}</p>
-                    </div>
-                  </div>
-                )}
               </div>
 
+              {data.website && (
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-3xl border border-slate-100/80 transition-colors hover:bg-slate-100/50">
+                  <div className="w-12 h-12 rounded-2xl bg-[#2ECC71]/10 flex items-center justify-center text-[#2ECC71] shadow-inner">
+                    <Globe className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-[9px] text-muted-foreground uppercase font-black tracking-wider mb-0.5">Website Oficial</p>
+                    <p className="text-[13px] font-bold truncate text-slate-800">{data.website}</p>
+                  </div>
+                </div>
+              )}
+
               {/* Action Button */}
-              <div className="pt-2">
-                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold shadow-md transition-all active:scale-[0.98]">
-                  {data.buttonLabel || "Ver Galeria Completa"}
+              <div className="pt-4 pb-8">
+                <Button className="w-full h-14 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-black text-sm uppercase tracking-widest shadow-[0_10px_20px_rgba(46,204,113,0.3)] transition-all active:scale-[0.95] flex items-center justify-center gap-2">
+                  <span>{data.buttonLabel || "Ver Galeria Completa"}</span>
+                  <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                    <Search className="w-3 h-3" />
+                  </div>
                 </Button>
+                <p className="text-[9px] text-center text-slate-400 mt-4 font-medium uppercase tracking-tight">Escaneado via QR Code Premium</p>
               </div>
             </div>
           </div>

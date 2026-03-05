@@ -542,7 +542,7 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
 
               {/* Action Button */}
               <div className="pt-4 pb-8">
-                <Button className="w-full h-14 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-black text-sm uppercase tracking-widest shadow-[0_10px_20px_rgba(46,204,113,0.3)] transition-all active:scale-[0.95] flex items-center justify-center gap-2">
+                <Button className="w-full h-14 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-black text-[11px] uppercase tracking-[0.15em] shadow-[0_10px_20px_rgba(46,204,113,0.3)] transition-all active:scale-[0.95] flex items-center justify-center gap-2">
                   <span>{data.buttonLabel || "Ver Galeria Completa"}</span>
                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                     <Search className="w-3 h-3" />

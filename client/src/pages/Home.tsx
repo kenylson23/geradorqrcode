@@ -16,7 +16,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow">
+      <main className="flex-grow pb-24">
         <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
@@ -32,7 +32,8 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-20 w-1/2 h-screen pointer-events-none">
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-20 w-1/2 max-h-[calc(100vh-6rem)] overflow-y-auto pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
+
               {/* Control Tabs */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-4 pointer-events-auto">

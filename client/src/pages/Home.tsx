@@ -102,12 +102,12 @@ export default function Home() {
 
       {/* Fixed Bottom Navigation */}
       {qrData && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg py-4 px-6">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg py-2 px-6">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Button 
               variant="outline"
               onClick={reset}
-              className="h-11 px-8 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
+              className="h-9 px-6 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
               data-testid="button-back"
             >
               ← Voltar
@@ -116,14 +116,14 @@ export default function Home() {
             <div className="flex gap-3">
               <Button 
                 onClick={() => download("qr-code-element")} 
-                className="h-11 px-8 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-95"
+                className="h-9 px-6 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-95"
                 data-testid="button-download-qr"
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download PNG
               </Button>
               <Button 
-                className="h-11 px-8 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
+                className="h-9 px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
                 data-testid="button-next"
               >
                 Próximo →

@@ -31,11 +31,11 @@ export default function Home() {
               />
             </div>
 
-            {/* Right Column: Mockup (6 columns) - Desktop only */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit">
+            {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-20 w-1/2 h-screen pointer-events-none">
               {/* Control Tabs */}
               {qrData && (
-                <div className="flex gap-3 justify-center mb-4">
+                <div className="flex gap-3 justify-center mb-4 pointer-events-auto">
                   <button
                     onClick={() => setShowQr(false)}
                     className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
@@ -54,7 +54,7 @@ export default function Home() {
               )}
 
               {/* iPhone Mockup */}
-              <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[460px] w-[260px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
+              <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[460px] w-[260px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0 pointer-events-auto">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>

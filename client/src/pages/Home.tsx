@@ -16,7 +16,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow pb-40">
+      <main className="flex-grow pb-56">
         <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             

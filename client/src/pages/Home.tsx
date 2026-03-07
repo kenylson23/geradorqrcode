@@ -16,7 +16,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8 pb-20">
+      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             
@@ -32,7 +32,7 @@ export default function Home() {
               
               {/* Action Buttons */}
               {qrData && (
-                <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="grid grid-cols-2 gap-3 pt-8">
                   <Button 
                     onClick={() => download("qr-code-element")} 
                     className="h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-[0.98]"
@@ -55,7 +55,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="hidden lg:flex lg:col-span-2 flex-col items-center justify-start h-fit max-h-[calc(100vh-240px)] overflow-y-auto">
+            <div className="hidden lg:block lg:col-span-2 sticky top-24">
               {/* Control Tabs - Outside Mockup */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-6">
@@ -76,7 +76,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] max-h-[520px] w-auto max-w-[280px] shadow-2xl overflow-visible flex items-center justify-center" style={{aspectRatio: "240/420"}}>
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[550px] w-[240px] shadow-2xl overflow-visible">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>

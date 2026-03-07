@@ -580,7 +580,25 @@ export function QrResult({ value }: QrResultProps) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
+    <div className="flex flex-col items-center gap-4 w-full h-full overflow-hidden">
+      {/* Control Tabs - At the Top */}
+      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
+        <button
+          onClick={() => setShowQr(false)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-preview"
+        >
+          Pré-visualização
+        </button>
+        <button
+          onClick={() => setShowQr(true)}
+          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          data-testid="button-tab-qr"
+        >
+          Código QR
+        </button>
+      </div>
+
       <div className="flex-1 w-full relative">
         <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
           {renderSimulation()}
@@ -627,24 +645,6 @@ export function QrResult({ value }: QrResultProps) {
               </div>
           </div>
         </div>
-      </div>
-
-      {/* Control Tabs - Moved outside simulation */}
-      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
-        <button
-          onClick={() => setShowQr(false)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
-          data-testid="button-tab-preview"
-        >
-          Pré-visualização
-        </button>
-        <button
-          onClick={() => setShowQr(true)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
-          data-testid="button-tab-qr"
-        >
-          Código QR
-        </button>
       </div>
 
       {isTooLong && (

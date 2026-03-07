@@ -55,7 +55,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="lg:col-span-5 sticky top-24">
+            <div className="hidden lg:block lg:fixed lg:right-8 lg:top-24 lg:w-80 z-40">
               {/* Control Tabs - Outside Mockup */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-6">

@@ -32,7 +32,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-10 w-1/2 pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-16 w-1/2 pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
 
               {/* Control Tabs */}
               {qrData && (

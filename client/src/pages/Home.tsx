@@ -10,6 +10,7 @@ import { Download, RefreshCw } from "lucide-react";
 export default function Home() {
   const { qrData, generate, download, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showQr, setShowQr] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans pb-24">
@@ -55,6 +56,26 @@ export default function Home() {
 
             {/* Right Column: Mobile Preview */}
             <div className="lg:col-span-5 sticky top-24">
+              {/* Control Tabs - Outside Mockup */}
+              {qrData && (
+                <div className="flex gap-3 justify-center mb-6">
+                  <button
+                    onClick={() => setShowQr(false)}
+                    className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
+                    data-testid="button-tab-preview"
+                  >
+                    Pré-visualização
+                  </button>
+                  <button
+                    onClick={() => setShowQr(true)}
+                    className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
+                    data-testid="button-tab-qr"
+                  >
+                    Código QR
+                  </button>
+                </div>
+              )}
+
               <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[640px] w-[300px] shadow-2xl overflow-visible">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
@@ -71,6 +92,8 @@ export default function Home() {
                     <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
                       <QrResult 
                         value={qrData}
+                        showQr={showQr}
+                        setShowQr={setShowQr}
                       />
                     </div>
                   ) : (

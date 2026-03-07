@@ -7,10 +7,14 @@ import { useState } from "react";
 
 interface QrResultProps {
   value: any;
+  showQr?: boolean;
+  setShowQr?: (show: boolean) => void;
 }
 
-export function QrResult({ value }: QrResultProps) {
+export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSetShowQr }: QrResultProps) {
   const [showQr, setShowQr] = useState(false);
+  const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
+  const effectiveSetShowQr = propSetShowQr || setShowQr;
   
   // If value is an object with type 'links', we show LinkTree preview
   const isLinkTree = typeof value === 'object' && value?.type === 'links';
@@ -581,30 +585,12 @@ export function QrResult({ value }: QrResultProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
-      {/* Control Tabs - Outside Mockup at the Top */}
-      <div className="flex gap-3 justify-center pt-2">
-        <button
-          onClick={() => setShowQr(false)}
-          className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-          data-testid="button-tab-preview"
-        >
-          Pré-visualização
-        </button>
-        <button
-          onClick={() => setShowQr(true)}
-          className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-          data-testid="button-tab-qr"
-        >
-          Código QR
-        </button>
-      </div>
-
       <div className="flex-1 w-full relative">
-        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${showQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${effectiveShowQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
           {renderSimulation()}
         </div>
 
-        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${showQr ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${effectiveShowQr ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
           <div className="pt-12 flex flex-col items-center gap-8 w-full h-full bg-white">
              <div className="flex items-center justify-between px-6 w-full text-slate-900">
                 <span className="text-[12px] font-bold">9:41</span>

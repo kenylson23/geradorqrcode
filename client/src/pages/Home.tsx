@@ -32,7 +32,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit">
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit pb-56">
               {/* Control Tabs */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-4">

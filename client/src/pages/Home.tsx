@@ -76,7 +76,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[640px] w-[300px] shadow-2xl overflow-visible">
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[512px] w-[240px] shadow-2xl overflow-visible">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>

@@ -16,12 +16,12 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:pr-96">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="flex-grow pb-32">
+        <div className="max-w-7xl mx-auto px-6 py-8 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
-            {/* Left Column: Form and Selection */}
-            <div className="lg:col-span-3 space-y-6">
+            {/* Left Column: Form (7 columns) */}
+            <div className="lg:col-span-6">
               <QrForm 
                 onGenerate={(data) => {
                   generate(data);
@@ -29,100 +29,109 @@ export default function Home() {
                 }} 
                 onStepChange={setCurrentStep}
               />
-              
-              {/* Action Buttons */}
+            </div>
+
+            {/* Right Column: Mockup (5 columns) - Desktop only */}
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center gap-6">
+              {/* Control Tabs */}
               {qrData && (
-                <div className="grid grid-cols-2 gap-3 pt-8">
-                  <Button 
-                    onClick={() => download("qr-code-element")} 
-                    className="h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-[0.98]"
-                    data-testid="button-download-qr"
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => setShowQr(false)}
+                    className={`px-6 py-2.5 rounded-full text-[13px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    data-testid="button-tab-preview"
                   >
-                    <Download className="mr-2 h-5 w-5" />
-                    Baixar PNG
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={reset} 
-                    className="h-12 rounded-xl font-bold border-2 text-slate-500 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98]"
-                    data-testid="button-reset-qr"
+                    Pré-visualização
+                  </button>
+                  <button
+                    onClick={() => setShowQr(true)}
+                    className={`px-6 py-2.5 rounded-full text-[13px] font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    data-testid="button-tab-qr"
                   >
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Criar outro
-                  </Button>
+                    Código QR
+                  </button>
                 </div>
               )}
+
+              {/* iPhone Mockup */}
+              <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[480px] w-[270px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
+                {/* iPhone Frame Elements */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
+                  <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
+                </div>
+                
+                <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
+
+                <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
+                  {qrData ? (
+                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
+                      <QrResult 
+                        value={qrData}
+                        showQr={showQr}
+                        setShowQr={setShowQr}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 text-center">
+                      <div className="w-40 h-40 mx-auto border-2 border-dashed border-muted rounded-2xl flex items-center justify-center bg-muted/20">
+                        <div className="text-muted-foreground text-xs flex flex-col items-center gap-2">
+                          <div className="w-20 h-20 opacity-20 bg-foreground rounded-lg"></div>
+                          <span>QR aparecerá aqui</span>
+                        </div>
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground">
+                        Selecione um tipo
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        de QR Code à esquerda
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Home Indicator */}
+                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Fixed Mobile Preview - Right Side */}
-      <div className="hidden lg:flex fixed right-0 top-20 bottom-0 w-auto flex-col items-center justify-center pr-4 pointer-events-none">
-        <div className="pointer-events-auto flex flex-col items-center">
-          {/* Control Tabs - Outside Mockup */}
-          {qrData && (
-            <div className="flex gap-3 justify-center mb-6">
-              <button
-                onClick={() => setShowQr(false)}
-                className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-                data-testid="button-tab-preview"
-              >
-                Pré-visualização
-              </button>
-              <button
-                onClick={() => setShowQr(true)}
-                className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-                data-testid="button-tab-qr"
-              >
-                Código QR
-              </button>
-            </div>
-          )}
-
-          <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[480px] w-[270px] shadow-2xl overflow-hidden flex flex-col">
-            {/* iPhone Frame Elements */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
-              <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
-            </div>
+      {/* Fixed Bottom Navigation */}
+      {qrData && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg py-4 px-6">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <Button 
+              variant="outline"
+              onClick={reset}
+              className="h-11 px-8 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
+              data-testid="button-back"
+            >
+              ← Voltar
+            </Button>
             
-            <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
-            <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
-            <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
-            <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
-
-            <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
-              {qrData ? (
-                <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
-                  <QrResult 
-                    value={qrData}
-                    showQr={showQr}
-                    setShowQr={setShowQr}
-                  />
-                </div>
-              ) : (
-                <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-6 text-center">
-                  <div className="w-48 h-48 mx-auto border-2 border-dashed border-muted rounded-2xl flex items-center justify-center bg-muted/20">
-                    <div className="text-muted-foreground text-sm flex flex-col items-center gap-2">
-                      <div className="w-24 h-24 opacity-20 bg-foreground rounded-lg"></div>
-                      <span>Seu QR Code aparecerá aqui</span>
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-bold text-foreground">
-                    Selecione um tipo de código QR à esquerda.
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Escolha entre site, PDF, vCard e muito mais para começar.
-                  </p>
-                </div>
-              )}
-
-              {/* Home Indicator */}
-              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => download("qr-code-element")} 
+                className="h-11 px-8 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-95"
+                data-testid="button-download-qr"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download PNG
+              </Button>
+              <Button 
+                className="h-11 px-8 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
+                data-testid="button-next"
+              >
+                Próximo →
+              </Button>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {!qrData && <Footer />}
     </div>

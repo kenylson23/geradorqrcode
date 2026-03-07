@@ -16,11 +16,11 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow pb-32">
-        <div className="max-w-7xl mx-auto px-6 py-8 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <main className="flex-grow pb-40">
+        <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Left Column: Form (7 columns) */}
+            {/* Left Column: Form (6 columns) */}
             <div className="lg:col-span-6">
               <QrForm 
                 onGenerate={(data) => {
@@ -31,21 +31,21 @@ export default function Home() {
               />
             </div>
 
-            {/* Right Column: Mockup (5 columns) - Desktop only */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center gap-6">
+            {/* Right Column: Mockup (6 columns) - Desktop only */}
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit">
               {/* Control Tabs */}
               {qrData && (
-                <div className="flex gap-3 justify-center">
+                <div className="flex gap-3 justify-center mb-4">
                   <button
                     onClick={() => setShowQr(false)}
-                    className={`px-6 py-2.5 rounded-full text-[13px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    className={`px-5 py-2 rounded-full text-[12px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
                     data-testid="button-tab-preview"
                   >
                     Pré-visualização
                   </button>
                   <button
                     onClick={() => setShowQr(true)}
-                    className={`px-6 py-2.5 rounded-full text-[13px] font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    className={`px-5 py-2 rounded-full text-[12px] font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
                     data-testid="button-tab-qr"
                   >
                     Código QR
@@ -54,7 +54,7 @@ export default function Home() {
               )}
 
               {/* iPhone Mockup */}
-              <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[480px] w-[270px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
+              <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[460px] w-[260px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>

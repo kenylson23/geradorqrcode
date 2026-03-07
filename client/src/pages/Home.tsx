@@ -76,16 +76,16 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[380px] w-[240px] shadow-2xl overflow-visible">
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[550px] w-[240px] shadow-2xl overflow-visible">
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
                 </div>
                 
-                <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[90px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[145px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[200px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[165px] rounded-r-lg border-r border-white/10"></div>
+                <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
+                <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
 
                 <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
                   {qrData ? (

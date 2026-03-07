@@ -38,14 +38,14 @@ export default function Home() {
                 <div className="flex gap-3 justify-center mb-4">
                   <button
                     onClick={() => setShowQr(false)}
-                    className={`px-5 py-2 rounded-full text-[12px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
                     data-testid="button-tab-preview"
                   >
                     Pré-visualização
                   </button>
                   <button
                     onClick={() => setShowQr(true)}
-                    className={`px-5 py-2 rounded-full text-[12px] font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-md shadow-[#8B5CF6]/30' : 'bg-white border border-slate-200 text-slate-600 hover:text-slate-700'}`}
                     data-testid="button-tab-qr"
                   >
                     Código QR

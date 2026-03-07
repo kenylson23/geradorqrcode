@@ -580,19 +580,19 @@ export function QrResult({ value }: QrResultProps) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full h-full overflow-hidden">
-      {/* Control Tabs - At the Top */}
-      <div className="flex bg-[#F2F2F7] p-1 rounded-full w-full max-w-[280px] border border-slate-200 shadow-sm">
+    <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
+      {/* Control Tabs - Outside Mockup at the Top */}
+      <div className="flex gap-3 justify-center pt-2">
         <button
           onClick={() => setShowQr(false)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${!showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
           data-testid="button-tab-preview"
         >
           Pré-visualização
         </button>
         <button
           onClick={() => setShowQr(true)}
-          className={`flex-1 py-2 px-4 rounded-full text-[13px] font-bold transition-all ${showQr ? 'bg-[#2ECC71] text-white shadow-md' : 'text-slate-600 hover:text-[#2ECC71]'}`}
+          className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
           data-testid="button-tab-qr"
         >
           Código QR

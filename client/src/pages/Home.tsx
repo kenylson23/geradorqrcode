@@ -68,7 +68,7 @@ export default function Home() {
 
                 <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
                   {qrData ? (
-                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
+                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
                       <QrResult 
                         value={qrData}
                         showQr={showQr}

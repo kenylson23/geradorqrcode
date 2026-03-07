@@ -7,11 +7,9 @@ import { useState } from "react";
 
 interface QrResultProps {
   value: any;
-  onDownload: () => void;
-  onReset: () => void;
 }
 
-export function QrResult({ value, onDownload, onReset }: QrResultProps) {
+export function QrResult({ value }: QrResultProps) {
   const [showQr, setShowQr] = useState(false);
   
   // If value is an object with type 'links', we show LinkTree preview
@@ -659,29 +657,6 @@ export function QrResult({ value, onDownload, onReset }: QrResultProps) {
           </AlertDescription>
         </Alert>
       )}
-
-      <div className="grid grid-cols-2 gap-3 w-full max-w-[280px] mt-2 mb-8">
-        <Button 
-          onClick={onDownload} 
-          className="h-10 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-1"
-          disabled={isTooLong}
-          data-testid="button-download-qr"
-          title="Baixar PNG"
-        >
-          <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">Baixar</span>
-        </Button>
-        <Button 
-          variant="outline" 
-          onClick={onReset} 
-          className="h-10 rounded-xl font-bold border-2 text-slate-500 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98] text-xs flex items-center justify-center gap-1"
-          data-testid="button-reset-qr"
-          title="Criar outro QR code"
-        >
-          <RefreshCw className="h-4 w-4" />
-          <span className="hidden sm:inline">Novo</span>
-        </Button>
-      </div>
     </div>
   );
 }

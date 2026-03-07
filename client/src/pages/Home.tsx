@@ -4,6 +4,8 @@ import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
 import { QrResult } from "@/components/QrResult";
 import { useQrGenerator } from "@/hooks/use-qr-generator";
+import { Button } from "@/components/ui/button";
+import { Download, RefreshCw } from "lucide-react";
 
 export default function Home() {
   const { qrData, generate, download, reset } = useQrGenerator();
@@ -26,6 +28,29 @@ export default function Home() {
                 }} 
                 onStepChange={setCurrentStep}
               />
+              
+              {/* Action Buttons */}
+              {qrData && (
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <Button 
+                    onClick={() => download("qr-code-element")} 
+                    className="h-12 rounded-xl font-bold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-[0.98]"
+                    data-testid="button-download-qr"
+                  >
+                    <Download className="mr-2 h-5 w-5" />
+                    Baixar PNG
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={reset} 
+                    className="h-12 rounded-xl font-bold border-2 text-slate-500 hover:text-[#2ECC71] hover:border-[#2ECC71] transition-all active:scale-[0.98]"
+                    data-testid="button-reset-qr"
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Criar outro
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Mobile Preview */}
@@ -45,9 +70,7 @@ export default function Home() {
                   {qrData ? (
                     <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
                       <QrResult 
-                        value={qrData} 
-                        onDownload={() => download("qr-code-element")}
-                        onReset={reset}
+                        value={qrData}
                       />
                     </div>
                   ) : (

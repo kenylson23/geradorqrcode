@@ -16,9 +16,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8 pb-32">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+      <main className="flex-grow">
+        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:pr-96">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {/* Left Column: Form and Selection */}
             <div className="lg:col-span-3 space-y-6">
@@ -53,74 +53,76 @@ export default function Home() {
                 </div>
               )}
             </div>
-
-            {/* Right Column: Mobile Preview */}
-            <div className="hidden lg:block lg:col-span-2 sticky top-24">
-              {/* Control Tabs - Outside Mockup */}
-              {qrData && (
-                <div className="flex gap-3 justify-center mb-6">
-                  <button
-                    onClick={() => setShowQr(false)}
-                    className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-                    data-testid="button-tab-preview"
-                  >
-                    Pré-visualização
-                  </button>
-                  <button
-                    onClick={() => setShowQr(true)}
-                    className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
-                    data-testid="button-tab-qr"
-                  >
-                    Código QR
-                  </button>
-                </div>
-              )}
-
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[550px] w-[240px] shadow-2xl overflow-hidden flex flex-col">
-                {/* iPhone Frame Elements */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
-                  <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
-                </div>
-                
-                <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
-                <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
-
-                <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
-                  {qrData ? (
-                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
-                      <QrResult 
-                        value={qrData}
-                        showQr={showQr}
-                        setShowQr={setShowQr}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-6 text-center">
-                      <div className="w-48 h-48 mx-auto border-2 border-dashed border-muted rounded-2xl flex items-center justify-center bg-muted/20">
-                        <div className="text-muted-foreground text-sm flex flex-col items-center gap-2">
-                          <div className="w-24 h-24 opacity-20 bg-foreground rounded-lg"></div>
-                          <span>Seu QR Code aparecerá aqui</span>
-                        </div>
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground">
-                        Selecione um tipo de código QR à esquerda.
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        Escolha entre site, PDF, vCard e muito mais para começar.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Home Indicator */}
-                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </main>
+
+      {/* Fixed Mobile Preview - Right Side */}
+      <div className="hidden lg:flex fixed right-0 top-20 bottom-0 w-auto flex-col items-center justify-center pr-4 pointer-events-none">
+        <div className="pointer-events-auto flex flex-col items-center">
+          {/* Control Tabs - Outside Mockup */}
+          {qrData && (
+            <div className="flex gap-3 justify-center mb-6">
+              <button
+                onClick={() => setShowQr(false)}
+                className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
+                data-testid="button-tab-preview"
+              >
+                Pré-visualização
+              </button>
+              <button
+                onClick={() => setShowQr(true)}
+                className={`px-6 py-3 rounded-full text-[14px] font-bold transition-all ${showQr ? 'bg-[#8B5CF6] text-white shadow-lg' : 'bg-slate-200 text-slate-400 hover:text-slate-600'}`}
+                data-testid="button-tab-qr"
+              >
+                Código QR
+              </button>
+            </div>
+          )}
+
+          <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[550px] w-[240px] shadow-2xl overflow-hidden flex flex-col">
+            {/* iPhone Frame Elements */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
+              <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
+            </div>
+            
+            <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
+            <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
+            <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
+            <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
+
+            <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
+              {qrData ? (
+                <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300 scale-95 origin-top">
+                  <QrResult 
+                    value={qrData}
+                    showQr={showQr}
+                    setShowQr={setShowQr}
+                  />
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-6 text-center">
+                  <div className="w-48 h-48 mx-auto border-2 border-dashed border-muted rounded-2xl flex items-center justify-center bg-muted/20">
+                    <div className="text-muted-foreground text-sm flex flex-col items-center gap-2">
+                      <div className="w-24 h-24 opacity-20 bg-foreground rounded-lg"></div>
+                      <span>Seu QR Code aparecerá aqui</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Selecione um tipo de código QR à esquerda.
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Escolha entre site, PDF, vCard e muito mais para começar.
+                  </p>
+                </div>
+              )}
+
+              {/* Home Indicator */}
+              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {!qrData && <Footer />}
     </div>

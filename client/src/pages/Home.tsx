@@ -18,7 +18,7 @@ export default function Home() {
 
       <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             
             {/* Left Column: Form and Selection */}
             <div className="lg:col-span-3 space-y-6">
@@ -55,7 +55,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="hidden lg:block lg:col-span-2 fixed right-8 top-24 z-30 w-80">
+            <div className="hidden lg:flex lg:col-span-2 flex-col items-center justify-start h-fit max-h-[calc(100vh-200px)] overflow-y-auto">
               {/* Control Tabs - Outside Mockup */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-6">
@@ -76,7 +76,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[420px] w-[240px] shadow-2xl overflow-visible">
+              <div className="relative mx-auto border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] max-h-[520px] w-auto max-w-[280px] shadow-2xl overflow-visible flex items-center justify-center" style={{aspectRatio: "240/420"}}>
                 {/* iPhone Frame Elements */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
                   <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>

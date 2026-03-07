@@ -13,15 +13,15 @@ export default function Home() {
   const [showQr, setShowQr] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans pb-40">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
       <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             
             {/* Left Column: Form and Selection */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-3 space-y-6">
               <QrForm 
                 onGenerate={(data) => {
                   generate(data);
@@ -55,7 +55,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="hidden lg:block lg:fixed lg:right-8 lg:top-24 lg:w-80 z-40">
+            <div className="hidden lg:block lg:col-span-2 sticky top-24">
               {/* Control Tabs - Outside Mockup */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-6">

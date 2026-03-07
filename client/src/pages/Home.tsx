@@ -16,12 +16,12 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow pb-56">
+      <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
             {/* Left Column: Form (6 columns) */}
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-6 pb-56">
               <QrForm 
                 onGenerate={(data) => {
                   generate(data);
@@ -32,7 +32,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit pb-56">
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-8 h-fit">
               {/* Control Tabs */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-4">

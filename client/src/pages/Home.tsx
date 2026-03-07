@@ -16,9 +16,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <main className="flex-grow container mx-auto px-4 py-6 sm:px-6 lg:px-8 pb-20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             
             {/* Left Column: Form and Selection */}
             <div className="lg:col-span-3 space-y-6">
@@ -55,7 +55,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mobile Preview */}
-            <div className="hidden lg:flex lg:col-span-2 flex-col items-center justify-start h-fit max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="hidden lg:flex lg:col-span-2 flex-col items-center justify-start h-fit max-h-[calc(100vh-240px)] overflow-y-auto">
               {/* Control Tabs - Outside Mockup */}
               {qrData && (
                 <div className="flex gap-3 justify-center mb-6">

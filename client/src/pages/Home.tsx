@@ -122,7 +122,7 @@ export default function Home() {
         </div>
       </main>
 
-      <Footer />
+      {!qrData && <Footer />}
     </div>
   );
 }

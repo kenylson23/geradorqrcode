@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface QrResultProps {
   value: any;
@@ -18,6 +18,21 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   
   // If value is an object with type 'links', we show LinkTree preview
   const isLinkTree = typeof value === 'object' && value?.type === 'links';
+
+  // Handle keyboard scroll with arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const scrollAmount = 60; // pixels to scroll
+        const direction = e.key === 'ArrowUp' ? -1 : 1;
+        window.scrollBy(0, direction * scrollAmount);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
   
   // Extract the raw URL for the preview (before any processing like mailto: or tel:)
   // This ensures we show exactly what the user typed in the browser simulation

@@ -164,8 +164,10 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
     switch (type) {
       case "url":
       case "facebook":
-      case "pdf":
         defaultValues = { ...defaultValues, url: "" };
+        break;
+      case "pdf":
+        defaultValues = { ...defaultValues, url: "", companyName: "", title: "", description: "", website: "", buttonLabel: "", fileUrl: "" };
         break;
       case "instagram":
         defaultValues = { ...defaultValues, url: "", instagramUser: "" };
@@ -394,7 +396,79 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
               {activeType === "pdf" && (
                 <div className="space-y-6">
-                   <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Empresa</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Sua Empresa" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Título do PDF</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Título do Documento" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Breve descrição do conteúdo..." {...field} value={field.value || ''} className="min-h-[80px]" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Site</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://seusite.com" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="buttonLabel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Texto do Botão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Download PDF" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <FormLabel className="text-sm font-medium text-gray-700">Upload do PDF</FormLabel>
                     <div 
                       className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}

@@ -1231,7 +1231,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
-              <div className="fixed bottom-6 left-6 right-6 md:absolute md:bottom-6 md:left-6 md:right-6 flex gap-3 bg-white pt-4">
+              <div className="flex gap-3 bg-white pt-4">
                 <Button
                   type="button"
                   variant="outline"

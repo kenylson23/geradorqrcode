@@ -1220,13 +1220,13 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     setActiveType(null);
                     onStepChange(1);
                   }}
-                  className="flex-1 h-12 rounded-lg font-semibold text-base"
+                  className="flex-1 h-10 rounded-lg font-semibold text-sm"
                 >
                   Voltar
                 </Button>
                 <Button 
                   type="submit"
-                  className="flex-[2] h-12 rounded-lg bg-primary hover:bg-primary/90 font-semibold text-base"
+                  className="flex-[2] h-10 rounded-lg bg-primary hover:bg-primary/90 font-semibold text-sm"
                 >
                   Gerar QR Code
                 </Button>

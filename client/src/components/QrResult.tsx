@@ -154,7 +154,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
     if (isLinkTreeData && hasMinData) {
       return (
-        <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-y-auto">
+        <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
           <LinkTree 
             title={data.title} 
             description={data.description} 
@@ -382,7 +382,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <p className="text-xs opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
             </div>
             
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-hidden">
               <div className="space-y-4">
                 {data.description && (
                   <div className="p-4 bg-slate-50 rounded-2xl">
@@ -435,7 +435,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </div>
               <Video className="w-4 h-4" />
             </div>
-            <div className="flex-1 p-4 flex flex-col justify-end gap-2 overflow-y-auto">
+            <div className="flex-1 p-4 flex flex-col justify-end gap-2 overflow-hidden">
               <div className="self-end bg-[#DCF8C6] p-3 rounded-lg rounded-tr-none shadow-sm max-w-[80%]">
                 <p className="text-[11px] text-slate-800">{data.message || "Olá! Gostaria de mais informações."}</p>
                 <p className="text-[9px] text-slate-500 text-right mt-1">12:01</p>
@@ -466,7 +466,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <h3 className="text-xl font-bold">{data.firstName} {data.lastName}</h3>
               <p className="text-sm opacity-90">{data.profession || data.jobTitle}</p>
             </div>
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl overflow-y-auto">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl overflow-hidden">
               <div className="space-y-4 pb-20">
                 {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
@@ -555,7 +555,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <p className="text-sm opacity-90 relative z-10">{data.industry || "Ramo de Atividade"}</p>
             </div>
             
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-hidden">
               {data.caption && (
                 <p className="text-sm text-slate-600 text-center italic leading-relaxed">"{data.caption}"</p>
               )}
@@ -670,7 +670,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
             </div>
             
             {/* Content Area */}
-            <div className="flex-1 bg-white -mt-10 rounded-t-[40px] p-6 space-y-8 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] relative z-20 overflow-y-auto">
+            <div className="flex-1 bg-white -mt-10 rounded-t-[40px] p-6 space-y-8 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] relative z-20 overflow-hidden">
               {data.description && (
                 <div className="relative">
                   <div className="absolute -left-2 top-0 bottom-0 w-1 bg-[#2ECC71]/20 rounded-full" />

@@ -185,7 +185,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
         defaultValues = { ...defaultValues, phone: "" };
         break;
       case "links":
-        defaultValues = { ...defaultValues, title: "", description: "", photoUrl: "", links: [{ label: "", url: "" }] };
+        defaultValues = { ...defaultValues, title: "", description: "", photoUrl: "", links: [{ label: "", url: "", imageUrl: "" }] };
         break;
       case "vcard":
         defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", socialLinks: [] };
@@ -509,15 +509,49 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
               {activeType === "links" && (
                 <div className="space-y-6">
+                  <div className="space-y-4">
+                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
+                    <div 
+                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={() => document.getElementById('profile-upload')?.click()}
+                    >
+                      <input
+                        id="profile-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {watchedValues.photoUrl ? (
+                        <div className="relative w-20 h-20">
+                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Profile" />
+                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <Upload className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-xs font-medium text-gray-700">Carregar foto de perfil</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Título da Página</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">Nome do Perfil</FormLabel>
                           <FormControl>
-                            <Input placeholder="Meus Links" {...field} value={field.value || ''} />
+                            <Input placeholder="Stephanie Nichols" {...field} value={field.value || ''} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -528,7 +562,7 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">Bio/Descrição</FormLabel>
                           <FormControl>
                             <Input placeholder="Confira minhas redes sociais" {...field} value={field.value || ''} />
                           </FormControl>
@@ -537,14 +571,15 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       )}
                     />
                   </div>
+
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <FormLabel className="text-base font-bold text-foreground">Links</FormLabel>
+                      <FormLabel className="text-base font-bold text-foreground">Lista de Links</FormLabel>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => append({ label: "", url: "" })}
+                        onClick={() => append({ label: "", url: "", imageUrl: "" })}
                         className="flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
@@ -553,44 +588,66 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                     </div>
                     <div className="space-y-3">
                       {fields.map((item, index) => (
-                        <div key={item.id} className="flex gap-3 items-start p-4 bg-gray-50 rounded-xl border border-gray-100 group">
-                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <FormField
-                              control={form.control}
-                              name={`links.${index}.label`}
-                              render={({ field }) => (
-                                <FormItem className="space-y-1">
-                                  <FormControl>
-                                    <Input placeholder="Nome (ex: Instagram)" {...field} value={field.value || ''} className="bg-white" />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name={`links.${index}.url`}
-                              render={({ field }) => (
-                                <FormItem className="space-y-1">
-                                  <FormControl>
-                                    <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          {fields.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => remove(index)}
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
+                          <div className="flex items-center gap-4">
+                            <div 
+                              className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors flex-shrink-0 overflow-hidden"
+                              onClick={() => document.getElementById(`link-img-${index}`)?.click()}
                             >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
+                              <input
+                                id={`link-img-${index}`}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleFileUpload(file, `links.${index}.imageUrl`);
+                                }}
+                              />
+                              {(watchedValues as any).links?.[index]?.imageUrl ? (
+                                <img src={(watchedValues as any).links[index].imageUrl} className="w-full h-full object-cover" alt="Link icon" />
+                              ) : (
+                                <ImageIcon className="w-5 h-5 text-slate-300" />
+                              )}
+                            </div>
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <FormField
+                                control={form.control}
+                                name={`links.${index}.label`}
+                                render={({ field }) => (
+                                  <FormItem className="space-y-1">
+                                    <FormControl>
+                                      <Input placeholder="Título do link (ex: Blog)" {...field} value={field.value || ''} className="bg-white" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={form.control}
+                                name={`links.${index}.url`}
+                                render={({ field }) => (
+                                  <FormItem className="space-y-1">
+                                    <FormControl>
+                                      <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            {fields.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => remove(index)}
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>

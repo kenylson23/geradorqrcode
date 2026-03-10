@@ -158,6 +158,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           <LinkTree 
             title={data.title} 
             description={data.description} 
+            photoUrl={data.photoUrl}
             links={data.links || []} 
           />
         </div>

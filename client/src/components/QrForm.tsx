@@ -672,40 +672,6 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
               {activeType === "vcard" && (
                 <div className="space-y-6">
-                  <div className="space-y-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
-                    <div 
-                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
-                      onClick={() => document.getElementById('vcard-photo-upload')?.click()}
-                    >
-                      <input
-                        id="vcard-photo-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(file, "photoUrl");
-                        }}
-                      />
-                      {watchedValues.photoUrl ? (
-                        <div className="relative w-20 h-20">
-                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Profile" />
-                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <Upload className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
-                            <Upload className="w-6 h-6 text-primary" />
-                          </div>
-                          <p className="text-xs font-medium text-gray-700">Carregar foto de perfil</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}

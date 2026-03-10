@@ -28,6 +28,11 @@ export default function Home() {
                   if (currentStep < 2) setCurrentStep(2);
                 }} 
                 onStepChange={setCurrentStep}
+                ref={(instance) => {
+                  if (instance) {
+                    (window as any).qrFormRef = instance;
+                  }
+                }}
               />
             </div>
 
@@ -107,7 +112,12 @@ export default function Home() {
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Button 
               variant="outline"
-              onClick={reset}
+              onClick={() => {
+                reset();
+                if ((window as any).qrFormRef?.handleBack) {
+                  (window as any).qrFormRef.handleBack();
+                }
+              }}
               className="h-9 px-6 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
               data-testid="button-back"
             >

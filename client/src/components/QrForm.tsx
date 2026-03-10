@@ -1211,26 +1211,6 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                   />
                 </div>
               )}
-
-              <div className="fixed bottom-4 left-4 right-4 md:absolute md:bottom-4 md:left-4 md:right-4 flex gap-2 bg-white pt-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setActiveType(null);
-                    onStepChange(1);
-                  }}
-                  className="flex-1 h-10 rounded-lg font-semibold text-sm"
-                >
-                  Voltar
-                </Button>
-                <Button 
-                  type="submit"
-                  className="flex-[2] h-10 rounded-lg bg-primary hover:bg-primary/90 font-semibold text-sm"
-                >
-                  Gerar QR Code
-                </Button>
-              </div>
             </motion.div>
           </AnimatePresence>
         </form>

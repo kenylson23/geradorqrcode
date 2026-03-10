@@ -167,11 +167,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
     switch (data?.type) {
       case 'url':
-      case 'facebook':
-      case 'instagram':
-        const url = (typeof value === 'object' ? (value.url || value.fileUrl || (value.type === 'instagram' && value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value) || "";
-        const fullUrl = url ? (url.startsWith('http') ? url : `https://${url}`) : "";
-
+        const urlValue = (typeof value === 'object' ? (value.url || value.fileUrl || "") : value) || "";
+        const urlFullUrl = urlValue ? (urlValue.startsWith('http') ? urlValue : `https://${urlValue}`) : "";
+        
         return (
           <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
             {/* Browser Header Area - More like the mockup */}
@@ -196,18 +194,16 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               
               <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
                 <Globe className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{url || "Ex: https://seusite.com"}</span>
+                <span className="text-[13px] text-white font-medium truncate flex-1">{urlValue || "Ex: https://seusite.com"}</span>
               </div>
             </div>
             
             {/* Content Area */}
             <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-              {!fullUrl ? (
+              {!urlFullUrl ? (
                 <div className="p-4 space-y-4">
                   <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
-                    {data.type === 'facebook' ? <Facebook className="w-12 h-12 text-slate-400" /> : 
-                      data.type === 'instagram' ? <Instagram className="w-12 h-12 text-slate-400" /> :
-                      <Globe className="w-12 h-12 text-slate-400" />}
+                    <Globe className="w-12 h-12 text-slate-400" />
                   </div>
                   <div className="space-y-2">
                     <div className="h-4 bg-slate-100 rounded-full w-full"></div>
@@ -221,9 +217,150 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               ) : (
                 <div className="absolute inset-0 bg-white">
                   <iframe 
-                    src={fullUrl} 
+                    src={urlFullUrl} 
                     className="w-full h-full border-0"
                     title="Safari Preview"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 'facebook':
+        const facebookUrl = (typeof value === 'object' ? (value.url || value.fileUrl || "") : value) || "";
+        const facebookFullUrl = facebookUrl ? (facebookUrl.startsWith('http') ? facebookUrl : `https://${facebookUrl}`) : "";
+        
+        return (
+          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Browser Header Area */}
+            <div className="bg-blue-500 pt-12 pb-4 px-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between px-2 text-white">
+                <span className="text-[12px] font-bold">9:41</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
+                  </div>
+                  <div className="w-3.5 h-3.5 flex items-center justify-center">
+                    <div className="w-3 h-2 border border-white rounded-sm relative">
+                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
+                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
+                <Facebook className="w-4 h-4 text-white" />
+                <span className="text-[13px] text-white font-medium truncate flex-1">{facebookUrl || "Ex: facebook.com/sua.pagina"}</span>
+              </div>
+            </div>
+            
+            {/* Content Area */}
+            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
+              {!facebookFullUrl ? (
+                <div className="p-4 space-y-4 flex flex-col items-center">
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl flex items-center justify-center shadow-sm relative">
+                    {data.photoUrl ? (
+                      <>
+                        <img src={data.photoUrl} alt="Profile" className="w-full h-full rounded-3xl object-cover" />
+                        <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+                          <Facebook className="w-6 h-6 text-white" />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Facebook className="w-16 h-16 text-blue-400" />
+                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+                          <Facebook className="w-5 h-5 text-white" />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {data.title && (
+                    <h2 className="text-xl font-bold text-gray-800 text-center mt-4">{data.title}</h2>
+                  )}
+                  {data.description && (
+                    <p className="text-sm text-gray-600 text-center line-clamp-3">{data.description}</p>
+                  )}
+                  {data.buttonLabel && (
+                    <button className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all">
+                      {data.buttonLabel}
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="absolute inset-0 bg-white">
+                  <iframe 
+                    src={facebookFullUrl} 
+                    className="w-full h-full border-0"
+                    title="Facebook Preview"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      
+      case 'instagram':
+        const instagramUrl = (typeof value === 'object' ? (value.url || value.fileUrl || (value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value) || "";
+        const instagramFullUrl = instagramUrl ? (instagramUrl.startsWith('http') ? instagramUrl : `https://${instagramUrl}`) : "";
+
+        return (
+          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Browser Header Area */}
+            <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 pt-12 pb-4 px-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between px-2 text-white">
+                <span className="text-[12px] font-bold">9:41</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="flex gap-0.5 items-end h-3">
+                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
+                  </div>
+                  <div className="w-3.5 h-3.5 flex items-center justify-center">
+                    <div className="w-3 h-2 border border-white rounded-sm relative">
+                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
+                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
+                <Instagram className="w-4 h-4 text-white" />
+                <span className="text-[13px] text-white font-medium truncate flex-1">{instagramUrl || "Ex: instagram.com/seu.perfil"}</span>
+              </div>
+            </div>
+            
+            {/* Content Area */}
+            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
+              {!instagramFullUrl ? (
+                <div className="p-4 space-y-4">
+                  <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
+                    <Instagram className="w-12 h-12 text-slate-400" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-slate-100 rounded-full w-full"></div>
+                    <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
+                    <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
+                  </div>
+                  <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
+                    <div className="h-4 bg-slate-300 rounded-full w-32"></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="absolute inset-0 bg-white">
+                  <iframe 
+                    src={instagramFullUrl} 
+                    className="w-full h-full border-0"
+                    title="Instagram Preview"
                     sandbox="allow-scripts allow-same-origin allow-forms"
                   />
                 </div>

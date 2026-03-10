@@ -163,8 +163,10 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
     let defaultValues: any = { type };
     switch (type) {
       case "url":
-      case "facebook":
         defaultValues = { ...defaultValues, url: "" };
+        break;
+      case "facebook":
+        defaultValues = { ...defaultValues, url: "", title: "", description: "", buttonLabel: "", photoUrl: "" };
         break;
       case "pdf":
         defaultValues = { ...defaultValues, url: "", companyName: "", title: "", description: "", website: "", buttonLabel: "", fileUrl: "" };
@@ -1193,10 +1195,10 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     name="url"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">URL da Página</FormLabel>
+                        <FormLabel className="text-sm font-medium text-gray-700">URL da Página do Facebook</FormLabel>
                         <FormControl>
                           <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                            <Facebook className="w-4 h-4 text-gray-400" />
+                            <Facebook className="w-4 h-4 text-blue-600" />
                             <Input 
                               placeholder="https://facebook.com/sua.pagina" 
                               {...field} 
@@ -1209,6 +1211,97 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Título</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Ex: Fashion Inspiration" 
+                            {...field} 
+                            value={field.value || ''} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Descrição da sua página do Facebook..." 
+                            {...field} 
+                            value={field.value || ''} 
+                            className="min-h-[80px]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="buttonLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Texto do Botão</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Ex: Go to our Facebook page" 
+                            {...field} 
+                            value={field.value || ''} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-2">
+                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
+                    <div 
+                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={() => document.getElementById('facebook-photo-upload')?.click()}
+                      data-testid="button-upload-facebook-photo"
+                    >
+                      <input
+                        id="facebook-photo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {isUploading ? (
+                        <div className="flex flex-col items-center gap-3">
+                          <Progress value={progress} className="w-full max-w-xs" />
+                          <p className="text-sm text-gray-600">{progress}%</p>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                          <p className="text-sm text-gray-600 text-center">Clique para escolher uma foto de perfil</p>
+                        </>
+                      )}
+                    </div>
+                    {form.getValues().photoUrl && (
+                      <p className="text-xs text-green-600 flex items-center gap-1">
+                        ✓ Foto enviada com sucesso
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </motion.div>

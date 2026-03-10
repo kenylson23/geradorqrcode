@@ -18,6 +18,7 @@ export const urlQrSchema = z.object({
   companyName: z.string().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
+  buttonLabel: z.string().optional(),
 });
 
 // For form validation, we use this refined version

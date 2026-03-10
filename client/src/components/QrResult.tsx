@@ -393,8 +393,8 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
                 )}
               </div>
-              <div className="sticky bottom-0 left-0 right-0 bg-white pt-2 pb-4">
-                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold">
+              <div className="absolute bottom-4 left-6 right-6">
+                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold shadow-lg shadow-[#2ECC71]/20">
                   Salvar Contacto
                 </Button>
               </div>

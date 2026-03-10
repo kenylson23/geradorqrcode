@@ -319,14 +319,18 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         return (
           <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
             <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30">
-                <User className="w-12 h-12" />
+              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30 overflow-hidden">
+                {data.photoUrl ? (
+                  <img src={data.photoUrl} className="w-full h-full object-cover" alt="Profile" />
+                ) : (
+                  <User className="w-12 h-12" />
+                )}
               </div>
               <h3 className="text-xl font-bold">{data.firstName} {data.lastName}</h3>
-              <p className="text-sm opacity-90">{data.jobTitle || data.profession}</p>
+              <p className="text-sm opacity-90">{data.profession || data.jobTitle}</p>
             </div>
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl">
-              <div className="space-y-4">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl overflow-y-auto">
+              <div className="space-y-4 pb-20">
                 {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -349,14 +353,25 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                     </div>
                   </div>
                 )}
-                {data.companyName && (
+                {(data.companyName || data.organization) && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                       <Briefcase className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Empresa</p>
-                      <p className="text-sm font-semibold">{data.companyName}</p>
+                      <p className="text-sm font-semibold">{data.companyName || data.organization}</p>
+                    </div>
+                  </div>
+                )}
+                {data.location && (
+                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Localização</p>
+                      <p className="text-sm font-semibold">{data.location}</p>
                     </div>
                   </div>
                 )}
@@ -378,9 +393,11 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
                 )}
               </div>
-              <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold">
-                Salvar Contacto
-              </Button>
+              <div className="sticky bottom-0 left-0 right-0 bg-white pt-2 pb-4">
+                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold">
+                  Salvar Contacto
+                </Button>
+              </div>
             </div>
           </div>
         );

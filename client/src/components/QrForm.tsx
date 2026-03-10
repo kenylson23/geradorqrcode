@@ -279,7 +279,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
-              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px] pb-24"
+              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px] pb-20"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -1246,7 +1246,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                 </div>
               )}
 
-              <div className="fixed bottom-6 left-6 right-6 md:absolute md:bottom-6 md:left-6 md:right-6 flex gap-3 bg-white pt-4">
+              <div className="fixed bottom-4 left-4 right-4 md:absolute md:bottom-4 md:left-4 md:right-4 flex gap-2 bg-white pt-3">
                 <Button
                   type="button"
                   variant="outline"
@@ -1254,13 +1254,13 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     setActiveType(null);
                     onStepChange(1);
                   }}
-                  className="flex-1 h-12 rounded-xl font-bold"
+                  className="flex-1 h-10 rounded-lg font-semibold text-sm"
                 >
                   Voltar
                 </Button>
                 <Button 
                   type="submit"
-                  className="flex-[2] h-12 rounded-xl bg-primary hover:bg-primary/90 font-bold"
+                  className="flex-[2] h-10 rounded-lg bg-primary hover:bg-primary/90 font-semibold text-sm"
                 >
                   Gerar QR Code
                 </Button>

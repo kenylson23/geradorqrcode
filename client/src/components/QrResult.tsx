@@ -390,9 +390,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
             <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10" />
-              <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10">
+              <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10 overflow-hidden">
                 {data.photoUrl ? (
-                  <img src={data.photoUrl} className="w-full h-full object-cover rounded-full" alt="Logo" />
+                  <img src={data.photoUrl} className="w-full h-full object-cover" alt="Logo" />
                 ) : (
                   <Search className="w-12 h-12 text-primary/20" />
                 )}
@@ -403,10 +403,25 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
             
             <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-y-auto">
               {data.caption && (
-                <p className="text-sm text-slate-600 text-center italic">{data.caption}</p>
+                <p className="text-sm text-slate-600 text-center italic leading-relaxed">"{data.caption}"</p>
               )}
               
+              {data.openingHours && data.openingHours.length > 0 && (
+                <div className="space-y-3">
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold px-1">Horário de Funcionamento</p>
+                  <div className="bg-slate-50 rounded-2xl p-4 space-y-2">
+                    {data.openingHours.map((oh: any, i: number) => (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className="text-slate-500">{oh.day}</span>
+                        <span className="font-semibold text-slate-700">{oh.hours}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-3">
+                <p className="text-[10px] text-muted-foreground uppercase font-bold px-1">Contato e Localização</p>
                 {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -447,7 +462,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold">Endereço</p>
-                      <p className="text-sm font-semibold truncate">{data.location}</p>
+                      <p className="text-sm font-semibold leading-tight">{data.location}</p>
                     </div>
                   </div>
                 )}

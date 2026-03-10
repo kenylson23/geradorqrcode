@@ -766,19 +766,185 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
 
               {activeType === "business" && (
                 <div className="space-y-6">
+                  <div className="space-y-4">
+                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil / Logo</FormLabel>
+                    <div 
+                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={() => document.getElementById('business-photo-upload')?.click()}
+                    >
+                      <input
+                        id="business-photo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {watchedValues.photoUrl ? (
+                        <div className="relative w-20 h-20">
+                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Business Logo" />
+                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <Upload className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-xs font-medium text-gray-700">Carregar logo da empresa</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Empresa</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Nome da Empresa" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="industry"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Título / Ramo</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: Restaurante, Advocacia" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
                   <FormField
                     control={form.control}
-                    name="companyName"
+                    name="caption"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nome da Empresa</FormLabel>
+                        <FormLabel className="text-sm font-medium text-gray-700">Legenda</FormLabel>
                         <FormControl>
-                          <Input placeholder="Minha Empresa Lda" {...field} value={field.value || ''} />
+                          <Input placeholder="Uma frase curta sobre seu negócio" {...field} value={field.value || ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                  <div className="space-y-4">
+                    <FormLabel className="text-base font-bold text-foreground">Horários de Funcionamento</FormLabel>
+                    <div className="space-y-3">
+                      {(form.getValues("openingHours") as any[])?.map((_, index) => (
+                        <div key={index} className="flex gap-3 items-center">
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.day`}
+                            render={({ field }) => (
+                              <FormItem className="flex-1">
+                                <FormControl>
+                                  <Input {...field} placeholder="Dia" className="bg-white" />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`openingHours.${index}.hours`}
+                            render={({ field }) => (
+                              <FormItem className="flex-[2]">
+                                <FormControl>
+                                  <Input {...field} placeholder="09:00 - 18:00" className="bg-white" />
+                                </FormControl>
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const current = form.getValues("openingHours") || [];
+                          form.setValue("openingHours", [...current, { day: "", hours: "" }]);
+                        }}
+                        className="w-full"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Adicionar Horário
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <FormLabel className="text-base font-bold text-foreground">Informações de Contato</FormLabel>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Endereço completo" {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+244..." {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Site</FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://empresa.com" {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
 

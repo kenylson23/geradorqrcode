@@ -655,6 +655,200 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                 </div>
               )}
 
+              {activeType === "vcard" && (
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
+                    <div 
+                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={() => document.getElementById('vcard-photo-upload')?.click()}
+                    >
+                      <input
+                        id="vcard-photo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {watchedValues.photoUrl ? (
+                        <div className="relative w-20 h-20">
+                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Profile" />
+                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <Upload className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-xs font-medium text-gray-700">Carregar foto de perfil</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Nome</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: João" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Sobrenome</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: Silva" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2">
+                              <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                                <SelectTrigger className="w-[100px] h-10 rounded-lg border border-gray-200 bg-white">
+                                  <SelectValue placeholder="+" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {countryCodes.map((c) => (
+                                    <SelectItem key={c.code} value={c.code}>
+                                      {c.flag} +{c.code}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <Input 
+                                placeholder="923 000 000" 
+                                {...field} 
+                                value={field.value || ''} 
+                                className="flex-1"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="exemplo@email.com" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Luanda, Angola" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="pt-4 border-t border-gray-100">
+                    <h4 className="text-sm font-bold text-gray-900 mb-4">Detalhes da Empresa</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="companyName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Empresa</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome da Empresa" {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="profession"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-gray-700">Profissão</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Ex: Designer, Gerente" {...field} value={field.value || ''} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="summary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Resumo</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Breve resumo profissional..." 
+                            {...field} 
+                            value={field.value || ''} 
+                            className="min-h-[100px]" 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Website (Opcional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://seusite.com" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
               {activeType === "images" && (
                 <div className="space-y-6">
                   <div className="space-y-4">
@@ -806,9 +1000,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       name="companyName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Empresa</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">Nome da Empresa</FormLabel>
                           <FormControl>
-                            <Input placeholder="Nome da Empresa" {...field} value={field.value || ''} />
+                            <Input placeholder="Minha Empresa" {...field} value={field.value || ''} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -819,9 +1013,9 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                       name="industry"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Título / Ramo</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">Ramo de Atividade</FormLabel>
                           <FormControl>
-                            <Input placeholder="Ex: Restaurante, Advocacia" {...field} value={field.value || ''} />
+                            <Input placeholder="Ex: Tecnologia, Consultoria" {...field} value={field.value || ''} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -834,138 +1028,227 @@ export function QrForm({ onGenerate, onStepChange }: QrFormProps) {
                     name="caption"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Legenda</FormLabel>
+                        <FormLabel className="text-sm font-medium text-gray-700">Slogan / Legenda</FormLabel>
                         <FormControl>
-                          <Input placeholder="Uma frase curta sobre seu negócio" {...field} value={field.value || ''} />
+                          <Input placeholder="O melhor serviço para você" {...field} value={field.value || ''} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <div className="space-y-4">
-                    <FormLabel className="text-base font-bold text-foreground">Horários de Funcionamento</FormLabel>
-                    <div className="space-y-3">
-                      {(form.getValues("openingHours") as any[])?.map((_, index) => (
-                        <div key={index} className="flex gap-3 items-center">
-                          <FormField
-                            control={form.control}
-                            name={`openingHours.${index}.day`}
-                            render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormControl>
-                                  <Input {...field} placeholder="Dia" className="bg-white" />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`openingHours.${index}.hours`}
-                            render={({ field }) => (
-                              <FormItem className="flex-[2]">
-                                <FormControl>
-                                  <Input {...field} placeholder="09:00 - 18:00" className="bg-white" />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const current = form.getValues("openingHours") || [];
-                          form.setValue("openingHours", [...current, { day: "", hours: "" }]);
-                        }}
-                        className="w-full"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Adicionar Horário
-                      </Button>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
+                          <FormControl>
+                            <Input placeholder="923 000 000" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                          <FormControl>
+                            <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
-                  <div className="space-y-4">
-                    <FormLabel className="text-base font-bold text-foreground">Informações de Contato</FormLabel>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="location"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Endereço completo" {...field} value={field.value || ''} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
-                            <FormControl>
-                              <Input placeholder="+244..." {...field} value={field.value || ''} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
-                            <FormControl>
-                              <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="website"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium text-gray-700">Site</FormLabel>
-                            <FormControl>
-                              <Input placeholder="https://empresa.com" {...field} value={field.value || ''} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Website</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://minhaempresa.com" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Endereço Completo" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               )}
 
-              <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4 z-50">
-                <div className="max-w-7xl mx-auto flex justify-between items-center px-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => { setActiveType(null); onStepChange(1); }}
-                    className="rounded-xl px-8 h-12 font-medium border-primary text-primary hover:bg-primary/5"
-                  >
-                    ← Voltar
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="rounded-xl px-8 h-12 font-medium bg-primary hover:bg-primary/90 text-white shadow-md flex items-center gap-2"
-                    data-testid="button-qr-generate"
-                  >
-                    Próximo →
-                  </Button>
+              {activeType === "text" && (
+                <div className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="text"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Seu Texto</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Escreva sua mensagem aqui..." 
+                            {...field} 
+                            value={field.value || ''} 
+                            className="min-h-[150px] rounded-lg border-gray-200" 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
+              )}
+
+              {activeType === "phone" && (
+                <div className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Número de Telefone</FormLabel>
+                        <FormControl>
+                          <div className="flex gap-2 mt-1.5">
+                            <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
+                              <SelectTrigger className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white">
+                                <SelectValue placeholder="+" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {countryCodes.map((c) => (
+                                  <SelectItem key={c.code} value={c.code}>
+                                    {c.flag} +{c.code}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Input 
+                              placeholder="923 000 000" 
+                              {...field} 
+                              value={field.value || ''} 
+                              className="h-11 rounded-lg border-gray-200" 
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {activeType === "email" && (
+                <div className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Seu Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="exemplo@email.com" {...field} value={field.value || ''} className="h-11 rounded-lg border-gray-200 mt-1.5" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="subject"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Assunto</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Gostaria de um orçamento" {...field} value={field.value || ''} className="h-11 rounded-lg border-gray-200 mt-1.5" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="body"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Mensagem</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Escreva sua mensagem aqui..." 
+                            {...field} 
+                            value={field.value || ''} 
+                            className="min-h-[100px] rounded-lg border-gray-200 mt-1.5" 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {activeType === "facebook" && (
+                <div className="space-y-5">
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">URL da Página</FormLabel>
+                        <FormControl>
+                          <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                            <Facebook className="w-4 h-4 text-gray-400" />
+                            <Input 
+                              placeholder="https://facebook.com/sua.pagina" 
+                              {...field} 
+                              value={field.value || ''} 
+                              className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              <div className="fixed bottom-6 left-6 right-6 md:absolute md:bottom-6 md:left-6 md:right-6 flex gap-3 bg-white pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setActiveType(null);
+                    onStepChange(1);
+                  }}
+                  className="flex-1 h-12 rounded-xl font-bold"
+                >
+                  Voltar
+                </Button>
+                <Button 
+                  type="submit"
+                  className="flex-[2] h-12 rounded-xl bg-primary hover:bg-primary/90 font-bold"
+                >
+                  Gerar QR Code
+                </Button>
               </div>
             </motion.div>
           </AnimatePresence>

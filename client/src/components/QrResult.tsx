@@ -397,25 +397,31 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <p className="text-xs opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
             </div>
             
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-hidden">
-              <div className="space-y-4">
+            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-4 shadow-xl relative z-20 overflow-hidden flex flex-col">
+              <div className="space-y-3 flex-1 overflow-y-auto pr-2">
                 {data.description && (
-                  <div className="p-4 bg-slate-50 rounded-2xl">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Descrição</p>
-                    <p className="text-sm text-slate-600 leading-relaxed line-clamp-4">{data.description}</p>
+                  <div className="p-3 bg-slate-50 rounded-xl">
+                    <p className="text-[9px] text-muted-foreground uppercase font-bold mb-2">Descrição</p>
+                    <p className="text-xs text-slate-600 leading-relaxed break-words">{data.description}</p>
                   </div>
                 )}
                 
                 {data.website && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
+                  <a 
+                    href={data.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                    data-testid="link-website-pdf"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                      <Globe className="w-4 h-4" />
                     </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-sm font-semibold truncate">{data.website}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-muted-foreground uppercase font-bold">Site</p>
+                      <p className="text-xs font-semibold truncate text-primary hover:underline">{data.website}</p>
                     </div>
-                  </div>
+                  </a>
                 )}
               </div>
 

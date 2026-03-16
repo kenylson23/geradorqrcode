@@ -420,15 +420,24 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </div>
 
               <div className="pt-4">
-                <a 
-                  href={hasPdfData ? (data.fileUrl || data.url) : "#"}
-                  download={(data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all ${!hasPdfData ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {data.buttonLabel || "Download PDF"}
-                </a>
+                {hasPdfData ? (
+                  <a 
+                    href={data.fileUrl || data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all cursor-pointer"
+                    data-testid="button-open-pdf"
+                  >
+                    {data.buttonLabel || "Download PDF"}
+                  </a>
+                ) : (
+                  <button 
+                    disabled
+                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all opacity-50 cursor-not-allowed"
+                  >
+                    {data.buttonLabel || "Download PDF"}
+                  </button>
+                )}
                 {!hasPdfData && (
                   <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>
                 )}

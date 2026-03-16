@@ -149,10 +149,8 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       console.error("Erro no processamento do arquivo:", error);
       alert(error.message || "Erro ao processar o arquivo.");
     } finally {
-      setTimeout(() => {
-        setIsUploading(false);
-        setProgress(0);
-      }, 1000);
+      setIsUploading(false);
+      setProgress(0);
     }
   };
 

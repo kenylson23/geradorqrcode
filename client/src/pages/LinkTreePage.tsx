@@ -44,24 +44,29 @@ export default function LinkTreePage() {
           <p className="text-lg opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
         </div>
 
-        <div className="flex-1 bg-white -mt-12 rounded-t-[48px] p-8 max-w-2xl mx-auto w-full space-y-8 shadow-2xl relative z-20">
+        <div className="flex-1 bg-white -mt-12 rounded-t-[48px] p-6 max-w-2xl mx-auto w-full space-y-6 shadow-2xl relative z-20 overflow-y-auto">
           {data.description && (
-            <div className="p-6 bg-slate-50 rounded-3xl">
+            <div className="p-5 bg-slate-50 rounded-2xl">
               <p className="text-xs text-muted-foreground uppercase font-bold mb-2">Descrição</p>
-              <p className="text-lg text-slate-600 leading-relaxed">{data.description}</p>
+              <p className="text-base text-slate-600 leading-relaxed break-words">{data.description}</p>
             </div>
           )}
 
           {data.website && (
-            <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-3xl">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                <Globe className="w-8 h-8" />
+            <a 
+              href={data.website.startsWith('http') ? data.website : `https://${data.website}`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                <Globe className="w-6 h-6" />
               </div>
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground uppercase font-bold">Site</p>
-                <p className="text-lg font-semibold truncate">{data.website}</p>
+                <p className="text-sm font-semibold text-primary truncate hover:underline">{data.website}</p>
               </div>
-            </div>
+            </a>
           )}
 
           <div className="pt-8 text-center">

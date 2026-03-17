@@ -132,10 +132,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
+      
+      // Preserve original format by specifying quality and format explicitly
+      if (isImageField) {
+        formData.append("fetch_format", "auto");
+        formData.append("quality", "auto");
+      }
 
-      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-      const resourceType = isPdf ? 'raw' : 'image';
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
+      // Use 'auto' endpoint for all files to avoid forced transformations
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
         method: "POST",
         body: formData,
       });
@@ -149,9 +154,18 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       setProgress(100);
       
       if (result.secure_url) {
-        const downloadUrl = result.secure_url;
+        // If for image field and the returned URL has .pdf, try to reconstruct with original extension
+        let downloadUrl = result.secure_url;
         
-        console.log("Upload success, URL:", { downloadUrl, fieldName });
+        if (isImageField && result.public_id && downloadUrl.includes('.pdf')) {
+          // Reconstruct URL using public_id to avoid forced PDF conversion
+          // Format: https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}
+          const filename = result.original_filename || file.name;
+          downloadUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${result.public_id}`;
+          console.log("Reconstructed image URL:", { downloadUrl, public_id: result.public_id });
+        }
+        
+        console.log("Upload success, URL:", { downloadUrl, fieldName, isImageField, hasPdf: downloadUrl.includes('.pdf') });
         
         // Update form value and trigger immediate re-render
         form.setValue(fieldName, downloadUrl, { shouldDirty: true, shouldTouch: true, shouldValidate: true });

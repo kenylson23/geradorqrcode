@@ -149,20 +149,24 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       setProgress(100);
       
       if (result.secure_url) {
-        let downloadUrl = result.secure_url;
+        const downloadUrl = result.secure_url;
         
-        form.setValue(fieldName, downloadUrl);
+        console.log("Upload success, URL:", { downloadUrl, fieldName });
+        
+        // Update form value and trigger immediate re-render
+        form.setValue(fieldName, downloadUrl, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+        
         if (activeType === "pdf") {
-          form.setValue("url", downloadUrl);
+          form.setValue("url", downloadUrl, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
         }
         
-        // Ensure we trigger a generation update with the new URL
-        const currentValues = form.getValues();
-        console.log("Upload success, updating form with URL:", downloadUrl);
-        onGenerate({ ...currentValues, [fieldName]: downloadUrl });
+        // Small delay to allow form state to update before generating
+        setTimeout(() => {
+          const updatedValues = form.getValues();
+          console.log("Emitting updated values after upload:", updatedValues);
+          onGenerate(updatedValues);
+        }, 100);
       }
-      
-      onGenerate(form.getValues());
     } catch (error: any) {
       console.error("Erro no processamento do arquivo:", error);
       alert(error.message || "Erro ao processar o arquivo.");

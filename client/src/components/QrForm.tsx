@@ -104,6 +104,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       setIsUploading(true);
       setProgress(10);
       
+      // Validate image files
+      const isImageField = fieldName === 'photoUrl' || fieldName.includes('imageUrl');
+      if (isImageField) {
+        const isImage = file.type.startsWith('image/');
+        if (!isImage) {
+          throw new Error("Por favor, selecione uma imagem válida (JPG, PNG, GIF, etc.)");
+        }
+      }
+      
       const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
       const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
@@ -116,7 +125,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       formData.append("upload_preset", uploadPreset);
 
       const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-      const resourceType = isPdf ? 'raw' : 'auto';
+      const resourceType = isPdf ? 'raw' : 'image';
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
         method: "POST",
         body: formData,

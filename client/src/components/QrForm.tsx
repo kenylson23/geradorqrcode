@@ -106,10 +106,19 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       
       // Validate image files
       const isImageField = fieldName === 'photoUrl' || fieldName.includes('imageUrl');
+      console.log("Upload attempt:", { fileName: file.name, fileType: file.type, fieldName, isImageField });
+      
       if (isImageField) {
         const isImage = file.type.startsWith('image/');
-        if (!isImage) {
-          throw new Error("Por favor, selecione uma imagem válida (JPG, PNG, GIF, etc.)");
+        const validImageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp'];
+        const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+        const hasValidExtension = validImageExtensions.includes(fileExtension);
+        
+        console.log("Image validation:", { isImage, fileType: file.type, fileExtension, hasValidExtension });
+        
+        if (!isImage || !hasValidExtension) {
+          console.error("Invalid file type for image field:", file.type, file.name);
+          throw new Error("Por favor, selecione uma imagem válida (JPG, PNG, GIF, WebP, etc.)");
         }
       }
       
@@ -546,7 +555,11 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         className="hidden"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
-                          if (file) handleFileUpload(file, "photoUrl");
+                          if (file) {
+                            handleFileUpload(file, "photoUrl");
+                            // Reset input so same file can be selected again
+                            e.target.value = '';
+                          }
                         }}
                       />
                       {watchedValues.photoUrl ? (

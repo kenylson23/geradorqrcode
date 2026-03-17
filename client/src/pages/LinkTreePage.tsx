@@ -14,6 +14,8 @@ export default function LinkTreePage() {
       const hash = window.location.hash.slice(1);
       if (hash) {
         const decoded = JSON.parse(decodeURIComponent(escape(atob(hash))));
+        console.log("LinkTreePage decoded data:", decoded);
+        console.log("Photo URL:", decoded.photoUrl);
         setData(decoded);
       }
     } catch (e) {

@@ -137,6 +137,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
       const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
       const resourceType = isPdf ? 'raw' : 'image';
       
+      // For images, add a parameter to preserve the original format
+      // This overrides any preset transformation that might convert to PDF
+      if (isImageField && !isPdf) {
+        formData.append("format", "auto");
+        formData.append("flags", "keep_attribution");
+      }
+      
+      console.log("Uploading with:", { isPdf, resourceType, isImageField, fileType: file.type });
+      
       const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
         method: "POST",
         body: formData,

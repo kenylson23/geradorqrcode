@@ -101,9 +101,11 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           type: 'links',
           title: data.title,
           description: data.description,
+          photoUrl: data.photoUrl,
           links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
             label: l.label,
-            url: l.url
+            url: l.url,
+            imageUrl: l.imageUrl
           }))
         };
         const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(pageData))));

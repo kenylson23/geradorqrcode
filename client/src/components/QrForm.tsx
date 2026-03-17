@@ -159,10 +159,11 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         
         if (isImageField && result.public_id && downloadUrl.includes('.pdf')) {
           // Reconstruct URL using public_id to avoid forced PDF conversion
-          // Format: https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}
-          const filename = result.original_filename || file.name;
-          downloadUrl = `https://res.cloudinary.com/${cloudName}/image/upload/${result.public_id}`;
-          console.log("Reconstructed image URL:", { downloadUrl, public_id: result.public_id });
+          // Add image transformations (f_auto=automatic format, q_auto=automatic quality)
+          // Format: https://res.cloudinary.com/{cloud_name}/image/upload/f_auto,q_auto/{version}/{public_id}
+          const version = result.version ? `v${result.version}` : 'v1';
+          downloadUrl = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${version}/${result.public_id}`;
+          console.log("Reconstructed image URL:", { downloadUrl, public_id: result.public_id, version: result.version });
         }
         
         console.log("Upload success, URL:", { downloadUrl, fieldName, isImageField, hasPdf: downloadUrl.includes('.pdf') });

@@ -211,7 +211,8 @@ export default function LinkTreePage() {
     <div className="min-h-screen bg-slate-50 py-12 px-4 flex flex-col items-center justify-center">
       <LinkTree 
         title={data.title} 
-        description={data.description} 
+        description={data.description}
+        photoUrl={data.photoUrl}
         links={data.links} 
       />
     </div>

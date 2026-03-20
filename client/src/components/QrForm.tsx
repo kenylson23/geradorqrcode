@@ -207,7 +207,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, url: "", companyName: "", title: "", description: "", website: "", buttonLabel: "", fileUrl: "" };
         break;
       case "instagram":
-        defaultValues = { ...defaultValues, url: "", instagramUser: "" };
+        defaultValues = { ...defaultValues, url: "", instagramUser: "", title: "", description: "", buttonLabel: "", photoUrl: "" };
         break;
       case "text":
         defaultValues = { ...defaultValues, text: "" };
@@ -372,15 +372,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     name="url"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">URL do Perfil</FormLabel>
+                        <FormLabel className="text-sm font-medium text-gray-700">URL do Perfil do Instagram</FormLabel>
                         <FormControl>
                           <div className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white mt-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-                            <Globe className="w-4 h-4 text-gray-400" />
-                            <Input 
-                              placeholder="https://instagram.com/seu.usuario" 
-                              {...field} 
-                              value={field.value || ''} 
-                              className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0" 
+                            <Instagram className="w-4 h-4 text-pink-500" />
+                            <Input
+                              placeholder="https://instagram.com/seu.usuario"
+                              {...field}
+                              value={field.value || ''}
+                              className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none h-auto p-0"
                             />
                           </div>
                         </FormControl>
@@ -388,6 +388,87 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Nome / Título</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Fashion Inspiration" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Descrição do seu perfil do Instagram..."
+                            {...field}
+                            value={field.value || ''}
+                            className="min-h-[80px]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="buttonLabel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Texto do Botão</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Ver nosso Instagram" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-2">
+                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
+                    <div
+                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      onClick={() => document.getElementById('instagram-photo-upload')?.click()}
+                      data-testid="button-upload-instagram-photo"
+                    >
+                      <input
+                        id="instagram-photo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {isUploading ? (
+                        <div className="flex flex-col items-center gap-3">
+                          <Progress value={progress} className="w-full max-w-xs" />
+                          <p className="text-sm text-gray-600">{progress}%</p>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                          <p className="text-sm text-gray-600 text-center">Clique para escolher uma foto de perfil</p>
+                        </>
+                      )}
+                    </div>
+                    {form.getValues().photoUrl && (
+                      <p className="text-xs text-green-600 flex items-center gap-1">✓ Foto enviada com sucesso</p>
+                    )}
+                  </div>
                 </div>
               )}
 

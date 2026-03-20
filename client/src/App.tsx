@@ -9,6 +9,7 @@ import LinkTreePage from "@/pages/LinkTreePage";
 import ImagePage from "@/pages/ImagePage";
 import VCardPage from "@/pages/VCardPage";
 import FacebookPage from "@/pages/FacebookPage";
+import InstagramPage from "@/pages/InstagramPage";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/c" component={VCardPage} />
       <Route path="/i/:data" component={ImagePage} />
       <Route path="/fb/:data" component={FacebookPage} />
+      <Route path="/ig/:data" component={InstagramPage} />
       <Route component={NotFound} />
     </Switch>
   );

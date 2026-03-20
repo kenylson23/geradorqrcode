@@ -62,8 +62,19 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
     switch (data.type) {
       case "url":
-      case "instagram":
         return data.url ? (data.url.startsWith('http') ? data.url : `https://${data.url}`) : "";
+      case "instagram": {
+        const igData = {
+          type: "instagram",
+          url: data.url,
+          title: data.title,
+          description: data.description,
+          buttonLabel: data.buttonLabel,
+          photoUrl: data.photoUrl,
+        };
+        const encodedIg = encodeURIComponent(JSON.stringify(igData));
+        return `${window.location.origin}/ig/${encodedIg}`;
+      }
       case "facebook": {
         const fbData = {
           type: "facebook",
@@ -319,67 +330,55 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         );
       }
       
-      case 'instagram':
-        const instagramUrl = (typeof value === 'object' ? (value.url || value.fileUrl || (value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value) || "";
-        const instagramFullUrl = instagramUrl ? (instagramUrl.startsWith('http') ? instagramUrl : `https://${instagramUrl}`) : "";
-
+      case 'instagram': {
+        const igSimUrl = (typeof value === 'object' ? (value.url || "") : value) || "";
         return (
-          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            {/* Browser Header Area */}
-            <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 pt-12 pb-4 px-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between px-2 text-white">
-                <span className="text-[12px] font-bold">9:41</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-0.5 items-end h-3">
-                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
+          <div className="w-full h-full flex flex-col animate-in fade-in duration-500 overflow-auto"
+            style={{ background: "linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)" }}>
+            <div className="flex-1 flex flex-col items-center justify-center p-6">
+              <div className="w-full bg-white rounded-3xl overflow-hidden shadow-xl">
+                {/* Header */}
+                <div className="px-6 pt-8 pb-12 flex flex-col items-center text-center relative"
+                  style={{ background: "linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)" }}>
+                  <div className="absolute bottom-0 left-0 right-0 h-6 bg-white rounded-t-3xl" />
+                  <div className="w-20 h-20 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white/20 flex items-center justify-center mb-3">
+                    {data.photoUrl ? (
+                      <img src={data.photoUrl} alt={data.title || "Foto"} className="w-full h-full object-cover" />
+                    ) : (
+                      <Instagram className="w-10 h-10 text-white" />
+                    )}
                   </div>
-                  <div className="w-3.5 h-3.5 flex items-center justify-center">
-                    <div className="w-3 h-2 border border-white rounded-sm relative">
-                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
-                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
+                  <h3 className="text-white text-base font-bold leading-tight">{data.title || "Meu Perfil"}</h3>
+                </div>
+
+                {/* Content */}
+                <div className="px-5 pt-2 pb-6 space-y-3">
+                  {data.description && (
+                    <p className="text-slate-500 text-[11px] text-center leading-relaxed">{data.description}</p>
+                  )}
+
+                  {igSimUrl && (
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                      <Instagram className="w-3.5 h-3.5 text-pink-500 flex-shrink-0" />
+                      <span className="text-[10px] text-slate-500 truncate flex-1">{igSimUrl}</span>
                     </div>
+                  )}
+
+                  <div className="w-full min-h-10 rounded-xl flex items-center justify-center gap-1.5 px-3 py-2"
+                    style={{ background: "linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)" }}>
+                    <span className="text-white text-[11px] font-bold text-center leading-snug">{data.buttonLabel || "Visitar Perfil do Instagram"}</span>
+                    <ArrowRight className="w-3 h-3 text-white flex-shrink-0" />
+                  </div>
+
+                  <div className="pt-1 border-t border-slate-100 text-center">
+                    <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
                   </div>
                 </div>
               </div>
-              
-              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
-                <Instagram className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{instagramUrl || "Ex: instagram.com/seu.perfil"}</span>
-              </div>
-            </div>
-            
-            {/* Content Area */}
-            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-              {!instagramFullUrl ? (
-                <div className="p-4 space-y-4">
-                  <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
-                    <Instagram className="w-12 h-12 text-slate-400" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-4 bg-slate-100 rounded-full w-full"></div>
-                    <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
-                    <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
-                  </div>
-                  <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
-                    <div className="h-4 bg-slate-300 rounded-full w-32"></div>
-                  </div>
-                </div>
-              ) : (
-                <div className="absolute inset-0 bg-white">
-                  <iframe 
-                    src={instagramFullUrl} 
-                    className="w-full h-full border-0"
-                    title="Instagram Preview"
-                    sandbox="allow-scripts allow-same-origin allow-forms"
-                  />
-                </div>
-              )}
             </div>
           </div>
         );
+      }
 
       case 'pdf':
         const hasPdfData = data.fileUrl || data.url;

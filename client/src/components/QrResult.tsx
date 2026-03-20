@@ -62,9 +62,20 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
     switch (data.type) {
       case "url":
-      case "facebook":
       case "instagram":
         return data.url ? (data.url.startsWith('http') ? data.url : `https://${data.url}`) : "";
+      case "facebook": {
+        const fbData = {
+          type: "facebook",
+          url: data.url,
+          title: data.title,
+          description: data.description,
+          buttonLabel: data.buttonLabel,
+          photoUrl: data.photoUrl,
+        };
+        const encodedFb = encodeURIComponent(JSON.stringify(fbData));
+        return `${window.location.origin}/fb/${encodedFb}`;
+      }
       case "pdf":
         const pdfData = {
           type: "pdf",
@@ -261,84 +272,52 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           </div>
         );
 
-      case 'facebook':
-        const facebookUrl = (typeof value === 'object' ? (value.url || value.fileUrl || "") : value) || "";
-        const facebookFullUrl = facebookUrl ? (facebookUrl.startsWith('http') ? facebookUrl : `https://${facebookUrl}`) : "";
-        
+      case 'facebook': {
+        const fbSimUrl = (typeof value === 'object' ? (value.url || "") : value) || "";
         return (
-          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            {/* Browser Header Area */}
-            <div className="bg-blue-500 pt-12 pb-4 px-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between px-2 text-white">
-                <span className="text-[12px] font-bold">9:41</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-0.5 items-end h-3">
-                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
-                  </div>
-                  <div className="w-3.5 h-3.5 flex items-center justify-center">
-                    <div className="w-3 h-2 border border-white rounded-sm relative">
-                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
-                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
-                <Facebook className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{facebookUrl || "Ex: facebook.com/sua.pagina"}</span>
-              </div>
-            </div>
-            
-            {/* Content Area */}
-            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
-              {!facebookFullUrl ? (
-                <div className="p-4 space-y-4 flex flex-col items-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-blue-50 rounded-3xl flex items-center justify-center shadow-sm relative">
+          <div className="w-full h-full bg-[#1877F2] flex flex-col animate-in fade-in duration-500 overflow-auto">
+            <div className="flex-1 flex flex-col items-center justify-center p-6">
+              <div className="w-full bg-white rounded-3xl overflow-hidden shadow-xl">
+                {/* Header */}
+                <div className="bg-[#1877F2] px-6 pt-8 pb-12 flex flex-col items-center text-center relative">
+                  <div className="absolute bottom-0 left-0 right-0 h-6 bg-white rounded-t-3xl" />
+                  <div className="w-20 h-20 rounded-full border-4 border-white shadow-lg overflow-hidden bg-[#1877F2]/30 flex items-center justify-center mb-3">
                     {data.photoUrl ? (
-                      <>
-                        <img src={data.photoUrl} alt="Profile" className="w-full h-full rounded-3xl object-cover" />
-                        <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
-                          <Facebook className="w-6 h-6 text-white" />
-                        </div>
-                      </>
+                      <img src={data.photoUrl} alt={data.title || "Foto"} className="w-full h-full object-cover" />
                     ) : (
-                      <>
-                        <Facebook className="w-16 h-16 text-blue-400" />
-                        <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white">
-                          <Facebook className="w-5 h-5 text-white" />
-                        </div>
-                      </>
+                      <Facebook className="w-10 h-10 text-white" />
                     )}
                   </div>
-                  {data.title && (
-                    <h2 className="text-xl font-bold text-gray-800 text-center mt-4">{data.title}</h2>
-                  )}
+                  <h3 className="text-white text-base font-bold leading-tight">{data.title || "Minha Página"}</h3>
+                </div>
+
+                {/* Content */}
+                <div className="px-5 pt-2 pb-6 space-y-3">
                   {data.description && (
-                    <p className="text-sm text-gray-600 text-center line-clamp-3">{data.description}</p>
+                    <p className="text-slate-500 text-[11px] text-center leading-relaxed">{data.description}</p>
                   )}
-                  {data.buttonLabel && (
-                    <button className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all">
-                      {data.buttonLabel}
-                    </button>
+
+                  {fbSimUrl && (
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                      <Facebook className="w-3.5 h-3.5 text-[#1877F2] flex-shrink-0" />
+                      <span className="text-[10px] text-slate-500 truncate flex-1">{fbSimUrl}</span>
+                    </div>
                   )}
+
+                  <div className="w-full h-10 rounded-xl bg-[#1877F2] flex items-center justify-center gap-1.5">
+                    <span className="text-white text-[11px] font-bold">{data.buttonLabel || "Visitar Página do Facebook"}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-white" />
+                  </div>
+
+                  <div className="pt-1 border-t border-slate-100 text-center">
+                    <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                  </div>
                 </div>
-              ) : (
-                <div className="absolute inset-0 bg-white">
-                  <iframe 
-                    src={facebookFullUrl} 
-                    className="w-full h-full border-0"
-                    title="Facebook Preview"
-                    sandbox="allow-scripts allow-same-origin allow-forms"
-                  />
-                </div>
-              )}
+              </div>
             </div>
           </div>
         );
+      }
       
       case 'instagram':
         const instagramUrl = (typeof value === 'object' ? (value.url || value.fileUrl || (value.instagramUser ? `instagram.com/${value.instagramUser.startsWith('@') ? value.instagramUser.slice(1) : value.instagramUser}` : "")) : value) || "";

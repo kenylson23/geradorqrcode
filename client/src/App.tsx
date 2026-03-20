@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import LinkTreePage from "@/pages/LinkTreePage";
 import ImagePage from "@/pages/ImagePage";
 import VCardPage from "@/pages/VCardPage";
+import FacebookPage from "@/pages/FacebookPage";
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/l" component={LinkTreePage} />
       <Route path="/c" component={VCardPage} />
       <Route path="/i/:data" component={ImagePage} />
+      <Route path="/fb/:data" component={FacebookPage} />
       <Route component={NotFound} />
     </Switch>
   );

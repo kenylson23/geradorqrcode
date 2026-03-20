@@ -951,35 +951,16 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                   />
 
                   <div className="space-y-3">
-                    <FormLabel className="text-sm font-medium text-gray-700">
-                      Imagens ({((watchedValues as any).fileUrls || []).length}/10)
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-sm font-medium text-gray-700">Imagens</FormLabel>
+                      <span className="text-xs text-gray-400 font-medium bg-gray-100 px-2 py-0.5 rounded-full">
+                        {((watchedValues as any).fileUrls || []).length}/10
+                      </span>
+                    </div>
 
-                    {((watchedValues as any).fileUrls || []).length > 0 && (
-                      <div className="grid grid-cols-3 gap-2">
-                        {((watchedValues as any).fileUrls || []).map((url: string, index: number) => (
-                          <div key={index} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-100">
-                            <img src={url} alt={`Imagem ${index + 1}`} className="w-full h-full object-cover" />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const current = (form.getValues() as any).fileUrls || [];
-                                const updated = current.filter((_: string, i: number) => i !== index);
-                                form.setValue("fileUrls" as any, updated);
-                                onGenerate({ ...form.getValues(), fileUrls: updated });
-                              }}
-                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {((watchedValues as any).fileUrls || []).length < 10 && (
+                    {((watchedValues as any).fileUrls || []).length === 0 ? (
                       <div
-                        className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                        className={`border-2 border-dashed rounded-xl p-10 transition-all flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 ${isUploading ? "opacity-50 pointer-events-none" : "border-gray-200"}`}
                         onClick={() => document.getElementById("images-upload")?.click()}
                       >
                         <input
@@ -1022,12 +1003,99 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                             e.target.value = "";
                           }}
                         />
-                        <Upload className="w-6 h-6 text-primary mb-2" />
-                        <p className="text-sm font-medium text-gray-700">Clique para adicionar imagens</p>
-                        <p className="text-xs text-gray-400 mt-1">PNG, JPG até 10MB · máx. 10 imagens</p>
+                        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
+                          <ImageIcon className="w-7 h-7 text-primary" />
+                        </div>
+                        <p className="text-sm font-semibold text-gray-700">Clique para adicionar imagens</p>
+                        <p className="text-xs text-gray-400 mt-1">Selecione várias imagens de uma vez</p>
+                        <p className="text-[11px] text-gray-300 mt-0.5">PNG, JPG, WebP · até 10MB · máx. 10 imagens</p>
                         {isUploading && (
-                          <div className="w-full max-w-[200px] mt-3">
-                            <Progress value={progress} className="h-1" />
+                          <div className="w-full max-w-[200px] mt-4">
+                            <Progress value={progress} className="h-1.5" />
+                            <p className="text-[10px] text-gray-400 text-center mt-1">A fazer upload... {progress}%</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-3 gap-2">
+                          {((watchedValues as any).fileUrls || []).map((url: string, index: number) => (
+                            <div key={index} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-100 shadow-sm">
+                              <img src={url} alt={`Imagem ${index + 1}`} className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                              <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-[9px] text-white font-bold">{index + 1}</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const current = (form.getValues() as any).fileUrls || [];
+                                  const updated = current.filter((_: string, i: number) => i !== index);
+                                  form.setValue("fileUrls" as any, updated);
+                                  onGenerate({ ...form.getValues(), fileUrls: updated });
+                                }}
+                                className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+
+                          {((watchedValues as any).fileUrls || []).length < 10 && (
+                            <div
+                              className={`aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                              onClick={() => document.getElementById("images-upload-more")?.click()}
+                            >
+                              <input
+                                id="images-upload-more"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  const current: string[] = (form.getValues() as any).fileUrls || [];
+                                  const remaining = 10 - current.length;
+                                  const toUpload = files.slice(0, remaining);
+                                  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+                                  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+                                  setIsUploading(true);
+                                  const newUrls: string[] = [...current];
+                                  for (let i = 0; i < toUpload.length; i++) {
+                                    const file = toUpload[i];
+                                    setProgress(Math.round(((i) / toUpload.length) * 100));
+                                    const fd = new FormData();
+                                    fd.append("file", file);
+                                    fd.append("upload_preset", uploadPreset);
+                                    try {
+                                      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
+                                      const result = await res.json();
+                                      if (result.secure_url) {
+                                        let url = result.secure_url;
+                                        if (result.public_id && url.includes('.pdf')) {
+                                          url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v${result.version}/${result.public_id}`;
+                                        }
+                                        newUrls.push(url);
+                                      }
+                                    } catch {}
+                                  }
+                                  setProgress(100);
+                                  setIsUploading(false);
+                                  form.setValue("fileUrls" as any, newUrls);
+                                  onGenerate({ ...form.getValues(), fileUrls: newUrls });
+                                  e.target.value = "";
+                                }}
+                              />
+                              <Plus className="w-5 h-5 text-gray-400 mb-1" />
+                              <span className="text-[10px] text-gray-400 font-medium">Adicionar</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {isUploading && (
+                          <div className="space-y-1">
+                            <Progress value={progress} className="h-1.5" />
+                            <p className="text-[10px] text-gray-400 text-center">A fazer upload... {progress}%</p>
                           </div>
                         )}
                       </div>

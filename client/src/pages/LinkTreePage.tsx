@@ -1,7 +1,7 @@
 import { LinkTree } from "@/components/LinkTree";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { User, Smartphone, Globe, Briefcase, MapPin, FileText } from "lucide-react";
+import { User, Smartphone, Globe, Briefcase, MapPin, FileText, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LinkTreePage() {
@@ -34,51 +34,88 @@ export default function LinkTreePage() {
 
   if (data.type === 'pdf') {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10" />
-          <div className="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
-            <FileText className="w-12 h-12" />
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center">
+        <div className="w-full max-w-md min-h-screen flex flex-col">
+          {/* Header */}
+          <div className="pt-14 pb-8 px-6 text-center">
+            {data.companyName && (
+              <p className="text-slate-400 text-xs uppercase tracking-[0.2em] font-bold mb-2">{data.companyName}</p>
+            )}
+            <h1 className="text-white text-2xl font-bold leading-tight">{data.title || "Documento PDF"}</h1>
           </div>
-          <h3 className="text-2xl font-bold relative z-10">{data.title || "Documento PDF"}</h3>
-          <p className="text-lg opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
-        </div>
 
-        <div className="flex-1 bg-white -mt-12 rounded-t-[48px] p-6 max-w-2xl mx-auto w-full space-y-6 shadow-2xl relative z-20 overflow-y-auto">
-          {data.description && (
-            <div className="p-5 bg-slate-50 rounded-2xl">
-              <p className="text-xs text-muted-foreground uppercase font-bold mb-2">Descrição</p>
-              <p className="text-base text-slate-600 leading-relaxed break-words">{data.description}</p>
+          {/* Document preview card */}
+          <div className="mx-5 mb-5 bg-white rounded-3xl shadow-2xl overflow-hidden">
+            {/* PDF bar */}
+            <div className="bg-red-500 px-5 py-4 flex items-center gap-3">
+              <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-bold text-sm uppercase tracking-wider">PDF</p>
+                <p className="text-red-100 text-[11px]">Documento</p>
+              </div>
+              <div className="ml-auto flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+                <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+                <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+              </div>
             </div>
-          )}
 
-          {data.website && (
-            <a 
-              href={data.website.startsWith('http') ? data.website : `https://${data.website}`}
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                <Globe className="w-6 h-6" />
+            {/* Simulated page content */}
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <div className="h-3 bg-slate-800 rounded-full w-2/3" />
+                <div className="h-2 bg-slate-200 rounded-full w-full" />
+                <div className="h-2 bg-slate-200 rounded-full w-11/12" />
+                <div className="h-2 bg-slate-200 rounded-full w-4/5" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground uppercase font-bold">Site</p>
-                <p className="text-sm font-semibold text-primary truncate hover:underline">{data.website}</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="h-16 bg-slate-100 rounded-xl" />
+                <div className="h-16 bg-slate-100 rounded-xl" />
               </div>
-            </a>
-          )}
+              <div className="space-y-2">
+                <div className="h-2 bg-slate-100 rounded-full w-full" />
+                <div className="h-2 bg-slate-100 rounded-full w-11/12" />
+                <div className="h-2 bg-slate-100 rounded-full w-4/6" />
+                <div className="h-2 bg-slate-100 rounded-full w-full" />
+                <div className="h-2 bg-slate-100 rounded-full w-3/4" />
+              </div>
+            </div>
+          </div>
 
-          <div className="pt-8 text-center">
+          {/* Info + CTA card */}
+          <div className="mx-5 mb-5 bg-slate-800 rounded-3xl p-5 space-y-4">
+            {data.description && (
+              <p className="text-slate-300 text-sm leading-relaxed">{data.description}</p>
+            )}
+
+            {data.website && (
+              <a
+                href={data.website.startsWith('http') ? data.website : `https://${data.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-slate-700/60 hover:bg-slate-700 rounded-2xl px-4 py-3 transition-colors"
+              >
+                <Globe className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <span className="text-slate-300 text-sm truncate">{data.website}</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500 ml-auto flex-shrink-0" />
+              </a>
+            )}
+
             <a
               href={data.fileUrl || data.url}
-              download={(data.title || 'documento').toLowerCase().replace(/\s+/g, '-') + '.pdf'}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-16 rounded-3xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center text-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98] no-underline"
+              className="w-full min-h-14 rounded-2xl bg-red-500 hover:bg-red-600 active:scale-[0.98] text-white font-bold flex items-center justify-center gap-2.5 text-base transition-all shadow-lg shadow-red-500/30 px-4 py-3 text-center leading-snug"
             >
-              {data.buttonLabel || "Download PDF"}
+              <Download className="w-5 h-5 flex-shrink-0" />
+              <span>{data.buttonLabel || "Abrir PDF"}</span>
             </a>
+          </div>
+
+          <div className="mt-auto pb-8 text-center">
+            <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
           </div>
         </div>
       </div>

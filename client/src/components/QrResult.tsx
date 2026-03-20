@@ -380,73 +380,77 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         );
       }
 
-      case 'pdf':
+      case 'pdf': {
         const hasPdfData = data.fileUrl || data.url;
         return (
-          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-black/10" />
-              <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-2 border-white/30 relative z-10">
-                <FileText className="w-10 h-10" />
-              </div>
-              <h3 className="text-lg font-bold relative z-10">{data.title || "Documento PDF"}</h3>
-              <p className="text-xs opacity-90 relative z-10">{data.companyName || "Visualizador de PDF"}</p>
+          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 overflow-auto">
+            {/* Top header */}
+            <div className="bg-slate-900 pt-10 pb-6 px-5 flex flex-col items-center text-center">
+              {data.companyName && (
+                <p className="text-[10px] text-slate-400 uppercase tracking-[0.15em] font-bold mb-1">{data.companyName}</p>
+              )}
+              <h3 className="text-white text-sm font-bold leading-tight">{data.title || "Documento PDF"}</h3>
             </div>
-            
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-4 shadow-xl relative z-20 overflow-hidden flex flex-col">
-              <div className="space-y-3 flex-1 overflow-y-auto pr-2">
-                {data.description && (
-                  <div className="p-3 bg-slate-50 rounded-xl">
-                    <p className="text-[9px] text-muted-foreground uppercase font-bold mb-2">Descrição</p>
-                    <p className="text-xs text-slate-600 leading-relaxed break-words">{data.description}</p>
-                  </div>
-                )}
-                
-                {data.website && (
-                  <a 
-                    href={data.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
-                    data-testid="link-website-pdf"
-                  >
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                      <Globe className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-xs font-semibold truncate text-primary hover:underline">{data.website}</p>
-                    </div>
-                  </a>
-                )}
-              </div>
 
-              <div className="pt-4">
-                {hasPdfData ? (
-                  <a 
-                    href={data.fileUrl || data.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all cursor-pointer"
-                    data-testid="button-open-pdf"
-                  >
-                    {data.buttonLabel || "Download PDF"}
-                  </a>
-                ) : (
-                  <button 
-                    disabled
-                    className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold flex items-center justify-center transition-all opacity-50 cursor-not-allowed"
-                  >
-                    {data.buttonLabel || "Download PDF"}
-                  </button>
-                )}
-                {!hasPdfData && (
-                  <p className="text-[10px] text-center text-muted-foreground mt-2 italic">Aguardando upload do arquivo...</p>
-                )}
+            {/* Document card */}
+            <div className="mx-4 mb-4 bg-white rounded-2xl shadow-2xl overflow-hidden flex-shrink-0">
+              <div className="bg-red-500 px-4 py-3 flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/20 rounded flex items-center justify-center">
+                  <FileText className="w-3.5 h-3.5 text-white" />
+                </div>
+                <span className="text-white text-[11px] font-bold uppercase tracking-wider">PDF</span>
+                <div className="ml-auto flex gap-1">
+                  <div className="w-2 h-2 rounded-full bg-white/40" />
+                  <div className="w-2 h-2 rounded-full bg-white/40" />
+                  <div className="w-2 h-2 rounded-full bg-white/40" />
+                </div>
               </div>
+              <div className="p-4 space-y-3">
+                {/* Simulated document lines */}
+                <div className="space-y-2 py-2">
+                  <div className="h-2 bg-slate-200 rounded-full w-full" />
+                  <div className="h-2 bg-slate-200 rounded-full w-5/6" />
+                  <div className="h-2 bg-slate-200 rounded-full w-4/6" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="h-10 bg-slate-100 rounded-lg" />
+                  <div className="h-10 bg-slate-100 rounded-lg" />
+                </div>
+                <div className="space-y-1.5">
+                  <div className="h-2 bg-slate-100 rounded-full w-full" />
+                  <div className="h-2 bg-slate-100 rounded-full w-5/6" />
+                  <div className="h-2 bg-slate-100 rounded-full w-full" />
+                  <div className="h-2 bg-slate-100 rounded-full w-3/4" />
+                </div>
+              </div>
+            </div>
+
+            {/* Info card */}
+            <div className="mx-4 bg-slate-800 rounded-2xl p-4 space-y-3 flex-shrink-0">
+              {data.description && (
+                <p className="text-slate-300 text-[11px] leading-relaxed">{data.description}</p>
+              )}
+              {data.website && (
+                <div className="flex items-center gap-2 bg-slate-700/60 rounded-xl px-3 py-2">
+                  <Globe className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                  <span className="text-[10px] text-slate-400 truncate">{data.website}</span>
+                </div>
+              )}
+              <div className={`w-full min-h-10 rounded-xl flex items-center justify-center gap-1.5 px-3 py-2.5 ${hasPdfData ? 'bg-red-500' : 'bg-slate-600 opacity-60'}`}>
+                <FileText className="w-3.5 h-3.5 text-white flex-shrink-0" />
+                <span className="text-white text-[11px] font-bold text-center leading-snug">{data.buttonLabel || "Abrir PDF"}</span>
+              </div>
+              {!hasPdfData && (
+                <p className="text-[9px] text-center text-slate-500 italic">Aguardando upload do PDF...</p>
+              )}
+            </div>
+
+            <div className="py-4 text-center">
+              <p className="text-[8px] text-slate-600 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
             </div>
           </div>
         );
+      }
 
       case 'whatsapp':
         return (

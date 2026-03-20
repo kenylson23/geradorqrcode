@@ -304,9 +304,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                     </div>
                   )}
 
-                  <div className="w-full h-10 rounded-xl bg-[#1877F2] flex items-center justify-center gap-1.5">
-                    <span className="text-white text-[11px] font-bold">{data.buttonLabel || "Visitar Página do Facebook"}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-white" />
+                  <div className="w-full min-h-10 rounded-xl bg-[#1877F2] flex items-center justify-center gap-1.5 px-3 py-2">
+                    <span className="text-white text-[11px] font-bold text-center leading-snug">{data.buttonLabel || "Visitar Página do Facebook"}</span>
+                    <ArrowRight className="w-3 h-3 text-white flex-shrink-0" />
                   </div>
 
                   <div className="pt-1 border-t border-slate-100 text-center">

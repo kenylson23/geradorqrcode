@@ -54,11 +54,16 @@ export default function FacebookPage({ params }: FacebookPageProps) {
 
           <Button
             asChild
-            className="w-full h-12 rounded-xl text-sm font-bold bg-[#1877F2] hover:bg-[#166fe5] flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]"
+            className="w-full min-h-12 h-auto rounded-xl text-sm font-bold bg-[#1877F2] hover:bg-[#166fe5] shadow-md transition-all active:scale-[0.98]"
           >
-            <a href={facebookUrl} target="_blank" rel="noopener noreferrer">
-              {buttonLabel || "Visitar Página do Facebook"}
-              <ArrowRight className="w-4 h-4" />
+            <a
+              href={facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 py-3 px-4 whitespace-normal text-center"
+            >
+              <span className="leading-snug">{buttonLabel || "Visitar Página do Facebook"}</span>
+              <ArrowRight className="w-4 h-4 flex-shrink-0" />
             </a>
           </Button>
 

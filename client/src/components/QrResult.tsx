@@ -123,14 +123,23 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         const encodedImagesData = encodeURIComponent(JSON.stringify(imagesData));
         return `${window.location.origin}/i/${encodedImagesData}`;
       case "vcard":
-        const photo = data.photoUrl ? `\nPHOTO;VALUE=URI:${window.location.origin}${data.photoUrl}` : "";
-        const website = data.website ? `\nURL:${data.website}` : "";
-        const location = data.location ? `\nADR:;;${data.location};;;;` : "";
-        const org = data.companyName ? `\nORG:${data.companyName}` : (data.organization ? `\nORG:${data.organization}` : "");
-        const title = data.profession ? `\nTITLE:${data.profession}` : (data.jobTitle ? `\nTITLE:${data.jobTitle}` : "");
-        const summary = data.summary ? `\nNOTE:${data.summary}` : "";
-        const social = (data.socialLinks || []).map((s: any) => `\nX-SOCIAL-PROFILE;TYPE=${s.platform}:${s.url}`).join("");
-        return `BEGIN:VCARD\nVERSION:3.0\nN:${data.lastName || ""};${data.firstName || ""}\nFN:${data.firstName || ""} ${data.lastName || ""}\nTEL:${data.phone || ""}\nEMAIL:${data.email || ""}${org}${title}${photo}${website}${location}${summary}${social}\nEND:VCARD`;
+        const vcardData = {
+          type: 'vcard',
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          whatsappNumber: data.whatsappNumber,
+          email: data.email,
+          website: data.website,
+          location: data.location,
+          companyName: data.companyName || data.organization,
+          profession: data.profession || data.jobTitle,
+          summary: data.summary,
+          photoUrl: data.photoUrl,
+          socialLinks: data.socialLinks,
+        };
+        const encodedVcard = btoa(unescape(encodeURIComponent(JSON.stringify(vcardData))));
+        return `${window.location.origin}/c#${encodedVcard}`;
       default:
         return JSON.stringify(data);
     }

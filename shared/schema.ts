@@ -70,6 +70,7 @@ export const vcardQrSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   phone: z.string().min(1, "Phone is required"),
+  whatsappNumber: z.string().optional(),
   email: z.string().email().optional(),
   organization: z.string().optional(),
   jobTitle: z.string().optional(),

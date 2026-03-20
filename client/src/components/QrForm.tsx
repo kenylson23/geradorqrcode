@@ -225,7 +225,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, title: "", description: "", photoUrl: "", links: [{ label: "", url: "", imageUrl: "" }] };
         break;
       case "vcard":
-        defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", socialLinks: [] };
+        defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", whatsappNumber: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", photoUrl: "", socialLinks: [] };
         break;
       case "images":
         defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "" };
@@ -713,6 +713,35 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
               {activeType === "vcard" && (
                 <div className="space-y-6">
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className="relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden"
+                      onClick={() => document.getElementById('vcard-photo-upload')?.click()}
+                    >
+                      <input
+                        type="file"
+                        id="vcard-photo-upload"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, "photoUrl");
+                        }}
+                      />
+                      {watchedValues.photoUrl ? (
+                        <img src={watchedValues.photoUrl} className="w-full h-full object-cover" alt="Foto de Perfil" />
+                      ) : (
+                        <div className="flex flex-col items-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a4 4 0 100 8 4 4 0 000-8zM6 20v-1a6 6 0 0112 0v1" />
+                          </svg>
+                          <span className="text-[10px] font-medium">Foto</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -775,6 +804,22 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="whatsappNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">WhatsApp (opcional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="923 000 000" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="email"

@@ -127,6 +127,7 @@ export const businessQrSchema = z.object({
   email: z.string().email().optional(),
   website: z.string().url().optional(),
   phone: z.string().optional(),
+  whatsappNumber: z.string().optional(),
   openingHours: z.array(z.object({
     day: z.string(),
     hours: z.string()

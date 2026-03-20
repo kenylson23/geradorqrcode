@@ -92,6 +92,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           companyName: data.companyName,
           industry: data.industry,
           phone: data.phone,
+          whatsappNumber: data.whatsappNumber,
           email: data.email,
           website: data.website,
           location: data.location,

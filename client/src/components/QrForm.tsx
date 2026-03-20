@@ -231,7 +231,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "" };
         break;
       case "business":
-        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
+        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
         break;
     }
     form.reset(defaultValues);
@@ -1065,7 +1065,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">Telefone (Ligar)</FormLabel>
                           <FormControl>
                             <Input placeholder="923 000 000" {...field} value={field.value || ''} />
                           </FormControl>
@@ -1075,18 +1075,31 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     />
                     <FormField
                       control={form.control}
-                      name="email"
+                      name="whatsappNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                          <FormLabel className="text-sm font-medium text-gray-700">WhatsApp</FormLabel>
                           <FormControl>
-                            <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
+                            <Input placeholder="923 000 000" {...field} value={field.value || ''} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="contato@empresa.com" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}

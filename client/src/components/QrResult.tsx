@@ -118,7 +118,8 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           description: data.description,
           website: data.website,
           buttonLabel: data.buttonLabel,
-          fileUrl: data.fileUrl
+          fileUrl: data.fileUrl,
+          fileUrls: data.fileUrls && data.fileUrls.length > 0 ? data.fileUrls : (data.fileUrl ? [data.fileUrl] : [])
         };
         const encodedImagesData = encodeURIComponent(JSON.stringify(imagesData));
         return `${window.location.origin}/i/${encodedImagesData}`;

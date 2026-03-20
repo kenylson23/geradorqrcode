@@ -228,7 +228,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, firstName: "", lastName: "", phone: "", whatsappNumber: "", email: "", organization: "", jobTitle: "", website: "", location: "", companyName: "", profession: "", summary: "", photoUrl: "", socialLinks: [] };
         break;
       case "images":
-        defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "" };
+        defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "", fileUrls: [] };
         break;
       case "business":
         defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
@@ -918,109 +918,149 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
               {activeType === "images" && (
                 <div className="space-y-6">
-                  <div className="space-y-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">Informações da imagem</FormLabel>
-                    <div className="grid grid-cols-1 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="title"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Título da galeria de imagens/álbum</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Exemplo: Minha galeria" {...field} value={field.value || ""} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Descrição da galeria de imagens/álbum</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Por exemplo, fotos de verão" 
-                                {...field} 
-                                value={field.value || ""} 
-                                className="min-h-[100px] resize-none"
-                              />
-                            </FormControl>
-                            <div className="text-[10px] text-right text-muted-foreground">
-                              {(field.value || "").length} / 4000
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <div className="space-y-2">
-                        <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Upload da Imagem</FormLabel>
-                        <div 
-                          className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
-                          onClick={() => document.getElementById("image-upload")?.click()}
-                        >
-                          <input
-                            id="image-upload"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleFileUpload(file, "fileUrl");
-                            }}
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Título da Galeria</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Fotos de Verão" {...field} value={field.value || ""} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Descrição</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Descrição opcional da galeria"
+                            {...field}
+                            value={field.value || ""}
+                            className="min-h-[80px] resize-none"
                           />
-                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                            <Upload className="w-6 h-6 text-primary" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-3">
+                    <FormLabel className="text-sm font-medium text-gray-700">
+                      Imagens ({((watchedValues as any).fileUrls || []).length}/10)
+                    </FormLabel>
+
+                    {((watchedValues as any).fileUrls || []).length > 0 && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {((watchedValues as any).fileUrls || []).map((url: string, index: number) => (
+                          <div key={index} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-100">
+                            <img src={url} alt={`Imagem ${index + 1}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const current = (form.getValues() as any).fileUrls || [];
+                                const updated = current.filter((_: string, i: number) => i !== index);
+                                form.setValue("fileUrls" as any, updated);
+                                onGenerate({ ...form.getValues(), fileUrls: updated });
+                              }}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold"
+                            >
+                              ×
+                            </button>
                           </div>
-                          <p className="text-sm font-medium text-gray-700">Clique para carregar imagem</p>
-                          <p className="text-xs text-gray-400 mt-1">PNG, JPG ou GIF até 10MB</p>
-                          
-                          {isUploading && (
-                            <div className="w-full max-w-[200px] mt-4">
-                              <Progress value={progress} className="h-1" />
-                            </div>
-                          )}
-                          
-                          {(watchedValues as any).fileUrl && !isUploading && (
-                            <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-100 flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                              <span className="text-[10px] font-medium text-green-700">Upload concluído</span>
-                            </div>
-                          )}
-                        </div>
+                        ))}
                       </div>
+                    )}
 
-                      <FormField
-                        control={form.control}
-                        name="website"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Site</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Exemplo: https://www.mypictures.com/" {...field} value={field.value || ""} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
+                    {((watchedValues as any).fileUrls || []).length < 10 && (
+                      <div
+                        className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                        onClick={() => document.getElementById("images-upload")?.click()}
+                      >
+                        <input
+                          id="images-upload"
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = Array.from(e.target.files || []);
+                            const current: string[] = (form.getValues() as any).fileUrls || [];
+                            const remaining = 10 - current.length;
+                            const toUpload = files.slice(0, remaining);
+                            const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+                            const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+                            setIsUploading(true);
+                            const newUrls: string[] = [...current];
+                            for (let i = 0; i < toUpload.length; i++) {
+                              const file = toUpload[i];
+                              setProgress(Math.round(((i) / toUpload.length) * 100));
+                              const fd = new FormData();
+                              fd.append("file", file);
+                              fd.append("upload_preset", uploadPreset);
+                              try {
+                                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
+                                const result = await res.json();
+                                if (result.secure_url) {
+                                  let url = result.secure_url;
+                                  if (result.public_id && url.includes('.pdf')) {
+                                    url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v${result.version}/${result.public_id}`;
+                                  }
+                                  newUrls.push(url);
+                                }
+                              } catch {}
+                            }
+                            setProgress(100);
+                            setIsUploading(false);
+                            form.setValue("fileUrls" as any, newUrls);
+                            onGenerate({ ...form.getValues(), fileUrls: newUrls });
+                            e.target.value = "";
+                          }}
+                        />
+                        <Upload className="w-6 h-6 text-primary mb-2" />
+                        <p className="text-sm font-medium text-gray-700">Clique para adicionar imagens</p>
+                        <p className="text-xs text-gray-400 mt-1">PNG, JPG até 10MB · máx. 10 imagens</p>
+                        {isUploading && (
+                          <div className="w-full max-w-[200px] mt-3">
+                            <Progress value={progress} className="h-1" />
+                          </div>
                         )}
-                      />
+                      </div>
+                    )}
+                  </div>
 
-                      <FormField
-                        control={form.control}
-                        name="buttonLabel"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-xs text-muted-foreground uppercase font-bold">Texto do Botão</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Exemplo: Ver mais" {...field} value={field.value || ""} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Link do Botão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://meusite.com" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="buttonLabel"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Texto do Botão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: Ver mais" {...field} value={field.value || ""} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
               )}

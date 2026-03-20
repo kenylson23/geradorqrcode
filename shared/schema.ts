@@ -92,6 +92,7 @@ export const imagesQrSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   fileUrl: z.string().optional(),
+  fileUrls: z.array(z.string()).optional(),
   website: z.string().optional(),
   buttonLabel: z.string().optional(),
 });

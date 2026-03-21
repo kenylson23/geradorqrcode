@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface QrResultProps {
   value: any;
@@ -15,6 +15,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   const [showQr, setShowQr] = useState(false);
   const [simCurrent, setSimCurrent] = useState(0);
   const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
+  const simContainerRef = useRef<HTMLDivElement>(null);
 
   const data = typeof value === 'object' ? value : null;
   const simImagesKey = data?.fileUrls?.length ?? 0;
@@ -24,14 +25,16 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   // If value is an object with type 'links', we show LinkTree preview
   const isLinkTree = typeof value === 'object' && value?.type === 'links';
 
-  // Handle keyboard scroll with arrow keys
+  // Handle keyboard scroll with arrow keys — scrolls the simulation's inner container
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        const scrollAmount = 60; // pixels to scroll
-        const direction = e.key === 'ArrowUp' ? -1 : 1;
-        window.scrollBy(0, direction * scrollAmount);
+        const scrollable = simContainerRef.current?.querySelector('.sim-scroll') as HTMLElement | null;
+        if (scrollable) {
+          e.preventDefault();
+          const direction = e.key === 'ArrowUp' ? -1 : 1;
+          scrollable.scrollBy({ top: direction * 80, behavior: 'smooth' });
+        }
       }
     };
 
@@ -286,7 +289,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
       case 'facebook': {
         const fbSimUrl = (typeof value === 'object' ? (value.url || "") : value) || "";
         return (
-          <div className="w-full h-full bg-[#1877F2] flex flex-col animate-in fade-in duration-500 overflow-auto">
+          <div className="w-full h-full bg-[#1877F2] flex flex-col animate-in fade-in duration-500 sim-scroll">
             <div className="flex-1 flex flex-col items-center justify-center p-6">
               <div className="w-full bg-white rounded-3xl overflow-hidden shadow-xl">
                 {/* Header */}
@@ -333,7 +336,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
       case 'instagram': {
         const igSimUrl = (typeof value === 'object' ? (value.url || "") : value) || "";
         return (
-          <div className="w-full h-full flex flex-col animate-in fade-in duration-500 overflow-auto"
+          <div className="w-full h-full flex flex-col animate-in fade-in duration-500 sim-scroll"
             style={{ background: "linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)" }}>
             <div className="flex-1 flex flex-col items-center justify-center p-6">
               <div className="w-full bg-white rounded-3xl overflow-hidden shadow-xl">
@@ -383,7 +386,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
       case 'pdf': {
         const hasPdfData = data.fileUrl || data.url;
         return (
-          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 overflow-auto">
+          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 sim-scroll">
             {/* Top header */}
             <div className="bg-slate-900 pt-10 pb-6 px-5 flex flex-col items-center text-center">
               {data.companyName && (
@@ -670,7 +673,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           : data.fileUrl ? [data.fileUrl] : [];
         const simIsSingle = simImages.length <= 1;
         return (
-          <div className="w-full h-full bg-slate-950 flex flex-col animate-in fade-in duration-500 overflow-auto">
+          <div className="w-full h-full bg-slate-950 flex flex-col animate-in fade-in duration-500 sim-scroll">
             {/* Image area */}
             {simImages.length > 0 ? (
               <div className="relative w-full bg-slate-900 flex-shrink-0">
@@ -801,7 +804,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   return (
     <div className="flex flex-col items-center gap-6 w-full h-full overflow-hidden">
       <div className="flex-1 w-full relative">
-        <div className={`absolute inset-0 flex flex-col transition-all duration-500 ${effectiveShowQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+        <div ref={simContainerRef} className={`absolute inset-0 flex flex-col transition-all duration-500 ${effectiveShowQr ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
           {renderSimulation()}
         </div>
 

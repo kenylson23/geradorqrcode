@@ -92,4 +92,13 @@
   .input-field {
     @apply h-12 px-4 rounded-xl border-2 border-border bg-background focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 outline-none;
   }
+
+  .sim-scroll {
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .sim-scroll::-webkit-scrollbar {
+    display: none;
+  }
 }

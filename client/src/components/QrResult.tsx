@@ -487,86 +487,124 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
       case 'vcard':
         return (
-          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 sim-scroll">
-            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center flex-shrink-0">
-              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30 overflow-hidden">
+          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 sim-scroll">
+            {/* Dark hero */}
+            <div className="relative px-5 pt-10 pb-16 flex flex-col items-center text-center flex-shrink-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900" />
+              {/* Avatar */}
+              <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mb-4 shadow-2xl relative z-10 overflow-hidden">
                 {data.photoUrl ? (
                   <img src={data.photoUrl} className="w-full h-full object-cover" alt="Profile" />
                 ) : (
-                  <User className="w-12 h-12" />
+                  <User className="w-9 h-9 text-slate-300" />
                 )}
               </div>
-              <h3 className="text-xl font-bold">{data.firstName} {data.lastName}</h3>
-              <p className="text-sm opacity-90">{data.profession || data.jobTitle}</p>
+              <h3 className="text-white text-lg font-bold relative z-10 leading-tight">
+                {(data.firstName || data.lastName) ? `${data.firstName || ''} ${data.lastName || ''}`.trim() : "Nome Completo"}
+              </h3>
+              {(data.profession || data.jobTitle) && (
+                <p className="text-slate-400 text-xs mt-1 relative z-10">{data.profession || data.jobTitle}</p>
+              )}
+              {(data.companyName || data.organization) && (
+                <span className="mt-2 inline-flex items-center gap-1.5 bg-white/10 text-white/70 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full relative z-10">
+                  <Briefcase className="w-2.5 h-2.5" />
+                  {data.companyName || data.organization}
+                </span>
+              )}
             </div>
-            <div className="bg-white -mt-12 rounded-t-[32px] p-6 space-y-4 shadow-xl">
-              <div className="space-y-4">
-                {data.phone && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Smartphone className="w-5 h-5" />
+
+            {/* White card */}
+            <div className="bg-white rounded-t-[28px] -mt-8 relative z-10 px-5 pt-5 pb-6 space-y-4 shadow-2xl">
+
+              {/* Quick action pills */}
+              {(data.phone || data.email) && (
+                <div className="flex gap-2 flex-wrap">
+                  {data.phone && (
+                    <div className="flex items-center gap-1.5 bg-green-50 text-green-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <Phone className="w-3 h-3" />
+                      <span>Ligar</span>
                     </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Telemóvel</p>
-                      <p className="text-sm font-semibold">{data.phone}</p>
+                  )}
+                  {(data.whatsappNumber || data.phone) && (
+                    <div className="flex items-center gap-1.5 bg-green-500 text-white rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <MessageCircle className="w-3 h-3" />
+                      <span>WhatsApp</span>
+                    </div>
+                  )}
+                  {data.email && (
+                    <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <Mail className="w-3 h-3" />
+                      <span>Email</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Contact rows */}
+              <div className="space-y-2.5">
+                {data.phone && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Telemóvel</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.phone}</p>
                     </div>
                   </div>
                 )}
                 {data.email && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4 text-blue-600" />
                     </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
-                      <p className="text-sm font-semibold">{data.email}</p>
-                    </div>
-                  </div>
-                )}
-                {(data.companyName || data.organization) && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Briefcase className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Empresa</p>
-                      <p className="text-sm font-semibold">{data.companyName || data.organization}</p>
-                    </div>
-                  </div>
-                )}
-                {data.location && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Localização</p>
-                      <p className="text-sm font-semibold">{data.location}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Email</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.email}</p>
                     </div>
                   </div>
                 )}
                 {data.website && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-4 h-4 text-violet-600" />
                     </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Website</p>
-                      <p className="text-sm font-semibold">{data.website}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Website</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.website}</p>
                     </div>
                   </div>
                 )}
-                {data.summary && (
-                  <div className="p-4 bg-slate-50 rounded-2xl">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Sobre</p>
-                    <p className="text-sm text-slate-600 leading-relaxed">{data.summary}</p>
+                {data.location && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Localização</p>
+                      <p className="text-xs font-semibold text-slate-800 leading-snug">{data.location}</p>
+                    </div>
                   </div>
                 )}
               </div>
-              <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold shadow-lg shadow-[#2ECC71]/20">
+
+              {/* Summary */}
+              {data.summary && (
+                <div className="bg-slate-50 rounded-2xl p-3">
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide mb-1.5">Sobre</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">{data.summary}</p>
+                </div>
+              )}
+
+              {/* Save button */}
+              <button className="w-full min-h-11 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-green-500/20 transition-all">
+                <User className="w-4 h-4" />
                 Salvar Contacto
-              </Button>
-              <div className="pb-4" />
+              </button>
+
+              <div className="text-center pt-1 pb-2">
+                <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+              </div>
             </div>
           </div>
         );

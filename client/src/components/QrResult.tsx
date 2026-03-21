@@ -229,59 +229,105 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         const urlFullUrl = urlValue ? (urlValue.startsWith('http') ? urlValue : `https://${urlValue}`) : "";
         
         return (
-          <div className="w-full h-full bg-white flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            {/* Browser Header Area - More like the mockup */}
-            <div className="bg-[#2ECC71] pt-12 pb-4 px-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between px-2 text-white">
-                <span className="text-[12px] font-bold">9:41</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-0.5 items-end h-3">
-                    <div className="w-0.5 h-1 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-1.5 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2 bg-white rounded-full"></div>
-                    <div className="w-0.5 h-2.5 bg-white/40 rounded-full"></div>
-                  </div>
-                  <div className="w-3.5 h-3.5 flex items-center justify-center">
-                    <div className="w-3 h-2 border border-white rounded-sm relative">
-                      <div className="absolute inset-0 bg-white m-[1px] w-[80%]"></div>
-                      <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-0.5 h-1 bg-white rounded-r-sm"></div>
-                    </div>
+          <div className="w-full h-full bg-[#F2F2F7] flex flex-col animate-in fade-in duration-500 overflow-hidden">
+            {/* Status bar */}
+            <div className="bg-[#F2F2F7] pt-8 pb-1 px-5 flex items-center justify-between flex-shrink-0">
+              <span className="text-[11px] font-bold text-slate-900">9:41</span>
+              <div className="flex items-center gap-1.5">
+                <div className="flex gap-[2px] items-end h-2.5">
+                  <div className="w-[3px] h-[5px] bg-slate-900 rounded-sm"></div>
+                  <div className="w-[3px] h-[7px] bg-slate-900 rounded-sm"></div>
+                  <div className="w-[3px] h-[9px] bg-slate-900 rounded-sm"></div>
+                  <div className="w-[3px] h-[10px] bg-slate-400 rounded-sm"></div>
+                </div>
+                <svg className="w-3.5 h-3" viewBox="0 0 16 12" fill="currentColor">
+                  <path d="M8 2.4C5.6 2.4 3.5 3.4 2 5L0 3C2.1 1.1 4.9 0 8 0s5.9 1.1 8 3l-2 2C12.5 3.4 10.4 2.4 8 2.4zM8 6.8c-1.2 0-2.3.5-3.1 1.2L3 6.1C4.2 4.9 6 4.2 8 4.2s3.8.7 5 1.9L11.1 8C10.3 7.3 9.2 6.8 8 6.8zM8 11.2c-.8 0-1.5-.3-2-.8L8 8l2 2.4c-.5.5-1.2.8-2 .8z"/>
+                </svg>
+                <div className="flex items-center gap-0.5">
+                  <div className="w-5 h-2.5 border border-slate-900 rounded-[2px] relative">
+                    <div className="absolute inset-[1px] right-[3px] bg-slate-900 rounded-[1px]"></div>
+                    <div className="absolute right-[-2px] top-[3px] w-[2px] h-[4px] bg-slate-900 rounded-r-sm"></div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="bg-white/20 backdrop-blur-md rounded-2xl py-2 px-4 flex items-center gap-3 border border-white/10">
-                <Globe className="w-4 h-4 text-white" />
-                <span className="text-[13px] text-white font-medium truncate flex-1">{urlValue || "Ex: https://seusite.com"}</span>
               </div>
             </div>
-            
-            {/* Content Area */}
-            <div className="flex-1 bg-white flex flex-col relative overflow-hidden">
+
+            {/* Browser address bar */}
+            <div className="bg-[#F2F2F7] px-3 pb-2 flex-shrink-0">
+              <div className="bg-white rounded-xl px-3 py-2 flex items-center gap-2 shadow-sm border border-slate-200/80">
+                {urlFullUrl ? (
+                  <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                  </div>
+                ) : (
+                  <Globe className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                )}
+                <span className={`text-[12px] flex-1 truncate ${urlFullUrl ? 'text-slate-700 font-medium' : 'text-slate-400'}`}>
+                  {urlValue || "seusite.com"}
+                </span>
+                <div className="w-3.5 h-3.5 flex-shrink-0">
+                  <MoreHorizontal className="w-3.5 h-3.5 text-slate-400" />
+                </div>
+              </div>
+            </div>
+
+            {/* Content area */}
+            <div className="flex-1 relative overflow-hidden bg-white">
               {!urlFullUrl ? (
-                <div className="p-4 space-y-4">
-                  <div className="w-full aspect-[4/5] bg-slate-200 rounded-lg flex items-center justify-center">
-                    <Globe className="w-12 h-12 text-slate-400" />
+                <div className="p-4 space-y-3 animate-pulse">
+                  {/* Hero skeleton */}
+                  <div className="w-full h-28 bg-slate-200 rounded-xl" />
+                  {/* Nav skeleton */}
+                  <div className="flex gap-2">
+                    <div className="h-6 bg-slate-100 rounded-lg flex-1" />
+                    <div className="h-6 bg-slate-100 rounded-lg flex-1" />
+                    <div className="h-6 bg-slate-100 rounded-lg flex-1" />
+                  </div>
+                  {/* Content lines */}
+                  <div className="space-y-2 pt-1">
+                    <div className="h-2.5 bg-slate-100 rounded-full w-2/3" />
+                    <div className="h-2 bg-slate-100 rounded-full w-full" />
+                    <div className="h-2 bg-slate-100 rounded-full w-11/12" />
+                    <div className="h-2 bg-slate-100 rounded-full w-4/5" />
+                  </div>
+                  {/* Cards row */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="h-16 bg-slate-100 rounded-xl" />
+                    <div className="h-16 bg-slate-100 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-slate-100 rounded-full w-full"></div>
-                    <div className="h-4 bg-slate-100 rounded-full w-5/6"></div>
-                    <div className="h-4 bg-slate-100 rounded-full w-4/6 mx-auto mt-4"></div>
+                    <div className="h-2 bg-slate-100 rounded-full w-full" />
+                    <div className="h-2 bg-slate-100 rounded-full w-3/4" />
                   </div>
-                  <div className="mt-8 p-4 bg-slate-100 rounded-lg h-16 flex items-center justify-center">
-                    <div className="h-4 bg-slate-300 rounded-full w-32"></div>
-                  </div>
+                  <div className="h-8 bg-slate-200 rounded-xl w-2/5 mx-auto" />
                 </div>
               ) : (
-                <div className="absolute inset-0 bg-white">
-                  <iframe 
-                    src={urlFullUrl} 
-                    className="w-full h-full border-0"
-                    title="Safari Preview"
-                    sandbox="allow-scripts allow-same-origin allow-forms"
-                  />
-                </div>
+                <iframe
+                  src={urlFullUrl}
+                  className="w-full h-full border-0"
+                  title="Browser Preview"
+                  sandbox="allow-scripts allow-same-origin allow-forms"
+                />
               )}
+            </div>
+
+            {/* Bottom browser toolbar */}
+            <div className="bg-[#F2F2F7] border-t border-slate-200/80 px-4 py-2 flex items-center justify-between flex-shrink-0">
+              <ChevronLeft className="w-5 h-5 text-slate-400" />
+              <ChevronRight className="w-5 h-5 text-slate-300" />
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-4 h-4 border-2 border-slate-400 rounded-sm" />
+              </div>
+              <div className="flex flex-col items-center gap-[2px]">
+                <div className="w-3.5 h-[1.5px] bg-slate-400 rounded-full" />
+                <div className="w-3.5 h-[1.5px] bg-slate-400 rounded-full" />
+                <div className="w-3.5 h-[1.5px] bg-slate-400 rounded-full" />
+              </div>
+              <div className="w-5 h-5 flex items-center justify-center">
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-400 flex items-center justify-center">
+                  <User className="w-2 h-2 text-slate-400" />
+                </div>
+              </div>
             </div>
           </div>
         );

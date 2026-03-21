@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState, useEffect, useRef } from "react";
@@ -573,94 +573,132 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
       case 'business':
         return (
-          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 sim-scroll">
-            <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden flex-shrink-0">
-              <div className="absolute inset-0 bg-black/10" />
-              <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10 overflow-hidden">
+          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 sim-scroll">
+            {/* Dark hero header */}
+            <div className="relative px-5 pt-10 pb-16 flex flex-col items-center text-center flex-shrink-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900" />
+              {/* Logo */}
+              <div className="w-20 h-20 rounded-2xl bg-white flex items-center justify-center mb-4 shadow-2xl relative z-10 overflow-hidden border border-white/10">
                 {data.photoUrl ? (
                   <img src={data.photoUrl} className="w-full h-full object-cover" alt="Logo" />
                 ) : (
-                  <Search className="w-12 h-12 text-primary/20" />
+                  <Briefcase className="w-9 h-9 text-slate-300" />
                 )}
               </div>
-              <h3 className="text-xl font-bold relative z-10">{data.companyName || "Nome da Empresa"}</h3>
-              <p className="text-sm opacity-90 relative z-10">{data.industry || "Ramo de Atividade"}</p>
-            </div>
-            
-            <div className="bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 pb-8">
-              {data.caption && (
-                <p className="text-sm text-slate-600 text-center italic leading-relaxed">"{data.caption}"</p>
+              <h3 className="text-white text-lg font-bold relative z-10 leading-tight">{data.companyName || "Nome da Empresa"}</h3>
+              {data.industry && (
+                <span className="mt-2 inline-block bg-white/10 text-white/80 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full relative z-10">{data.industry}</span>
               )}
-              
+            </div>
+
+            {/* White content card */}
+            <div className="bg-white rounded-t-[28px] -mt-8 relative z-10 px-5 pt-5 pb-6 space-y-5 shadow-2xl">
+
+              {/* Caption */}
+              {data.caption && (
+                <div className="border-l-4 border-primary pl-3 py-1">
+                  <p className="text-xs text-slate-500 italic leading-relaxed">"{data.caption}"</p>
+                </div>
+              )}
+
+              {/* Quick action pills */}
+              {(data.phone || data.email || data.website) && (
+                <div className="flex gap-2 flex-wrap">
+                  {data.phone && (
+                    <div className="flex items-center gap-1.5 bg-green-50 text-green-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <Phone className="w-3 h-3" />
+                      <span>Ligar</span>
+                    </div>
+                  )}
+                  {(data.whatsappNumber || data.phone) && (
+                    <div className="flex items-center gap-1.5 bg-green-500 text-white rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <MessageCircle className="w-3 h-3" />
+                      <span>WhatsApp</span>
+                    </div>
+                  )}
+                  {data.email && (
+                    <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <Mail className="w-3 h-3" />
+                      <span>Email</span>
+                    </div>
+                  )}
+                  {data.website && (
+                    <div className="flex items-center gap-1.5 bg-slate-100 text-slate-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
+                      <ExternalLink className="w-3 h-3" />
+                      <span>Site</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Contact rows */}
+              <div className="space-y-2.5">
+                {data.phone && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Telefone</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.phone}</p>
+                    </div>
+                  </div>
+                )}
+                {data.email && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Email</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.email}</p>
+                    </div>
+                  </div>
+                )}
+                {data.website && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
+                      <Globe className="w-4 h-4 text-violet-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Website</p>
+                      <p className="text-xs font-semibold text-slate-800 truncate">{data.website}</p>
+                    </div>
+                  </div>
+                )}
+                {data.location && (
+                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Endereço</p>
+                      <p className="text-xs font-semibold text-slate-800 leading-snug">{data.location}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Opening hours */}
               {data.openingHours && data.openingHours.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold px-1">Horário de Funcionamento</p>
-                  <div className="bg-slate-50 rounded-2xl p-4 space-y-2">
+                <div className="bg-slate-50 rounded-2xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Horário</p>
+                  </div>
+                  <div className="space-y-2">
                     {data.openingHours.map((oh: any, i: number) => (
-                      <div key={i} className="flex justify-between text-sm">
-                        <span className="text-slate-500">{oh.day}</span>
-                        <span className="font-semibold text-slate-700">{oh.hours}</span>
+                      <div key={i} className="flex justify-between items-center">
+                        <span className="text-[11px] text-slate-500">{oh.day}</span>
+                        <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">{oh.hours}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              <div className="space-y-3">
-                <p className="text-[10px] text-muted-foreground uppercase font-bold px-1">Contato e Localização</p>
-                {data.phone && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Smartphone className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Telefone</p>
-                      <p className="text-sm font-semibold truncate">{data.phone}</p>
-                    </div>
-                  </div>
-                )}
-                {data.email && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
-                      <p className="text-sm font-semibold truncate">{data.email}</p>
-                    </div>
-                  </div>
-                )}
-                {data.website && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Globe className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Site</p>
-                      <p className="text-sm font-semibold truncate">{data.website}</p>
-                    </div>
-                  </div>
-                )}
-                {data.location && (
-                  <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                      <Search className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold">Endereço</p>
-                      <p className="text-sm font-semibold leading-tight">{data.location}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button className="rounded-2xl bg-primary font-bold h-12">
-                  Contato
-                </Button>
-                <Button variant="outline" className="rounded-2xl border-2 font-bold h-12">
-                  Visitar
-                </Button>
+              <div className="pt-1 pb-2 text-center">
+                <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
               </div>
             </div>
           </div>

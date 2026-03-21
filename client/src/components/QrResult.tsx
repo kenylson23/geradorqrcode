@@ -212,7 +212,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
     if (isLinkTreeData && hasMinData) {
       return (
-        <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
+        <div className="w-full h-full bg-white animate-in fade-in slide-in-from-bottom-4 duration-500 sim-scroll">
           <LinkTree 
             title={data.title} 
             description={data.description} 
@@ -487,8 +487,8 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
 
       case 'vcard':
         return (
-          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center">
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 sim-scroll">
+            <div className="bg-[#2ECC71] pt-12 pb-20 px-6 text-white flex flex-col items-center text-center flex-shrink-0">
               <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-4 border-4 border-white/30 overflow-hidden">
                 {data.photoUrl ? (
                   <img src={data.photoUrl} className="w-full h-full object-cover" alt="Profile" />
@@ -499,8 +499,8 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <h3 className="text-xl font-bold">{data.firstName} {data.lastName}</h3>
               <p className="text-sm opacity-90">{data.profession || data.jobTitle}</p>
             </div>
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl overflow-hidden">
-              <div className="space-y-4 pb-20">
+            <div className="bg-white -mt-12 rounded-t-[32px] p-6 space-y-4 shadow-xl">
+              <div className="space-y-4">
                 {data.phone && (
                   <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -563,19 +563,18 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
                 )}
               </div>
-              <div className="absolute bottom-4 left-6 right-6">
-                <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold shadow-lg shadow-[#2ECC71]/20">
-                  Salvar Contacto
-                </Button>
-              </div>
+              <Button className="w-full h-12 rounded-2xl bg-[#2ECC71] hover:bg-[#27ae60] font-bold shadow-lg shadow-[#2ECC71]/20">
+                Salvar Contacto
+              </Button>
+              <div className="pb-4" />
             </div>
           </div>
         );
 
       case 'business':
         return (
-          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 overflow-hidden">
-            <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden">
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 sim-scroll">
+            <div className="bg-primary pt-12 pb-20 px-6 text-white flex flex-col items-center text-center relative overflow-hidden flex-shrink-0">
               <div className="absolute inset-0 bg-black/10" />
               <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-white shadow-xl relative z-10 overflow-hidden">
                 {data.photoUrl ? (
@@ -588,7 +587,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               <p className="text-sm opacity-90 relative z-10">{data.industry || "Ramo de Atividade"}</p>
             </div>
             
-            <div className="flex-1 bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 overflow-hidden">
+            <div className="bg-white -mt-12 rounded-t-[32px] p-6 space-y-6 shadow-xl relative z-20 pb-8">
               {data.caption && (
                 <p className="text-sm text-slate-600 text-center italic leading-relaxed">"{data.caption}"</p>
               )}

@@ -134,7 +134,11 @@ export const businessQrSchema = z.object({
   whatsappNumber: z.string().optional(),
   openingHours: z.array(z.object({
     day: z.string(),
-    hours: z.string()
+    enabled: z.boolean().optional(),
+    slots: z.array(z.object({
+      from: z.string(),
+      to: z.string()
+    })).optional()
   })).optional(),
   socialLinks: z.array(z.object({
     platform: z.string(),

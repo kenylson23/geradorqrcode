@@ -1,7 +1,7 @@
 import { LinkTree } from "@/components/LinkTree";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { User, Smartphone, Globe, Briefcase, MapPin, FileText, Download, ExternalLink } from "lucide-react";
+import { User, Smartphone, Globe, Briefcase, MapPin, FileText, Download, ExternalLink, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LinkTreePage() {
@@ -266,6 +266,29 @@ export default function LinkTreePage() {
               )}
             </div>
             
+            {data.openingHours && data.openingHours.some((d: any) => d.enabled) && (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock className="w-4 h-4 text-slate-400" />
+                  <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">Horário de Funcionamento</p>
+                </div>
+                <div className="bg-slate-50 rounded-2xl overflow-hidden divide-y divide-slate-100">
+                  {data.openingHours.filter((d: any) => d.enabled).map((dayEntry: any) => (
+                    <div key={dayEntry.day} className="flex items-center gap-3 px-4 py-3">
+                      <span className="w-28 text-sm font-semibold text-slate-800 flex-shrink-0">{dayEntry.day}</span>
+                      <div className="flex-1 space-y-1">
+                        {(dayEntry.slots || []).filter((s: any) => s.from || s.to).map((slot: any, i: number) => (
+                          <p key={i} className="text-sm text-slate-600">
+                            {slot.from || "--:--"} – {slot.to || "--:--"}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="pt-6 border-t border-slate-100 text-center">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
             </div>

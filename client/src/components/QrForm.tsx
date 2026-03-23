@@ -37,7 +37,9 @@ import {
   Upload,
   RefreshCw,
   Plus,
-  Trash2
+  Trash2,
+  Clock,
+  ChevronDown
 } from "lucide-react";
 import { SiTiktok, SiYoutube, SiInstagram, SiFacebook, SiWhatsapp } from "react-icons/si";
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
@@ -89,6 +91,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
   const [activeType, setActiveType] = useState<QrType | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState("244");
   const [isUploading, setIsUploading] = useState(false);
+  const [openingHoursOpen, setOpeningHoursOpen] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const form = useForm<QrCodeForm>({
@@ -240,7 +243,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "", fileUrls: [] };
         break;
       case "business":
-        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", mapsUrl: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
+        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", mapsUrl: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [
+          { day: "Segunda-Feira", enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Terça-Feira",   enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Quarta-Feira",  enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Quinta-Feira",  enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Sexta-Feira",   enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Sábado",        enabled: false, slots: [{ from: "", to: "" }] },
+          { day: "Domingo",       enabled: false, slots: [{ from: "", to: "" }] },
+        ], socialLinks: [] };
         break;
     }
     form.reset(defaultValues);
@@ -1470,6 +1481,112 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </FormItem>
                       )}
                     />
+                  </div>
+
+                  {/* Opening Hours */}
+                  <div className="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                      type="button"
+                      className="w-full flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                      onClick={() => setOpeningHoursOpen(prev => !prev)}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-4 h-4 text-gray-500" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-semibold text-gray-900">Horário de funcionamento</p>
+                        <p className="text-xs text-gray-500">Horário comercial para cada dia da semana.</p>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openingHoursOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {openingHoursOpen && (
+                      <div className="divide-y divide-gray-100">
+                        {(watchedValues.openingHours || []).map((dayEntry: any, dayIdx: number) => (
+                          <div key={dayEntry.day} className="px-4 py-3 bg-white">
+                            <div className="flex items-start gap-3">
+                              <input
+                                type="checkbox"
+                                checked={dayEntry.enabled || false}
+                                onChange={(e) => {
+                                  const newHours = [...(watchedValues.openingHours || [])];
+                                  newHours[dayIdx] = { ...newHours[dayIdx], enabled: e.target.checked };
+                                  form.setValue("openingHours" as any, newHours);
+                                }}
+                                className="mt-2.5 w-4 h-4 rounded border-gray-300 accent-primary cursor-pointer"
+                              />
+                              <span className="w-28 pt-2 text-sm font-semibold text-gray-800 flex-shrink-0">{dayEntry.day}</span>
+                              <div className="flex-1 space-y-2">
+                                {(dayEntry.slots && dayEntry.slots.length > 0 ? dayEntry.slots : [{ from: "", to: "" }]).map((slot: any, slotIdx: number) => (
+                                  <div key={slotIdx} className="flex items-center gap-2">
+                                    <div className={`flex items-center gap-1.5 flex-1 border rounded-lg px-3 py-2 ${dayEntry.enabled ? 'border-gray-200 bg-gray-50' : 'border-gray-100 bg-gray-50 opacity-40'}`}>
+                                      <Clock className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                      <input
+                                        type="time"
+                                        value={slot.from || ""}
+                                        disabled={!dayEntry.enabled}
+                                        onChange={(e) => {
+                                          const newHours = [...(watchedValues.openingHours || [])];
+                                          const newSlots = [...(newHours[dayIdx].slots || [])];
+                                          newSlots[slotIdx] = { ...newSlots[slotIdx], from: e.target.value };
+                                          newHours[dayIdx] = { ...newHours[dayIdx], slots: newSlots };
+                                          form.setValue("openingHours" as any, newHours);
+                                        }}
+                                        className="flex-1 bg-transparent text-sm text-gray-700 outline-none disabled:cursor-not-allowed min-w-0"
+                                      />
+                                    </div>
+                                    <div className={`flex items-center gap-1.5 flex-1 border rounded-lg px-3 py-2 ${dayEntry.enabled ? 'border-gray-200 bg-gray-50' : 'border-gray-100 bg-gray-50 opacity-40'}`}>
+                                      <Clock className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                                      <input
+                                        type="time"
+                                        value={slot.to || ""}
+                                        disabled={!dayEntry.enabled}
+                                        onChange={(e) => {
+                                          const newHours = [...(watchedValues.openingHours || [])];
+                                          const newSlots = [...(newHours[dayIdx].slots || [])];
+                                          newSlots[slotIdx] = { ...newSlots[slotIdx], to: e.target.value };
+                                          newHours[dayIdx] = { ...newHours[dayIdx], slots: newSlots };
+                                          form.setValue("openingHours" as any, newHours);
+                                        }}
+                                        className="flex-1 bg-transparent text-sm text-gray-700 outline-none disabled:cursor-not-allowed min-w-0"
+                                      />
+                                    </div>
+                                    {(dayEntry.slots || []).length > 1 && slotIdx < (dayEntry.slots || []).length - 1 ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const newHours = [...(watchedValues.openingHours || [])];
+                                          const newSlots = newHours[dayIdx].slots.filter((_: any, i: number) => i !== slotIdx);
+                                          newHours[dayIdx] = { ...newHours[dayIdx], slots: newSlots };
+                                          form.setValue("openingHours" as any, newHours);
+                                        }}
+                                        className="w-8 h-8 rounded-lg border border-red-100 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 flex-shrink-0"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        disabled={!dayEntry.enabled}
+                                        onClick={() => {
+                                          const newHours = [...(watchedValues.openingHours || [])];
+                                          const newSlots = [...(newHours[dayIdx].slots || [{ from: "", to: "" }]), { from: "", to: "" }];
+                                          newHours[dayIdx] = { ...newHours[dayIdx], slots: newSlots };
+                                          form.setValue("openingHours" as any, newHours);
+                                        }}
+                                        className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed flex-shrink-0"
+                                      >
+                                        <Plus className="w-4 h-4" />
+                                      </button>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

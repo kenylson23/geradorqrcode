@@ -778,11 +778,11 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                               </button>
                             ))}
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div 
-                              className="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden"
-                              style={selectedSocial ? {} : { cursor: "pointer" }}
-                              onClick={() => !selectedSocial && document.getElementById(`link-img-${index}`)?.click()}
+                          <div className="flex items-start gap-3">
+                            <div
+                              className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors relative group"
+                              onClick={() => document.getElementById(`link-img-${index}`)?.click()}
+                              title="Carregar foto"
                             >
                               <input
                                 id={`link-img-${index}`}
@@ -794,13 +794,16 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                   if (file) handleFileUpload(file, `links.${index}.imageUrl`);
                                 }}
                               />
-                              {selectedSocial ? (
-                                <selectedSocial.Icon size={20} style={{ color: selectedSocial.color }} />
-                              ) : (watchedValues as any).links?.[index]?.imageUrl ? (
+                              {(watchedValues as any).links?.[index]?.imageUrl ? (
                                 <img src={(watchedValues as any).links[index].imageUrl} className="w-full h-full object-cover" alt="Link icon" />
+                              ) : selectedSocial ? (
+                                <selectedSocial.Icon size={22} style={{ color: selectedSocial.color }} />
                               ) : (
-                                <ImageIcon className="w-4 h-4 text-slate-300" />
+                                <ImageIcon className="w-5 h-5 text-slate-300" />
                               )}
+                              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                                <Upload className="w-3 h-3 text-white" />
+                              </div>
                             </div>
                             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
                               <FormField
@@ -808,6 +811,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                 name={`links.${index}.label`}
                                 render={({ field }) => (
                                   <FormItem className="space-y-1">
+                                    <FormLabel className="text-xs text-gray-500">Nome</FormLabel>
                                     <FormControl>
                                       <Input placeholder="Título do link (ex: Blog)" {...field} value={field.value || ''} className="bg-white" />
                                     </FormControl>
@@ -820,6 +824,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                 name={`links.${index}.url`}
                                 render={({ field }) => (
                                   <FormItem className="space-y-1">
+                                    <FormLabel className="text-xs text-gray-500">URL</FormLabel>
                                     <FormControl>
                                       <Input placeholder={urlPlaceholder} {...field} value={field.value || ''} className="bg-white" />
                                     </FormControl>

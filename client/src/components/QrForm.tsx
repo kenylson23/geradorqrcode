@@ -718,9 +718,81 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     />
                   </div>
 
-                  <div className="space-y-4">
+                  {/* ── REDES SOCIAIS ─────────────────────────────── */}
+                  <div className="space-y-3">
+                    <FormLabel className="text-base font-bold text-foreground">Redes Sociais</FormLabel>
+                    <div className="space-y-2">
+                      {SOCIAL_OPTIONS.map(({ type, label, Icon, color, placeholder }) => {
+                        const fieldIndex = fields.findIndex((_, i) =>
+                          (watchedValues as any).links?.[i]?.socialType === type
+                        );
+                        const isActive = fieldIndex !== -1;
+                        return (
+                          <div
+                            key={type}
+                            className={`rounded-xl border transition-all overflow-hidden ${
+                              isActive ? "border-gray-200 bg-white shadow-sm" : "border-gray-100 bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 px-3 py-2.5">
+                              <div
+                                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                style={{ backgroundColor: isActive ? color + "18" : "#f3f4f6" }}
+                              >
+                                <Icon size={18} style={{ color: isActive ? color : "#9ca3af" }} />
+                              </div>
+                              <span className={`flex-1 text-sm font-medium ${isActive ? "text-gray-800" : "text-gray-500"}`}>
+                                {label}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (isActive) {
+                                    remove(fieldIndex);
+                                  } else {
+                                    append({ label, url: "", imageUrl: "", socialType: type });
+                                  }
+                                }}
+                                className={`text-xs px-3 py-1 rounded-full font-medium transition-all ${
+                                  isActive
+                                    ? "bg-red-50 text-red-500 hover:bg-red-100"
+                                    : "bg-primary/10 text-primary hover:bg-primary/20"
+                                }`}
+                              >
+                                {isActive ? "Remover" : "Adicionar"}
+                              </button>
+                            </div>
+                            {isActive && (
+                              <div className="px-3 pb-3">
+                                <FormField
+                                  control={form.control}
+                                  name={`links.${fieldIndex}.url`}
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-1">
+                                      <FormControl>
+                                        <Input
+                                          placeholder={placeholder}
+                                          {...field}
+                                          value={field.value || ''}
+                                          className="bg-gray-50 text-sm"
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* ── LINKS PERSONALIZADOS ─────────────────────── */}
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <FormLabel className="text-base font-bold text-foreground">Lista de Links</FormLabel>
+                      <FormLabel className="text-base font-bold text-foreground">Links Personalizados</FormLabel>
                       <Button
                         type="button"
                         variant="outline"
@@ -734,109 +806,81 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     </div>
                     <div className="space-y-3">
                       {fields.map((item, index) => {
-                        const currentSocialType = (watchedValues as any).links?.[index]?.socialType || "";
-                        const selectedSocial = SOCIAL_OPTIONS.find(s => s.type === currentSocialType);
-                        const urlPlaceholder = selectedSocial?.placeholder || "https://...";
+                        const socialType = (watchedValues as any).links?.[index]?.socialType;
+                        if (socialType) return null;
                         return (
-                        <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
-                          <div className="flex items-center justify-between">
-                            <p className="text-xs font-medium text-gray-500">Rede social (opcional)</p>
-                            {fields.length > 1 && (
+                          <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
+                            <div className="flex items-start gap-3">
+                              <div
+                                className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors relative group"
+                                onClick={() => document.getElementById(`link-img-${index}`)?.click()}
+                                title="Carregar foto"
+                              >
+                                <input
+                                  id={`link-img-${index}`}
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handleFileUpload(file, `links.${index}.imageUrl`);
+                                  }}
+                                />
+                                {(watchedValues as any).links?.[index]?.imageUrl ? (
+                                  <img src={(watchedValues as any).links[index].imageUrl} className="w-full h-full object-cover" alt="Link icon" />
+                                ) : (
+                                  <ImageIcon className="w-5 h-5 text-slate-300" />
+                                )}
+                                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                                  <Upload className="w-3 h-3 text-white" />
+                                </div>
+                              </div>
+                              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <FormField
+                                  control={form.control}
+                                  name={`links.${index}.label`}
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-1">
+                                      <FormLabel className="text-xs text-gray-500">Nome</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Título do link (ex: Blog)" {...field} value={field.value || ''} className="bg-white" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name={`links.${index}.url`}
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-1">
+                                      <FormLabel className="text-xs text-gray-500">URL</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => remove(index)}
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-6 w-6 p-0"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
                               >
-                                <Trash2 className="w-3 h-3" />
+                                <Trash2 className="w-4 h-4" />
                               </Button>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            {SOCIAL_OPTIONS.map(({ type, label, Icon, color }) => (
-                              <button
-                                key={type}
-                                type="button"
-                                title={label}
-                                onClick={() => {
-                                  const isSelected = currentSocialType === type;
-                                  form.setValue(`links.${index}.socialType` as any, isSelected ? "" : type);
-                                  if (!isSelected) {
-                                    form.setValue(`links.${index}.label` as any, label);
-                                  }
-                                }}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
-                                  currentSocialType === type
-                                    ? "border-transparent text-white shadow-sm"
-                                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                                }`}
-                                style={currentSocialType === type ? { backgroundColor: color } : {}}
-                              >
-                                <Icon size={13} style={currentSocialType === type ? { color: "#fff" } : { color }} />
-                                {label}
-                              </button>
-                            ))}
-                          </div>
-                          <div className="flex items-start gap-3">
-                            <div
-                              className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors relative group"
-                              onClick={() => document.getElementById(`link-img-${index}`)?.click()}
-                              title="Carregar foto"
-                            >
-                              <input
-                                id={`link-img-${index}`}
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleFileUpload(file, `links.${index}.imageUrl`);
-                                }}
-                              />
-                              {(watchedValues as any).links?.[index]?.imageUrl ? (
-                                <img src={(watchedValues as any).links[index].imageUrl} className="w-full h-full object-cover" alt="Link icon" />
-                              ) : selectedSocial ? (
-                                <selectedSocial.Icon size={22} style={{ color: selectedSocial.color }} />
-                              ) : (
-                                <ImageIcon className="w-5 h-5 text-slate-300" />
-                              )}
-                              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
-                                <Upload className="w-3 h-3 text-white" />
-                              </div>
-                            </div>
-                            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-                              <FormField
-                                control={form.control}
-                                name={`links.${index}.label`}
-                                render={({ field }) => (
-                                  <FormItem className="space-y-1">
-                                    <FormLabel className="text-xs text-gray-500">Nome</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Título do link (ex: Blog)" {...field} value={field.value || ''} className="bg-white" />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                              <FormField
-                                control={form.control}
-                                name={`links.${index}.url`}
-                                render={({ field }) => (
-                                  <FormItem className="space-y-1">
-                                    <FormLabel className="text-xs text-gray-500">URL</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder={urlPlaceholder} {...field} value={field.value || ''} className="bg-white" />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
                             </div>
                           </div>
-                        </div>
                         );
                       })}
+                      {fields.every((_, i) => !!(watchedValues as any).links?.[i]?.socialType) && (
+                        <p className="text-xs text-gray-400 text-center py-2">
+                          Clique em "Adicionar Link" para adicionar links personalizados com foto e nome.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

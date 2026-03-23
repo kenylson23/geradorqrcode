@@ -1010,34 +1010,19 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="location"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Ex: Luanda, Angola" {...field} value={field.value || ''} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="mapsUrl"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Link Google Maps</FormLabel>
-                          <FormControl>
-                            <Input placeholder="https://maps.google.com/..." {...field} value={field.value || ''} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ex: Luanda, Angola" {...field} value={field.value || ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <div className="pt-4 border-t border-gray-100">
                     <h4 className="text-sm font-bold text-gray-900 mb-4">Detalhes da Empresa</h4>
@@ -1458,19 +1443,34 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Endereço Completo" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Endereço Completo" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="mapsUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Link Google Maps</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://maps.google.com/..." {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               )}
 

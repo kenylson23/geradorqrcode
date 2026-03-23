@@ -1,5 +1,13 @@
 import { ExternalLink, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SiTiktok, SiYoutube, SiInstagram, SiFacebook, SiWhatsapp } from "react-icons/si";
+
+const SOCIAL_ICONS: Record<string, { Icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>, color: string }> = {
+  instagram: { Icon: SiInstagram, color: "#E1306C" },
+  tiktok:    { Icon: SiTiktok,    color: "#000000" },
+  facebook:  { Icon: SiFacebook,  color: "#1877F2" },
+  whatsapp:  { Icon: SiWhatsapp,  color: "#25D366" },
+  youtube:   { Icon: SiYoutube,   color: "#FF0000" },
+};
 
 interface LinkTreeProps {
   title?: string;
@@ -9,6 +17,7 @@ interface LinkTreeProps {
     label: string;
     url: string;
     imageUrl?: string;
+    socialType?: string;
   }>;
 }
 
@@ -41,8 +50,9 @@ export function LinkTree({ title, description, photoUrl, links }: LinkTreeProps)
       {/* Links List */}
       <div className="mt-8 px-4 pb-12 space-y-3">
         {links.some(link => link.label && link.url) ? (
-          links.map((link, index) => (
-            link.label && link.url && (
+          links.map((link, index) => {
+            const social = link.socialType ? SOCIAL_ICONS[link.socialType] : null;
+            return link.label && link.url ? (
               <a 
                 key={index}
                 href={link.url} 
@@ -50,8 +60,10 @@ export function LinkTree({ title, description, photoUrl, links }: LinkTreeProps)
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 bg-white p-3 rounded-[24px] shadow-sm hover:shadow-md transition-shadow group border border-transparent hover:border-slate-100"
               >
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
-                  {link.imageUrl ? (
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                  {social ? (
+                    <social.Icon size={24} style={{ color: social.color }} />
+                  ) : link.imageUrl ? (
                     <img src={link.imageUrl} alt={link.label} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-slate-50">
@@ -62,8 +74,8 @@ export function LinkTree({ title, description, photoUrl, links }: LinkTreeProps)
                 <span className="flex-1 font-semibold text-[#374151] text-sm line-clamp-2">{link.label}</span>
                 <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-400" />
               </a>
-            )
-          ))
+            ) : null;
+          })
         ) : (
           /* Empty state skeletons */
           [1, 2].map((i) => (

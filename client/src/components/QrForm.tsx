@@ -39,12 +39,21 @@ import {
   Plus,
   Trash2
 } from "lucide-react";
+import { SiTiktok, SiYoutube, SiInstagram, SiFacebook, SiWhatsapp } from "react-icons/si";
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useFieldArray } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
 import { useUpload } from "@/hooks/use-upload";
+
+const SOCIAL_OPTIONS = [
+  { type: "instagram", label: "Instagram", Icon: SiInstagram, color: "#E1306C", placeholder: "https://instagram.com/seu_perfil" },
+  { type: "tiktok",    label: "TikTok",    Icon: SiTiktok,    color: "#000000", placeholder: "https://tiktok.com/@seu_perfil" },
+  { type: "facebook",  label: "Facebook",  Icon: SiFacebook,  color: "#1877F2", placeholder: "https://facebook.com/sua_pagina" },
+  { type: "whatsapp",  label: "WhatsApp",  Icon: SiWhatsapp,  color: "#25D366", placeholder: "https://wa.me/seu_numero" },
+  { type: "youtube",   label: "YouTube",   Icon: SiYoutube,   color: "#FF0000", placeholder: "https://youtube.com/@seu_canal" },
+];
 
 interface QrFormProps {
   onGenerate: (data: QrCodeForm) => void;
@@ -716,7 +725,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => append({ label: "", url: "", imageUrl: "" })}
+                        onClick={() => append({ label: "", url: "", imageUrl: "", socialType: "" })}
                         className="flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
@@ -724,12 +733,56 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                       </Button>
                     </div>
                     <div className="space-y-3">
-                      {fields.map((item, index) => (
-                        <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
-                          <div className="flex items-center gap-4">
+                      {fields.map((item, index) => {
+                        const currentSocialType = (watchedValues as any).links?.[index]?.socialType || "";
+                        const selectedSocial = SOCIAL_OPTIONS.find(s => s.type === currentSocialType);
+                        const urlPlaceholder = selectedSocial?.placeholder || "https://...";
+                        return (
+                        <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-medium text-gray-500">Rede social (opcional)</p>
+                            {fields.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => remove(index)}
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10 h-6 w-6 p-0"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {SOCIAL_OPTIONS.map(({ type, label, Icon, color }) => (
+                              <button
+                                key={type}
+                                type="button"
+                                title={label}
+                                onClick={() => {
+                                  const isSelected = currentSocialType === type;
+                                  form.setValue(`links.${index}.socialType` as any, isSelected ? "" : type);
+                                  if (!isSelected) {
+                                    form.setValue(`links.${index}.label` as any, label);
+                                  }
+                                }}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
+                                  currentSocialType === type
+                                    ? "border-transparent text-white shadow-sm"
+                                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                                }`}
+                                style={currentSocialType === type ? { backgroundColor: color } : {}}
+                              >
+                                <Icon size={13} style={currentSocialType === type ? { color: "#fff" } : { color }} />
+                                {label}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-3">
                             <div 
-                              className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors flex-shrink-0 overflow-hidden"
-                              onClick={() => document.getElementById(`link-img-${index}`)?.click()}
+                              className="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden"
+                              style={selectedSocial ? {} : { cursor: "pointer" }}
+                              onClick={() => !selectedSocial && document.getElementById(`link-img-${index}`)?.click()}
                             >
                               <input
                                 id={`link-img-${index}`}
@@ -741,10 +794,12 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                   if (file) handleFileUpload(file, `links.${index}.imageUrl`);
                                 }}
                               />
-                              {(watchedValues as any).links?.[index]?.imageUrl ? (
+                              {selectedSocial ? (
+                                <selectedSocial.Icon size={20} style={{ color: selectedSocial.color }} />
+                              ) : (watchedValues as any).links?.[index]?.imageUrl ? (
                                 <img src={(watchedValues as any).links[index].imageUrl} className="w-full h-full object-cover" alt="Link icon" />
                               ) : (
-                                <ImageIcon className="w-5 h-5 text-slate-300" />
+                                <ImageIcon className="w-4 h-4 text-slate-300" />
                               )}
                             </div>
                             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -766,27 +821,17 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                 render={({ field }) => (
                                   <FormItem className="space-y-1">
                                     <FormControl>
-                                      <Input placeholder="https://..." {...field} value={field.value || ''} className="bg-white" />
+                                      <Input placeholder={urlPlaceholder} {...field} value={field.value || ''} className="bg-white" />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
                             </div>
-                            {fields.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => remove(index)}
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            )}
                           </div>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

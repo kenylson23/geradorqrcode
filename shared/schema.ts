@@ -60,7 +60,8 @@ export const linksQrSchema = z.object({
     label: z.string().min(1),
     url: z.string().url(),
     imageUrl: z.string().optional(),
-    iconUrl: z.string().optional()
+    iconUrl: z.string().optional(),
+    socialType: z.string().optional()
   })).min(1, "At least one link is required"),
 });
 

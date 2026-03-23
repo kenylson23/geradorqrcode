@@ -766,17 +766,26 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </div>
 
               {/* Opening hours */}
-              {data.openingHours && data.openingHours.length > 0 && (
+              {data.openingHours && data.openingHours.some((oh: any) => oh.enabled) && (
                 <div className="bg-slate-50 rounded-2xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Horário</p>
+                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Horário de Funcionamento</p>
                   </div>
                   <div className="space-y-2">
-                    {data.openingHours.map((oh: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center">
-                        <span className="text-[11px] text-slate-500">{oh.day}</span>
-                        <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">{oh.hours}</span>
+                    {data.openingHours.filter((oh: any) => oh.enabled).map((oh: any, i: number) => (
+                      <div key={i} className="flex justify-between items-start">
+                        <span className="text-[11px] text-slate-500 flex-shrink-0 w-20">{oh.day}</span>
+                        <div className="flex flex-col items-end gap-0.5">
+                          {(oh.slots || []).filter((s: any) => s.from || s.to).length > 0
+                            ? (oh.slots || []).filter((s: any) => s.from || s.to).map((slot: any, si: number) => (
+                                <span key={si} className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">
+                                  {slot.from || "--:--"} – {slot.to || "--:--"}
+                                </span>
+                              ))
+                            : <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">Aberto</span>
+                          }
+                        </div>
                       </div>
                     ))}
                   </div>

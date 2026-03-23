@@ -1,6 +1,7 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
+import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState, useEffect, useRef } from "react";
@@ -128,7 +129,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           location: data.location,
           mapsUrl: data.mapsUrl,
           caption: data.caption,
-          photoUrl: data.photoUrl
+          photoUrl: data.photoUrl,
+          openingHours: data.openingHours,
+          socialLinks: data.socialLinks,
         } : {
           type: 'links',
           title: data.title,
@@ -791,6 +794,40 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
                 </div>
               )}
+
+              {/* Social links */}
+              {data.socialLinks && data.socialLinks.length > 0 && (() => {
+                const SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = {
+                  instagram: { Icon: SiInstagram, color: "#E1306C", label: "Instagram" },
+                  tiktok:    { Icon: SiTiktok,    color: "#000000", label: "TikTok" },
+                  facebook:  { Icon: SiFacebook,  color: "#1877F2", label: "Facebook" },
+                  whatsapp:  { Icon: SiWhatsapp,  color: "#25D366", label: "WhatsApp" },
+                  youtube:   { Icon: SiYoutube,   color: "#FF0000", label: "YouTube" },
+                };
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Redes Sociais</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {data.socialLinks.map((sl: any, i: number) => {
+                        const info = SOCIAL_MAP[sl.platform] || { Icon: Globe, color: "#6b7280", label: sl.platform };
+                        const { Icon, color, label } = info;
+                        return (
+                          <div
+                            key={i}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-white text-[10px] font-bold"
+                            style={{ backgroundColor: color }}
+                          >
+                            <Icon size={12} />
+                            <span>{label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div className="pt-1 pb-2 text-center">
                 <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>

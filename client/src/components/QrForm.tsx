@@ -1483,6 +1483,71 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     />
                   </div>
 
+                  {/* Redes Sociais */}
+                  <div className="space-y-3">
+                    <FormLabel className="text-base font-bold text-foreground">Redes Sociais</FormLabel>
+                    <div className="space-y-2">
+                      {SOCIAL_OPTIONS.map(({ type, label, Icon, color, placeholder }) => {
+                        const socialLinks: any[] = (watchedValues as any).socialLinks || [];
+                        const existingIdx = socialLinks.findIndex((s: any) => s.platform === type);
+                        const isActive = existingIdx !== -1;
+                        return (
+                          <div
+                            key={type}
+                            className={`rounded-xl border transition-all overflow-hidden ${
+                              isActive ? "border-gray-200 bg-white shadow-sm" : "border-gray-100 bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 px-3 py-2.5">
+                              <div
+                                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                                style={{ backgroundColor: isActive ? color + "18" : "#f3f4f6" }}
+                              >
+                                <Icon size={18} style={{ color: isActive ? color : "#9ca3af" }} />
+                              </div>
+                              <span className={`flex-1 text-sm font-medium ${isActive ? "text-gray-800" : "text-gray-500"}`}>
+                                {label}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const current: any[] = (watchedValues as any).socialLinks || [];
+                                  if (isActive) {
+                                    form.setValue("socialLinks" as any, current.filter((_: any, i: number) => i !== existingIdx));
+                                  } else {
+                                    form.setValue("socialLinks" as any, [...current, { platform: type, url: "" }]);
+                                  }
+                                }}
+                                className={`text-xs px-3 py-1 rounded-full font-medium transition-all ${
+                                  isActive
+                                    ? "bg-red-50 text-red-500 hover:bg-red-100"
+                                    : "bg-primary/10 text-primary hover:bg-primary/20"
+                                }`}
+                              >
+                                {isActive ? "Remover" : "Adicionar"}
+                              </button>
+                            </div>
+                            {isActive && (
+                              <div className="px-3 pb-3">
+                                <input
+                                  type="url"
+                                  placeholder={placeholder}
+                                  value={((watchedValues as any).socialLinks?.[existingIdx]?.url) || ""}
+                                  onChange={(e) => {
+                                    const current: any[] = [...((watchedValues as any).socialLinks || [])];
+                                    current[existingIdx] = { ...current[existingIdx], url: e.target.value };
+                                    form.setValue("socialLinks" as any, current);
+                                  }}
+                                  className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
                   {/* Opening Hours */}
                   <div className="border border-gray-200 rounded-xl overflow-hidden">
                     <button

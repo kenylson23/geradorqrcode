@@ -3,6 +3,15 @@ import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { User, Smartphone, Globe, Briefcase, MapPin, FileText, Download, ExternalLink, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
+
+const SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = {
+  instagram: { Icon: SiInstagram, color: "#E1306C", label: "Instagram" },
+  tiktok:    { Icon: SiTiktok,    color: "#000000", label: "TikTok" },
+  facebook:  { Icon: SiFacebook,  color: "#1877F2", label: "Facebook" },
+  whatsapp:  { Icon: SiWhatsapp,  color: "#25D366", label: "WhatsApp" },
+  youtube:   { Icon: SiYoutube,   color: "#FF0000", label: "YouTube" },
+};
 
 export default function LinkTreePage() {
   const [location] = useLocation();
@@ -285,6 +294,32 @@ export default function LinkTreePage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {data.socialLinks && data.socialLinks.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">Redes Sociais</p>
+                <div className="flex flex-wrap gap-3">
+                  {data.socialLinks.map((sl: any, i: number) => {
+                    const info = SOCIAL_MAP[sl.platform] || { Icon: Globe, color: "#6b7280", label: sl.platform };
+                    const { Icon, color, label } = info;
+                    const href = sl.url || "#";
+                    return (
+                      <a
+                        key={i}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white text-sm font-semibold shadow-sm active:opacity-80 transition-opacity"
+                        style={{ backgroundColor: color }}
+                      >
+                        <Icon size={18} />
+                        <span>{label}</span>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             )}

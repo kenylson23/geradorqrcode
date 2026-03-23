@@ -126,6 +126,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           email: data.email,
           website: data.website,
           location: data.location,
+          mapsUrl: data.mapsUrl,
           caption: data.caption,
           photoUrl: data.photoUrl
         } : {

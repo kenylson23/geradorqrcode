@@ -240,7 +240,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         defaultValues = { ...defaultValues, title: "", description: "", website: "", url: "", buttonLabel: "", fileUrl: "", fileUrls: [] };
         break;
       case "business":
-        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
+        defaultValues = { ...defaultValues, companyName: "", industry: "", caption: "", photoUrl: "", location: "", mapsUrl: "", email: "", website: "", phone: "", whatsappNumber: "", openingHours: [{ day: "Segunda-feira", hours: "09:00 - 18:00" }], socialLinks: [] };
         break;
     }
     form.reset(defaultValues);
@@ -1010,19 +1010,34 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     />
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Ex: Luanda, Angola" {...field} value={field.value || ''} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Localização</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ex: Luanda, Angola" {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="mapsUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-gray-700">Link Google Maps</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://maps.google.com/..." {...field} value={field.value || ''} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <div className="pt-4 border-t border-gray-100">
                     <h4 className="text-sm font-bold text-gray-900 mb-4">Detalhes da Empresa</h4>

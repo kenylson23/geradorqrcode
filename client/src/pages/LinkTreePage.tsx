@@ -247,7 +247,7 @@ export default function LinkTreePage() {
               )}
               {data.location && (
                 <a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(data.location)}`}
+                  href={data.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(data.location)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 active:bg-slate-200 transition-colors cursor-pointer"
@@ -258,6 +258,9 @@ export default function LinkTreePage() {
                   <div className="flex-1 overflow-hidden">
                     <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">Endereço</p>
                     <p className="text-base font-semibold text-slate-900">{data.location}</p>
+                    {data.mapsUrl && (
+                      <p className="text-[11px] text-primary mt-0.5">Ver no Google Maps →</p>
+                    )}
                   </div>
                 </a>
               )}

@@ -127,6 +127,7 @@ export const businessQrSchema = z.object({
   caption: z.string().optional(),
   photoUrl: z.string().optional(),
   location: z.string().optional(),
+  mapsUrl: z.string().optional(),
   email: z.string().email().optional(),
   website: z.string().url().optional(),
   phone: z.string().optional(),

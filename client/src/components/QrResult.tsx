@@ -136,7 +136,8 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
             label: l.label,
             url: l.url,
-            imageUrl: l.imageUrl
+            imageUrl: l.imageUrl,
+            socialType: l.socialType || ""
           }))
         };
         const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(pageData))));

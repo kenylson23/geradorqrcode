@@ -60,15 +60,16 @@ export function LinkTree({ title, description, photoUrl, links }: LinkTreeProps)
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 bg-white p-3 rounded-[24px] shadow-sm hover:shadow-md transition-shadow group border border-transparent hover:border-slate-100"
               >
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                <div
+                  className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center"
+                  style={social ? { backgroundColor: social.color } : { backgroundColor: "#f1f5f9" }}
+                >
                   {social ? (
-                    <social.Icon size={24} style={{ color: social.color }} />
+                    <social.Icon size={22} style={{ color: "#ffffff" }} />
                   ) : link.imageUrl ? (
                     <img src={link.imageUrl} alt={link.label} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-slate-50">
-                      <ExternalLink className="w-5 h-5 text-slate-300" />
-                    </div>
+                    <ExternalLink className="w-5 h-5 text-slate-300" />
                   )}
                 </div>
                 <span className="flex-1 font-semibold text-[#374151] text-sm line-clamp-2">{link.label}</span>

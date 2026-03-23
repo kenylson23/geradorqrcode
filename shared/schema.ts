@@ -2,9 +2,6 @@ import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// We don't strictly need a database for a static QR generator, 
-// but we'll define the schemas here for form validation and type safety.
-
 export const qrTypes = ["url", "text", "whatsapp", "email", "phone", "pdf", "links", "vcard", "images", "facebook", "instagram", "business"] as const;
 export type QrType = typeof qrTypes[number];
 
@@ -21,7 +18,6 @@ export const urlQrSchema = z.object({
   buttonLabel: z.string().optional(),
 });
 
-// For form validation, we use this refined version
 export const urlQrFormSchema = urlQrSchema.refine(data => {
   if (data.type === 'instagram') {
     return !!data.url || !!data.instagramUser;
@@ -32,13 +28,11 @@ export const urlQrFormSchema = urlQrSchema.refine(data => {
   path: ["url"]
 });
 
-// Schema for Text QR Code
 export const textQrSchema = z.object({
   type: z.literal("text"),
   text: z.string().min(1, { message: "Text is required" }),
 });
 
-// Schema for PDF QR Code
 export const pdfQrSchema = z.object({
   type: z.literal("pdf"),
   url: z.string().url({ message: "Please enter a valid PDF URL" }).optional(),
@@ -50,7 +44,6 @@ export const pdfQrSchema = z.object({
   buttonLabel: z.string().optional(),
 });
 
-// Schema for Links List QR Code
 export const linksQrSchema = z.object({
   type: z.literal("links"),
   title: z.string().optional(),
@@ -65,7 +58,6 @@ export const linksQrSchema = z.object({
   })).min(1, "At least one link is required"),
 });
 
-// Schema for vCard QR Code
 export const vcardQrSchema = z.object({
   type: z.literal("vcard"),
   firstName: z.string().min(1, "First name is required"),
@@ -87,7 +79,6 @@ export const vcardQrSchema = z.object({
   })).optional(),
 });
 
-// Schema for Images QR Code
 export const imagesQrSchema = z.object({
   type: z.literal("images"),
   title: z.string().optional(),
@@ -98,14 +89,12 @@ export const imagesQrSchema = z.object({
   buttonLabel: z.string().optional(),
 });
 
-// Schema for WhatsApp QR Code
 export const whatsappQrSchema = z.object({
   type: z.literal("whatsapp"),
   phone: z.string().min(9, { message: "Phone number is required" }),
   message: z.string().optional(),
 });
 
-// Schema for Email QR Code
 export const emailQrSchema = z.object({
   type: z.literal("email"),
   email: z.string().email({ message: "Invalid email address" }),
@@ -113,13 +102,11 @@ export const emailQrSchema = z.object({
   body: z.string().optional(),
 });
 
-// Schema for Phone QR Code
 export const phoneQrSchema = z.object({
   type: z.literal("phone"),
   phone: z.string().min(9, { message: "Phone number is required" }),
 });
 
-// Schema for Business QR Code
 export const businessQrSchema = z.object({
   type: z.literal("business"),
   companyName: z.string().min(1, "Company name is required"),
@@ -146,7 +133,6 @@ export const businessQrSchema = z.object({
   })).optional(),
 });
 
-// Combined schema for the form
 export const qrCodeFormSchema = z.discriminatedUnion("type", [
   urlQrSchema,
   textQrSchema,
@@ -173,7 +159,6 @@ export const linkTreeSchema = z.object({
 
 export type LinkTreeData = z.infer<typeof linkTreeSchema>;
 
-// No database tables needed for this static MVP, but keeping the file structure valid.
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -183,3 +168,12 @@ export const users = pgTable("users", {
 export const insertUserSchema = createInsertSchema(users);
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Table to store business QR page data with a short slug
+export const qrPages = pgTable("qr_pages", {
+  slug: text("slug").primaryKey(),
+  data: text("data").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type QrPage = typeof qrPages.$inferSelect;

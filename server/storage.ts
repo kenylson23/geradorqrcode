@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser } from "@shared/schema";
+import { users, qrPages, type User, type InsertUser, type QrPage } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import cloudinary from "./cloudinary";
@@ -9,6 +9,8 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   uploadImage(buffer: Buffer): Promise<string>;
+  saveQrPage(slug: string, data: string): Promise<void>;
+  getQrPage(slug: string): Promise<QrPage | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -42,6 +44,19 @@ export class DatabaseStorage implements IStorage {
       );
       uploadStream.end(buffer);
     });
+  }
+
+  async createQrPage(slug: string, data: string): Promise<void> {
+    await db.insert(qrPages).values({ slug, data });
+  }
+
+  async updateQrPage(slug: string, data: string): Promise<void> {
+    await db.update(qrPages).set({ data }).where(eq(qrPages.slug, slug));
+  }
+
+  async getQrPage(slug: string): Promise<QrPage | undefined> {
+    const [page] = await db.select().from(qrPages).where(eq(qrPages.slug, slug));
+    return page;
   }
 }
 

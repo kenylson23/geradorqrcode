@@ -10,6 +10,7 @@ import ImagePage from "@/pages/ImagePage";
 import VCardPage from "@/pages/VCardPage";
 import FacebookPage from "@/pages/FacebookPage";
 import InstagramPage from "@/pages/InstagramPage";
+import BusinessPage from "@/pages/BusinessPage";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/l" component={LinkTreePage} />
       <Route path="/c" component={VCardPage} />
+      <Route path="/b/:slug" component={BusinessPage} />
       <Route path="/i/:data" component={ImagePage} />
       <Route path="/fb/:data" component={FacebookPage} />
       <Route path="/ig/:data" component={InstagramPage} />

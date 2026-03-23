@@ -1,10 +1,10 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
+import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink, Loader2 } from "lucide-react";
 import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface QrResultProps {
   value: any;
@@ -18,9 +18,72 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
   const simContainerRef = useRef<HTMLDivElement>(null);
 
+  // Business pages are stored server-side and use a short slug in the QR code
+  const [businessSlug, setBusinessSlug] = useState<string | null>(null);
+  const [isSavingBusiness, setIsSavingBusiness] = useState(false);
+  const businessSlugRef = useRef<string | null>(null);
+
   const data = typeof value === 'object' ? value : null;
   const simImagesKey = data?.fileUrls?.length ?? 0;
   useEffect(() => { setSimCurrent(0); }, [simImagesKey]);
+
+  // When business data changes, save to server and get a short slug
+  useEffect(() => {
+    if (!data || data.type !== 'business') {
+      setBusinessSlug(null);
+      businessSlugRef.current = null;
+      return;
+    }
+    if (!data.companyName) return;
+
+    const pageData = {
+      type: 'business',
+      companyName: data.companyName,
+      industry: data.industry,
+      phone: data.phone,
+      whatsappNumber: data.whatsappNumber,
+      email: data.email,
+      website: data.website,
+      location: data.location,
+      mapsUrl: data.mapsUrl,
+      caption: data.caption,
+      photoUrl: data.photoUrl,
+      openingHours: data.openingHours,
+      socialLinks: data.socialLinks,
+    };
+
+    const save = async () => {
+      setIsSavingBusiness(true);
+      try {
+        const existingSlug = businessSlugRef.current;
+        if (existingSlug) {
+          await fetch(`/api/pages/${existingSlug}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: pageData }),
+          });
+          setBusinessSlug(existingSlug);
+        } else {
+          const res = await fetch('/api/pages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: pageData }),
+          });
+          const json = await res.json();
+          businessSlugRef.current = json.slug;
+          setBusinessSlug(json.slug);
+        }
+      } catch (e) {
+        console.error('Failed to save business page', e);
+      } finally {
+        setIsSavingBusiness(false);
+      }
+    };
+
+    const timer = setTimeout(save, 600);
+    return () => clearTimeout(timer);
+  }, [JSON.stringify(data)]);
+
   const effectiveSetShowQr = propSetShowQr || setShowQr;
   
   // If value is an object with type 'links', we show LinkTree preview
@@ -115,24 +178,15 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         return data.email ? `mailto:${data.email}?${subject.slice(1)}${body}` : "";
       case "phone":
         return data.phone ? `tel:${data.phone}` : "";
-      case "links":
       case "business":
-        const pageType = data.type;
-        const pageData = pageType === 'business' ? {
-          type: 'business',
-          companyName: data.companyName,
-          industry: data.industry,
-          phone: data.phone,
-          whatsappNumber: data.whatsappNumber,
-          email: data.email,
-          website: data.website,
-          location: data.location,
-          mapsUrl: data.mapsUrl,
-          caption: data.caption,
-          photoUrl: data.photoUrl,
-          openingHours: data.openingHours,
-          socialLinks: data.socialLinks,
-        } : {
+        // Business pages are stored server-side — return short URL if slug is ready
+        if (businessSlug) {
+          return `${window.location.origin}/b/${businessSlug}`;
+        }
+        // Not yet saved — return empty so QR shows loading state
+        return "";
+      case "links": {
+        const linksPageData = {
           type: 'links',
           title: data.title,
           description: data.description,
@@ -144,8 +198,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
             socialType: l.socialType || ""
           }))
         };
-        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(pageData))));
+        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(linksPageData))));
         return `${window.location.origin}/l#${encodedData}`;
+      }
       case "images":
         const imagesData = {
           type: "images",
@@ -992,7 +1047,12 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </div>
 
               <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
-                {isTooLong ? (
+                {isSavingBusiness || (data?.type === 'business' && !businessSlug) ? (
+                  <div className="w-48 h-48 flex flex-col items-center justify-center bg-slate-50 rounded-xl border border-slate-200">
+                    <Loader2 className="w-10 h-10 text-primary animate-spin mb-2" />
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">A gerar QR...</span>
+                  </div>
+                ) : isTooLong ? (
                   <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
                     <AlertTriangle className="w-10 h-10 mb-2" />
                     <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>

@@ -88,6 +88,7 @@ const qrOptions: { type: QrType; label: string; description: string; icon: any }
 ];
 
 export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
+  const LS_KEY = "angoqrcode_form_state";
   const [activeType, setActiveType] = useState<QrType | null>(null);
   const [selectedCountryCode, setSelectedCountryCode] = useState("244");
   const [isUploading, setIsUploading] = useState(false);
@@ -266,6 +267,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
     const handleBack = () => {
       setActiveType(null);
       onStepChange(1);
+      localStorage.removeItem(LS_KEY);
       form.reset({
         type: "url",
         url: "",
@@ -290,6 +292,41 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
   const watchedValues = form.watch();
   const [lastEmitted, setLastEmitted] = useState("");
+
+  // Restore from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) {
+        const { type, values, countryCode } = JSON.parse(saved);
+        if (type && values) {
+          setActiveType(type);
+          if (countryCode) setSelectedCountryCode(countryCode);
+          form.reset(values);
+          onStepChange(2);
+          onGenerate(values);
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist to localStorage on every change
+  useEffect(() => {
+    if (activeType) {
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify({
+          type: activeType,
+          values: watchedValues,
+          countryCode: selectedCountryCode,
+        }));
+      } catch {
+        // ignore storage errors
+      }
+    }
+  }, [watchedValues, activeType, selectedCountryCode]);
 
   useEffect(() => {
     const watchedStr = JSON.stringify(watchedValues) + selectedCountryCode;

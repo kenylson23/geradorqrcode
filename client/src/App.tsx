@@ -18,7 +18,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/l" component={LinkTreePage} />
       <Route path="/c" component={VCardPage} />
-      <Route path="/b/:slug" component={BusinessPage} />
+      <Route path="/b" component={BusinessPage} />
       <Route path="/i/:data" component={ImagePage} />
       <Route path="/fb/:data" component={FacebookPage} />
       <Route path="/ig/:data" component={InstagramPage} />

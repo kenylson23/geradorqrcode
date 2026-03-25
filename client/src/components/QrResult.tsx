@@ -1,10 +1,24 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
 import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
+import { compressToEncodedURIComponent as lzCompress } from "lz-string";
+
+// Cloudinary URL helpers (Option B: strip base URL + version to save ~50 chars)
+function shrinkCloudinaryUrl(url: string): string {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  const withoutBase = url.replace('https://res.cloudinary.com/', '');
+  return 'c:' + withoutBase.replace(/\/v\d+\//, '/');
+}
+
+// Compress business JSON with LZ-String (Option A) + shrink Cloudinary URLs (Option B)
+function encodeBusinessData(data: object): string {
+  const json = JSON.stringify(data);
+  return lzCompress(json);
+}
 
 interface QrResultProps {
   value: any;
@@ -18,71 +32,9 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
   const simContainerRef = useRef<HTMLDivElement>(null);
 
-  // Business pages are stored server-side and use a short slug in the QR code
-  const [businessSlug, setBusinessSlug] = useState<string | null>(null);
-  const [isSavingBusiness, setIsSavingBusiness] = useState(false);
-  const businessSlugRef = useRef<string | null>(null);
-
   const data = typeof value === 'object' ? value : null;
   const simImagesKey = data?.fileUrls?.length ?? 0;
   useEffect(() => { setSimCurrent(0); }, [simImagesKey]);
-
-  // When business data changes, save to server and get a short slug
-  useEffect(() => {
-    if (!data || data.type !== 'business') {
-      setBusinessSlug(null);
-      businessSlugRef.current = null;
-      return;
-    }
-    if (!data.companyName) return;
-
-    const pageData = {
-      type: 'business',
-      companyName: data.companyName,
-      industry: data.industry,
-      phone: data.phone,
-      whatsappNumber: data.whatsappNumber,
-      email: data.email,
-      website: data.website,
-      location: data.location,
-      mapsUrl: data.mapsUrl,
-      caption: data.caption,
-      photoUrl: data.photoUrl,
-      openingHours: data.openingHours,
-      socialLinks: data.socialLinks,
-    };
-
-    const save = async () => {
-      setIsSavingBusiness(true);
-      try {
-        const existingSlug = businessSlugRef.current;
-        if (existingSlug) {
-          await fetch(`/api/pages/${existingSlug}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: pageData }),
-          });
-          setBusinessSlug(existingSlug);
-        } else {
-          const res = await fetch('/api/pages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: pageData }),
-          });
-          const json = await res.json();
-          businessSlugRef.current = json.slug;
-          setBusinessSlug(json.slug);
-        }
-      } catch (e) {
-        console.error('Failed to save business page', e);
-      } finally {
-        setIsSavingBusiness(false);
-      }
-    };
-
-    const timer = setTimeout(save, 600);
-    return () => clearTimeout(timer);
-  }, [JSON.stringify(data)]);
 
   const effectiveSetShowQr = propSetShowQr || setShowQr;
   
@@ -178,13 +130,36 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         return data.email ? `mailto:${data.email}?${subject.slice(1)}${body}` : "";
       case "phone":
         return data.phone ? `tel:${data.phone}` : "";
-      case "business":
-        // Business pages are stored server-side — return short URL if slug is ready
-        if (businessSlug) {
-          return `${window.location.origin}/b/${businessSlug}`;
-        }
-        // Not yet saved — return empty so QR shows loading state
-        return "";
+      case "business": {
+        const bizData = {
+          type: 'business',
+          companyName: data.companyName,
+          industry: data.industry,
+          phone: data.phone,
+          whatsappNumber: data.whatsappNumber,
+          email: data.email,
+          website: data.website,
+          location: data.location,
+          mapsUrl: data.mapsUrl,
+          caption: data.caption,
+          // Option B: shorten Cloudinary URLs before compression
+          photoUrl: shrinkCloudinaryUrl(data.photoUrl || ''),
+          openingHours: (data.openingHours || [])
+            .filter((d: any) => d.enabled)
+            .map((d: any) => ({
+              d: d.day,
+              s: (d.slots || []).filter((s: any) => s.from || s.to)
+                .map((s: any) => ({ f: s.from, t: s.to }))
+            })),
+          socialLinks: (data.socialLinks || []).map((sl: any) => ({
+            p: sl.platform,
+            u: sl.url
+          })),
+        };
+        // Option A: LZ-String compress
+        const compressed = encodeBusinessData(bizData);
+        return `${window.location.origin}/b#${compressed}`;
+      }
       case "links": {
         const linksPageData = {
           type: 'links',
@@ -1047,12 +1022,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </div>
 
               <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
-                {isSavingBusiness || (data?.type === 'business' && !businessSlug) ? (
-                  <div className="w-48 h-48 flex flex-col items-center justify-center bg-slate-50 rounded-xl border border-slate-200">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin mb-2" />
-                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">A gerar QR...</span>
-                  </div>
-                ) : isTooLong ? (
+                {isTooLong ? (
                   <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
                     <AlertTriangle className="w-10 h-10 mb-2" />
                     <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>

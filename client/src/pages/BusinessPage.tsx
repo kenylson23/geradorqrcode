@@ -1,7 +1,7 @@
-import { useParams } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { Briefcase, Globe, MapPin, Clock, Smartphone, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Briefcase, Globe, MapPin, Clock, Smartphone } from "lucide-react";
 import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
+import { decompressFromEncodedURIComponent as lzDecompress } from "lz-string";
 
 const SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = {
   instagram: { Icon: SiInstagram, color: "#E1306C", label: "Instagram" },
@@ -11,31 +11,58 @@ const SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = 
   youtube:   { Icon: SiYoutube,   color: "#FF0000", label: "YouTube" },
 };
 
-export default function BusinessPage() {
-  const params = useParams<{ slug: string }>();
-  const slug = params.slug;
+// Expand shortened Cloudinary URL (Option B decode)
+function expandCloudinaryUrl(val: string): string {
+  if (!val || !val.startsWith('c:')) return val;
+  return 'https://res.cloudinary.com/' + val.slice(2);
+}
 
-  const { data: pageData, isLoading, isError } = useQuery({
-    queryKey: ["/api/pages", slug],
-    queryFn: async () => {
-      const res = await fetch(`/api/pages/${slug}`);
-      if (!res.ok) throw new Error("Page not found");
-      const json = await res.json();
-      return json.data;
-    },
-    enabled: !!slug,
-    retry: false,
+// Normalise compressed opening hours to display format
+function expandOpeningHours(oh: any[]): any[] {
+  if (!oh || !oh.length) return [];
+  return oh.map((entry: any) => {
+    // Already in long format (legacy)
+    if (entry.day) return entry;
+    // Short format from compression
+    return {
+      day: entry.d,
+      enabled: true,
+      slots: (entry.s || []).map((s: any) => ({ from: s.f, to: s.t })),
+    };
   });
+}
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-      </div>
-    );
-  }
+// Normalise compressed social links
+function expandSocialLinks(sl: any[]): any[] {
+  if (!sl || !sl.length) return [];
+  return sl.map((entry: any) => {
+    if (entry.platform) return entry;
+    return { platform: entry.p, url: entry.u };
+  });
+}
 
-  if (isError || !pageData) {
+export default function BusinessPage() {
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    try {
+      const hash = window.location.hash.slice(1);
+      if (!hash) { setError(true); return; }
+      const decompressed = lzDecompress(hash);
+      if (!decompressed) { setError(true); return; }
+      const parsed = JSON.parse(decompressed);
+      // Expand shortened fields
+      parsed.photoUrl = expandCloudinaryUrl(parsed.photoUrl || '');
+      parsed.openingHours = expandOpeningHours(parsed.openingHours || []);
+      parsed.socialLinks = expandSocialLinks(parsed.socialLinks || []);
+      setData(parsed);
+    } catch {
+      setError(true);
+    }
+  }, []);
+
+  if (error || (!data && window.location.hash.length <= 1)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 text-center">
         <div>
@@ -46,7 +73,7 @@ export default function BusinessPage() {
     );
   }
 
-  const data = pageData;
+  if (!data) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center">

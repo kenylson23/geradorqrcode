@@ -1,5 +1,5 @@
-import { users, qrPages, type User, type InsertUser, type QrPage } from "@shared/schema";
-import { db } from "./db";
+import { users, type User, type InsertUser, type QrPage } from "@shared/schema";
+import { db, neonSql } from "./db";
 import { eq } from "drizzle-orm";
 import cloudinary from "./cloudinary";
 import { Buffer } from "node:buffer";
@@ -9,7 +9,8 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   uploadImage(buffer: Buffer): Promise<string>;
-  saveQrPage(slug: string, data: string): Promise<void>;
+  createQrPage(slug: string, data: string): Promise<void>;
+  updateQrPage(slug: string, data: string): Promise<void>;
   getQrPage(slug: string): Promise<QrPage | undefined>;
 }
 
@@ -47,16 +48,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createQrPage(slug: string, data: string): Promise<void> {
-    await db.insert(qrPages).values({ slug, data });
+    await neonSql`INSERT INTO qr_pages (slug, data) VALUES (${slug}, ${data})`;
   }
 
   async updateQrPage(slug: string, data: string): Promise<void> {
-    await db.update(qrPages).set({ data }).where(eq(qrPages.slug, slug));
+    await neonSql`UPDATE qr_pages SET data = ${data} WHERE slug = ${slug}`;
   }
 
   async getQrPage(slug: string): Promise<QrPage | undefined> {
-    const [page] = await db.select().from(qrPages).where(eq(qrPages.slug, slug));
-    return page;
+    const rows = await neonSql`SELECT slug, data, created_at FROM qr_pages WHERE slug = ${slug} LIMIT 1`;
+    if (!rows || rows.length === 0) return undefined;
+    const row = rows[0];
+    return { slug: row.slug, data: row.data, createdAt: row.created_at };
   }
 }
 

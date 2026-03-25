@@ -22,7 +22,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Data is required" });
       }
       const slug = nanoid(8);
-      await storage.saveQrPage(slug, JSON.stringify(data));
+      await storage.createQrPage(slug, JSON.stringify(data));
       res.json({ slug });
     } catch (err) {
       console.error("Error saving page:", err);
@@ -38,7 +38,7 @@ export async function registerRoutes(
       if (!data || typeof data !== "object") {
         return res.status(400).json({ error: "Data is required" });
       }
-      await storage.saveQrPage(slug, JSON.stringify(data));
+      await storage.updateQrPage(slug, JSON.stringify(data));
       res.json({ slug });
     } catch (err) {
       console.error("Error updating page:", err);

@@ -10,3 +10,7 @@ if (!process.env.DATABASE_URL) {
 
 const sql = neon(process.env.DATABASE_URL);
 export const db = drizzle(sql, { schema });
+
+// Export raw neon SQL function for tagged-template queries
+// (required for @neondatabase/serverless v1.0.x compatibility)
+export const neonSql = sql;

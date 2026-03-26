@@ -5,7 +5,7 @@ import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState, useEffect, useRef } from "react";
-import { compressToEncodedURIComponent as lzCompress } from "lz-string";
+import { compressToEncodedURIComponent as lzCompress, decompressFromEncodedURIComponent as lzDecompress } from "lz-string";
 
 // Cloudinary URL helpers (Option B: strip base URL + version to save ~50 chars)
 function shrinkCloudinaryUrl(url: string): string {
@@ -66,7 +66,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
     if (!data) return "";
     
     // Check if data is already a URL string (from LinkTree/Images preview)
-    if (typeof data === 'string' && (data.startsWith('http') || data.includes('/i/') || data.includes('/l#'))) {
+    if (typeof data === 'string' && (data.startsWith('http') || data.includes('/i/') || data.includes('/ll#') || data.includes('/l#'))) {
       return data;
     }
 
@@ -165,16 +165,16 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           type: 'links',
           title: data.title,
           description: data.description,
-          photoUrl: data.photoUrl,
+          photoUrl: shrinkCloudinaryUrl(data.photoUrl || ''),
           links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
             label: l.label,
             url: l.url,
-            imageUrl: l.imageUrl,
+            imageUrl: shrinkCloudinaryUrl(l.imageUrl || ''),
             socialType: l.socialType || ""
           }))
         };
-        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(linksPageData))));
-        return `${window.location.origin}/l#${encodedData}`;
+        const compressed = lzCompress(JSON.stringify(linksPageData));
+        return `${window.location.origin}/ll#${compressed}`;
       }
       case "images":
         const imagesData = {
@@ -232,8 +232,11 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         if (value.includes('/i/')) {
           const encoded = value.split('/i/')[1];
           data = JSON.parse(decodeURIComponent(encoded));
-          // Log decoded data to debug
           console.log("Decoded Images Data:", data);
+        } else if (value.includes('/ll#')) {
+          const compressed = value.split('/ll#')[1];
+          const decompressed = lzDecompress(compressed);
+          if (decompressed) data = JSON.parse(decompressed);
         } else if (value.includes('/l#')) {
           const encoded = value.split('/l#')[1];
           data = JSON.parse(decodeURIComponent(escape(atob(encoded))));

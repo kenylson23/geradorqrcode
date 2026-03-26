@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import LinkTreePage from "@/pages/LinkTreePage";
+import LinksPage from "@/pages/LinksPage";
 import ImagePage from "@/pages/ImagePage";
 import VCardPage from "@/pages/VCardPage";
 import FacebookPage from "@/pages/FacebookPage";
@@ -17,6 +18,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/l" component={LinkTreePage} />
+      <Route path="/ll" component={LinksPage} />
       <Route path="/c" component={VCardPage} />
       <Route path="/b" component={BusinessPage} />
       <Route path="/i/:data" component={ImagePage} />

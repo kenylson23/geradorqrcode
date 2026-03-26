@@ -690,163 +690,131 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           </div>
         );
 
-      case 'business':
+      case 'business': {
+        const BIZ_SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = {
+          instagram: { Icon: SiInstagram, color: "#E1306C", label: "Instagram" },
+          tiktok:    { Icon: SiTiktok,    color: "#000000", label: "TikTok" },
+          facebook:  { Icon: SiFacebook,  color: "#1877F2", label: "Facebook" },
+          whatsapp:  { Icon: SiWhatsapp,  color: "#25D366", label: "WhatsApp" },
+          youtube:   { Icon: SiYoutube,   color: "#FF0000", label: "YouTube" },
+        };
         return (
-          <div className="w-full h-full bg-slate-900 flex flex-col animate-in fade-in duration-500 sim-scroll">
-            {/* Dark hero header */}
-            <div className="relative px-5 pt-10 pb-16 flex flex-col items-center text-center flex-shrink-0 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-900" />
-              {/* Logo */}
-              <div className="w-20 h-20 rounded-2xl bg-white flex items-center justify-center mb-4 shadow-2xl relative z-10 overflow-hidden border border-white/10">
-                {data.photoUrl ? (
-                  <img src={data.photoUrl} className="w-full h-full object-cover" alt="Logo" />
-                ) : (
-                  <Briefcase className="w-9 h-9 text-slate-300" />
-                )}
-              </div>
-              <h3 className="text-white text-lg font-bold relative z-10 leading-tight">{data.companyName || "Nome da Empresa"}</h3>
-              {data.industry && (
-                <span className="mt-2 inline-block bg-white/10 text-white/80 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full relative z-10">{data.industry}</span>
-              )}
-            </div>
-
-            {/* White content card */}
-            <div className="bg-white rounded-t-[28px] -mt-8 relative z-10 px-5 pt-5 pb-6 space-y-5 shadow-2xl">
-
-              {/* Caption */}
-              {data.caption && (
-                <div className="border-l-4 border-primary pl-3 py-1">
-                  <p className="text-xs text-slate-500 italic leading-relaxed">"{data.caption}"</p>
+          <div className="w-full h-full bg-slate-50 flex flex-col animate-in fade-in duration-500 sim-scroll">
+            <div className="w-full bg-white flex flex-col shadow-xl min-h-full">
+              {/* Primary header — matches BusinessPage exactly */}
+              <div className="bg-primary pt-8 pb-14 px-5 text-white flex flex-col items-center text-center relative overflow-hidden flex-shrink-0">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-3 border-4 border-white shadow-xl relative z-10 overflow-hidden flex-shrink-0">
+                  {data.photoUrl ? (
+                    <img src={data.photoUrl} className="w-full h-full object-cover" alt="Logo" />
+                  ) : (
+                    <Briefcase className="w-8 h-8 text-primary/20" />
+                  )}
                 </div>
-              )}
+                <h3 className="text-base font-bold relative z-10 leading-tight">{data.companyName || "Nome da Empresa"}</h3>
+                <p className="text-[11px] opacity-90 relative z-10 mt-0.5">{data.industry || "Ramo de Atividade"}</p>
+              </div>
 
-              {/* Quick action pills */}
-              {(data.phone || data.email || data.website) && (
-                <div className="flex gap-2 flex-wrap">
+              {/* White rounded card — matches -mt-12 rounded-t-[32px] */}
+              <div className="flex-1 bg-white -mt-8 rounded-t-[28px] px-4 pt-5 pb-4 space-y-4 relative z-20">
+
+                {data.caption && (
+                  <p className="text-[11px] text-slate-600 text-center italic leading-relaxed">{data.caption}</p>
+                )}
+
+                {/* Contact rows */}
+                <div className="space-y-2">
                   {data.phone && (
-                    <div className="flex items-center gap-1.5 bg-green-50 text-green-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
-                      <Phone className="w-3 h-3" />
-                      <span>Ligar</span>
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Ligar</p>
+                        <p className="text-xs font-semibold text-slate-900 truncate">{data.phone}</p>
+                      </div>
                     </div>
                   )}
                   {(data.whatsappNumber || data.phone) && (
-                    <div className="flex items-center gap-1.5 bg-green-500 text-white rounded-full px-3 py-1.5 text-[11px] font-bold">
-                      <MessageCircle className="w-3 h-3" />
-                      <span>WhatsApp</span>
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-2xl">
+                      <div className="w-9 h-9 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <SiWhatsapp className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-green-700 uppercase font-bold tracking-wider">WhatsApp</p>
+                        <p className="text-xs font-semibold text-green-800 truncate">{data.whatsappNumber || data.phone}</p>
+                      </div>
                     </div>
                   )}
                   {data.email && (
-                    <div className="flex items-center gap-1.5 bg-blue-50 text-blue-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
-                      <Mail className="w-3 h-3" />
-                      <span>Email</span>
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Email</p>
+                        <p className="text-xs font-semibold text-slate-900 truncate">{data.email}</p>
+                      </div>
                     </div>
                   )}
                   {data.website && (
-                    <div className="flex items-center gap-1.5 bg-slate-100 text-slate-700 rounded-full px-3 py-1.5 text-[11px] font-bold">
-                      <ExternalLink className="w-3 h-3" />
-                      <span>Site</span>
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Site</p>
+                        <p className="text-xs font-semibold text-slate-900 truncate">{data.website}</p>
+                      </div>
+                    </div>
+                  )}
+                  {data.location && (
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
+                      <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Endereço</p>
+                        <p className="text-xs font-semibold text-slate-900 leading-snug">{data.location}</p>
+                      </div>
                     </div>
                   )}
                 </div>
-              )}
 
-              {/* Contact rows */}
-              <div className="space-y-2.5">
-                {data.phone && (
-                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-9 h-9 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Telefone</p>
-                      <p className="text-xs font-semibold text-slate-800 truncate">{data.phone}</p>
-                    </div>
-                  </div>
-                )}
-                {data.email && (
-                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Email</p>
-                      <p className="text-xs font-semibold text-slate-800 truncate">{data.email}</p>
-                    </div>
-                  </div>
-                )}
-                {data.website && (
-                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-9 h-9 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
-                      <Globe className="w-4 h-4 text-violet-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Website</p>
-                      <p className="text-xs font-semibold text-slate-800 truncate">{data.website}</p>
-                    </div>
-                  </div>
-                )}
-                {data.location && (
-                  <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl">
-                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-orange-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Endereço</p>
-                      <p className="text-xs font-semibold text-slate-800 leading-snug">{data.location}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Opening hours */}
-              {data.openingHours && data.openingHours.some((oh: any) => oh.enabled) && (
-                <div className="bg-slate-50 rounded-2xl p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Horário de Funcionamento</p>
-                  </div>
+                {/* Opening hours */}
+                {data.openingHours && data.openingHours.some((oh: any) => oh.enabled) && (
                   <div className="space-y-2">
-                    {data.openingHours.filter((oh: any) => oh.enabled).map((oh: any, i: number) => (
-                      <div key={i} className="flex justify-between items-start">
-                        <span className="text-[11px] text-slate-500 flex-shrink-0 w-20">{oh.day}</span>
-                        <div className="flex flex-col items-end gap-0.5">
-                          {(oh.slots || []).filter((s: any) => s.from || s.to).length > 0
-                            ? (oh.slots || []).filter((s: any) => s.from || s.to).map((slot: any, si: number) => (
-                                <span key={si} className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">
-                                  {slot.from || "--:--"} – {slot.to || "--:--"}
-                                </span>
-                              ))
-                            : <span className="text-[11px] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-lg">Aberto</span>
-                          }
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-slate-400" />
+                      <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Horário de Funcionamento</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-2xl overflow-hidden divide-y divide-slate-100">
+                      {data.openingHours.filter((oh: any) => oh.enabled).map((oh: any, i: number) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-2">
+                          <span className="text-[10px] font-semibold text-slate-800 flex-shrink-0 w-20">{oh.day}</span>
+                          <div className="flex-1 space-y-0.5">
+                            {(oh.slots || []).filter((s: any) => s.from || s.to).map((slot: any, si: number) => (
+                              <p key={si} className="text-[10px] text-slate-600">{slot.from || "--:--"} – {slot.to || "--:--"}</p>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Social links */}
-              {data.socialLinks && data.socialLinks.length > 0 && (() => {
-                const SOCIAL_MAP: Record<string, { Icon: any; color: string; label: string }> = {
-                  instagram: { Icon: SiInstagram, color: "#E1306C", label: "Instagram" },
-                  tiktok:    { Icon: SiTiktok,    color: "#000000", label: "TikTok" },
-                  facebook:  { Icon: SiFacebook,  color: "#1877F2", label: "Facebook" },
-                  whatsapp:  { Icon: SiWhatsapp,  color: "#25D366", label: "WhatsApp" },
-                  youtube:   { Icon: SiYoutube,   color: "#FF0000", label: "YouTube" },
-                };
-                return (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wide">Redes Sociais</p>
+                      ))}
                     </div>
+                  </div>
+                )}
+
+                {/* Social links */}
+                {data.socialLinks && data.socialLinks.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[9px] text-muted-foreground uppercase font-bold tracking-wider">Redes Sociais</p>
                     <div className="flex flex-wrap gap-2">
                       {data.socialLinks.map((sl: any, i: number) => {
-                        const info = SOCIAL_MAP[sl.platform] || { Icon: Globe, color: "#6b7280", label: sl.platform };
+                        const info = BIZ_SOCIAL_MAP[sl.platform] || { Icon: Globe, color: "#6b7280", label: sl.platform };
                         const { Icon, color, label } = info;
                         return (
                           <div
                             key={i}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-white text-[10px] font-bold"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-white text-[10px] font-semibold shadow-sm"
                             style={{ backgroundColor: color }}
                           >
                             <Icon size={12} />
@@ -856,15 +824,16 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                       })}
                     </div>
                   </div>
-                );
-              })()}
+                )}
 
-              <div className="pt-1 pb-2 text-center">
-                <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                <div className="pt-3 border-t border-slate-100 text-center">
+                  <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                </div>
               </div>
             </div>
           </div>
         );
+      }
 
       case 'images': {
         const simImages: string[] = data.fileUrls && data.fileUrls.length > 0

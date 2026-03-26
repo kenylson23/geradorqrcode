@@ -167,10 +167,10 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
           description: data.description,
           photoUrl: shrinkCloudinaryUrl(data.photoUrl || ''),
           links: (data.links || []).filter((l: any) => l.label && l.url).map((l: any) => ({
-            label: l.label,
-            url: l.url,
-            imageUrl: shrinkCloudinaryUrl(l.imageUrl || ''),
-            socialType: l.socialType || ""
+            lb: l.label,
+            u: l.url,
+            i: shrinkCloudinaryUrl(l.imageUrl || ''),
+            s: l.socialType || ""
           }))
         };
         const compressed = lzCompress(JSON.stringify(linksPageData));
@@ -236,7 +236,16 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         } else if (value.includes('/ll#')) {
           const compressed = value.split('/ll#')[1];
           const decompressed = lzDecompress(compressed);
-          if (decompressed) data = JSON.parse(decompressed);
+          if (decompressed) {
+            const parsed = JSON.parse(decompressed);
+            if (Array.isArray(parsed.links)) {
+              parsed.links = parsed.links.map((l: any) => {
+                if (l.label !== undefined) return l;
+                return { label: l.lb, url: l.u, imageUrl: l.i || '', socialType: l.s || '' };
+              });
+            }
+            data = parsed;
+          }
         } else if (value.includes('/l#')) {
           const encoded = value.split('/l#')[1];
           data = JSON.parse(decodeURIComponent(escape(atob(encoded))));

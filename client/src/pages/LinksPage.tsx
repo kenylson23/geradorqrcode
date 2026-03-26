@@ -7,6 +7,19 @@ function expandCloudinaryUrl(val: string): string {
   return 'https://res.cloudinary.com/' + val.slice(2);
 }
 
+function expandLinks(links: any[]): any[] {
+  if (!links || !links.length) return [];
+  return links.map((l: any) => {
+    if (l.label !== undefined) return { ...l, imageUrl: expandCloudinaryUrl(l.imageUrl || '') };
+    return {
+      label: l.lb,
+      url: l.u,
+      imageUrl: expandCloudinaryUrl(l.i || ''),
+      socialType: l.s || '',
+    };
+  });
+}
+
 export default function LinksPage() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState(false);
@@ -20,12 +33,7 @@ export default function LinksPage() {
       const parsed = JSON.parse(decompressed);
 
       parsed.photoUrl = expandCloudinaryUrl(parsed.photoUrl || '');
-      if (Array.isArray(parsed.links)) {
-        parsed.links = parsed.links.map((l: any) => ({
-          ...l,
-          imageUrl: expandCloudinaryUrl(l.imageUrl || ''),
-        }));
-      }
+      parsed.links = expandLinks(parsed.links || []);
 
       setData(parsed);
     } catch (e) {

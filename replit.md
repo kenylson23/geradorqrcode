@@ -17,7 +17,7 @@ Preferred communication style: Simple, everyday language.
 - **Styling**: Tailwind CSS with CSS variables for theming (green/Angolan-inspired color palette). Fonts: DM Sans (body), Outfit (display)
 - **Forms**: react-hook-form with Zod validation via @hookform/resolvers
 - **State Management**: React hooks (useState). TanStack React Query is available but minimally used since the app is mostly client-side
-- **Animations**: Framer Motion for transitions
+- **Animations**: Tailwind CSS `animate-in` classes (Framer Motion is installed but NOT used — it causes `removeChild` errors in Netlify production builds)
 - **QR Code Rendering**: `qrcode.react` (QRCodeSVG component)
 - **Download**: `html-to-image` converts the QR element to PNG, `file-saver` triggers the download
 
@@ -69,6 +69,12 @@ server/               # Express backend
 shared/               # Shared between client and server
   schema.ts           # Zod validation schemas only (no DB tables)
 ```
+
+### Production Build Gotchas (Netlify)
+
+- **Do NOT use Framer Motion** (`AnimatePresence`, `motion.div`, etc.) — causes `removeChild` DOM errors in production. Use Tailwind `animate-in` classes instead.
+- **Do NOT use Radix UI `Select`** for country code pickers — the Portal-based dropdown conflicts with React's DOM cleanup when the parent component unmounts (e.g. clicking "Voltar"). Use native HTML `<select>` elements instead.
+- Both issues manifest identically as `NotFoundError: Failed to execute 'removeChild' on 'Node'` in the production bundle.
 
 ### Key Design Decisions
 

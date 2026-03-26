@@ -18,13 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
   Globe, 
   FileText, 
   Share2, 
@@ -533,18 +526,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         <FormLabel className="text-sm font-medium text-gray-700">Número do WhatsApp</FormLabel>
                         <FormControl>
                           <div className="flex gap-2 mt-1.5">
-                            <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
-                              <SelectTrigger className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white">
-                                <SelectValue placeholder="+" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {countryCodes.map((c) => (
-                                  <SelectItem key={c.code} value={c.code}>
-                                    {c.flag} +{c.code}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <select
+                              value={selectedCountryCode}
+                              onChange={(e) => setSelectedCountryCode(e.target.value)}
+                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                            >
+                              {countryCodes.map((c) => (
+                                <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
+                              ))}
+                            </select>
                             <Input 
                               placeholder="923 000 000" 
                               {...field} 
@@ -997,18 +987,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           <FormLabel className="text-sm font-medium text-gray-700">Telefone</FormLabel>
                           <FormControl>
                             <div className="flex gap-2">
-                              <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
-                                <SelectTrigger className="w-[100px] h-10 rounded-lg border border-gray-200 bg-white">
-                                  <SelectValue placeholder="+" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {countryCodes.map((c) => (
-                                    <SelectItem key={c.code} value={c.code}>
-                                      {c.flag} +{c.code}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <select
+                                value={selectedCountryCode}
+                                onChange={(e) => setSelectedCountryCode(e.target.value)}
+                                className="w-[100px] h-10 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                              >
+                                {countryCodes.map((c) => (
+                                  <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
+                                ))}
+                              </select>
                               <Input 
                                 placeholder="923 000 000" 
                                 {...field} 
@@ -1720,18 +1707,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         <FormLabel className="text-sm font-medium text-gray-700">Número de Telefone</FormLabel>
                         <FormControl>
                           <div className="flex gap-2 mt-1.5">
-                            <Select value={selectedCountryCode} onValueChange={setSelectedCountryCode}>
-                              <SelectTrigger className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white">
-                                <SelectValue placeholder="+" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {countryCodes.map((c) => (
-                                  <SelectItem key={c.code} value={c.code}>
-                                    {c.flag} +{c.code}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <select
+                              value={selectedCountryCode}
+                              onChange={(e) => setSelectedCountryCode(e.target.value)}
+                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                            >
+                              {countryCodes.map((c) => (
+                                <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
+                              ))}
+                            </select>
                             <Input 
                               placeholder="923 000 000" 
                               {...field} 

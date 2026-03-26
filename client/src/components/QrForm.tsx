@@ -480,10 +480,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
+                  <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
                       onClick={() => document.getElementById('instagram-photo-upload')?.click()}
                       data-testid="button-upload-instagram-photo"
                     >
@@ -498,20 +497,22 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         }}
                       />
                       {isUploading ? (
-                        <div className="flex flex-col items-center gap-3">
-                          <Progress value={progress} className="w-full max-w-xs" />
-                          <p className="text-sm text-gray-600">{progress}%</p>
+                        <div className="flex flex-col items-center gap-1 text-gray-400">
+                          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin" />
+                          <span className="text-[9px] font-medium">{progress}%</span>
                         </div>
+                      ) : watchedValues.photoUrl ? (
+                        <img src={watchedValues.photoUrl} className="w-full h-full object-cover" alt="Foto de Perfil" />
                       ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-600 text-center">Clique para escolher uma foto de perfil</p>
-                        </>
+                        <div className="flex flex-col items-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a4 4 0 100 8 4 4 0 000-8zM6 20v-1a6 6 0 0112 0v1" />
+                          </svg>
+                          <span className="text-[10px] font-medium">Foto</span>
+                        </div>
                       )}
                     </div>
-                    {form.getValues().photoUrl && (
-                      <p className="text-xs text-green-600 flex items-center gap-1">✓ Foto enviada com sucesso</p>
-                    )}
+                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
                   </div>
                 </div>
               )}
@@ -683,10 +684,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
               {activeType === "links" && (
                 <div className="space-y-6">
-                  <div className="space-y-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
-                    <div 
-                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
                       onClick={() => document.getElementById('profile-upload')?.click()}
                     >
                       <input
@@ -698,27 +698,27 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           const file = e.target.files?.[0];
                           if (file) {
                             handleFileUpload(file, "photoUrl");
-                            // Reset input so same file can be selected again
                             e.target.value = '';
                           }
                         }}
                       />
-                      {watchedValues.photoUrl ? (
-                        <div className="relative w-20 h-20">
-                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Profile" />
-                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <Upload className="w-5 h-5 text-white" />
-                          </div>
+                      {isUploading ? (
+                        <div className="flex flex-col items-center gap-1 text-gray-400">
+                          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin" />
+                          <span className="text-[9px] font-medium">{progress}%</span>
                         </div>
+                      ) : watchedValues.photoUrl ? (
+                        <img src={watchedValues.photoUrl} className="w-full h-full object-cover" alt="Foto de Perfil" />
                       ) : (
-                        <div className="flex flex-col items-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
-                            <Upload className="w-6 h-6 text-primary" />
-                          </div>
-                          <p className="text-xs font-medium text-gray-700">Carregar foto de perfil</p>
+                        <div className="flex flex-col items-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a4 4 0 100 8 4 4 0 000-8zM6 20v-1a6 6 0 0112 0v1" />
+                          </svg>
+                          <span className="text-[10px] font-medium">Foto</span>
                         </div>
                       )}
                     </div>
+                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1339,10 +1339,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
               {activeType === "business" && (
                 <div className="space-y-6">
-                  <div className="space-y-4">
-                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil / Logo</FormLabel>
-                    <div 
-                      className={`border-2 border-dashed rounded-xl p-6 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
                       onClick={() => document.getElementById('business-photo-upload')?.click()}
                     >
                       <input
@@ -1355,22 +1354,23 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           if (file) handleFileUpload(file, "photoUrl");
                         }}
                       />
-                      {watchedValues.photoUrl ? (
-                        <div className="relative w-20 h-20">
-                          <img src={watchedValues.photoUrl} className="w-full h-full object-cover rounded-full" alt="Business Logo" />
-                          <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                            <Upload className="w-5 h-5 text-white" />
-                          </div>
+                      {isUploading ? (
+                        <div className="flex flex-col items-center gap-1 text-gray-400">
+                          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin" />
+                          <span className="text-[9px] font-medium">{progress}%</span>
                         </div>
+                      ) : watchedValues.photoUrl ? (
+                        <img src={watchedValues.photoUrl} className="w-full h-full object-cover" alt="Logo" />
                       ) : (
-                        <div className="flex flex-col items-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-2">
-                            <Upload className="w-6 h-6 text-primary" />
-                          </div>
-                          <p className="text-xs font-medium text-gray-700">Carregar logo da empresa</p>
+                        <div className="flex flex-col items-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a4 4 0 100 8 4 4 0 000-8zM6 20v-1a6 6 0 0112 0v1" />
+                          </svg>
+                          <span className="text-[10px] font-medium">Logo</span>
                         </div>
                       )}
                     </div>
+                    <p className="text-xs text-muted-foreground">Clique para adicionar logo da empresa</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1859,10 +1859,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <FormLabel className="text-sm font-medium text-gray-700">Foto de Perfil</FormLabel>
-                    <div 
-                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
                       onClick={() => document.getElementById('facebook-photo-upload')?.click()}
                       data-testid="button-upload-facebook-photo"
                     >
@@ -1877,22 +1876,22 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         }}
                       />
                       {isUploading ? (
-                        <div className="flex flex-col items-center gap-3">
-                          <Progress value={progress} className="w-full max-w-xs" />
-                          <p className="text-sm text-gray-600">{progress}%</p>
+                        <div className="flex flex-col items-center gap-1 text-gray-400">
+                          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin" />
+                          <span className="text-[9px] font-medium">{progress}%</span>
                         </div>
+                      ) : watchedValues.photoUrl ? (
+                        <img src={watchedValues.photoUrl} className="w-full h-full object-cover" alt="Foto de Perfil" />
                       ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-600 text-center">Clique para escolher uma foto de perfil</p>
-                        </>
+                        <div className="flex flex-col items-center text-gray-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a4 4 0 100 8 4 4 0 000-8zM6 20v-1a6 6 0 0112 0v1" />
+                          </svg>
+                          <span className="text-[10px] font-medium">Foto</span>
+                        </div>
                       )}
                     </div>
-                    {form.getValues().photoUrl && (
-                      <p className="text-xs text-green-600 flex items-center gap-1">
-                        ✓ Foto enviada com sucesso
-                      </p>
-                    )}
+                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
                   </div>
                 </div>
               )}

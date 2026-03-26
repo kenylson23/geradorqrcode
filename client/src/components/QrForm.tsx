@@ -44,7 +44,6 @@ import {
 import { SiTiktok, SiYoutube, SiInstagram, SiFacebook, SiWhatsapp } from "react-icons/si";
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useFieldArray } from "react-hook-form";
-import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
 
 import { useUpload } from "@/hooks/use-upload";
@@ -366,14 +365,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
     <div className="w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div
               key={activeType}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px] pb-20"
+              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px] pb-20 animate-in fade-in slide-in-from-right-2 duration-200"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -1918,8 +1912,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                   </div>
                 </div>
               )}
-            </motion.div>
-          </AnimatePresence>
+            </div>
         </form>
       </Form>
     </div>

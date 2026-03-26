@@ -1,5 +1,3 @@
-import { pgTable, text, serial, timestamp } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const qrTypes = ["url", "text", "whatsapp", "email", "phone", "pdf", "links", "vcard", "images", "facebook", "instagram", "business"] as const;
@@ -158,22 +156,3 @@ export const linkTreeSchema = z.object({
 });
 
 export type LinkTreeData = z.infer<typeof linkTreeSchema>;
-
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-});
-
-export const insertUserSchema = createInsertSchema(users);
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
-
-// Table to store business QR page data with a short slug
-export const qrPages = pgTable("qr_pages", {
-  slug: text("slug").primaryKey(),
-  data: text("data").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export type QrPage = typeof qrPages.$inferSelect;

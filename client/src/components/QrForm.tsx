@@ -86,6 +86,50 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
   const [isUploading, setIsUploading] = useState(false);
   const [openingHoursOpen, setOpeningHoursOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [dragOverZone, setDragOverZone] = useState<string | null>(null);
+
+  const handleMultipleImageUpload = async (files: File[]) => {
+    const current: string[] = (form.getValues() as any).fileUrls || [];
+    const remaining = 10 - current.length;
+    const toUpload = files.filter(f => f.type.startsWith('image/')).slice(0, remaining);
+    if (toUpload.length === 0) return;
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+    setIsUploading(true);
+    const newUrls: string[] = [...current];
+    for (let i = 0; i < toUpload.length; i++) {
+      const file = toUpload[i];
+      setProgress(Math.round((i / toUpload.length) * 100));
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", uploadPreset);
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
+        const result = await res.json();
+        if (result.secure_url) {
+          let url = result.secure_url;
+          if (result.public_id && url.includes('.pdf')) {
+            url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v${result.version}/${result.public_id}`;
+          }
+          newUrls.push(url);
+        }
+      } catch {}
+    }
+    setProgress(100);
+    setIsUploading(false);
+    form.setValue("fileUrls" as any, newUrls);
+    onGenerate({ ...form.getValues(), fileUrls: newUrls });
+  };
+
+  const createDropHandlers = (zoneId: string, onFileDrop: (files: File[]) => void) => ({
+    onDragOver: (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); setDragOverZone(zoneId); },
+    onDragLeave: (e: React.DragEvent) => { e.preventDefault(); setDragOverZone(null); },
+    onDrop: (e: React.DragEvent) => {
+      e.preventDefault(); e.stopPropagation(); setDragOverZone(null);
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length > 0) onFileDrop(files);
+    },
+  });
 
   const form = useForm<QrCodeForm>({
     resolver: zodResolver(qrCodeFormSchema),
@@ -482,9 +526,10 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : dragOverZone === 'instagram-photo' ? 'border-primary bg-primary/5' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
                       onClick={() => document.getElementById('instagram-photo-upload')?.click()}
                       data-testid="button-upload-instagram-photo"
+                      {...createDropHandlers('instagram-photo', ([file]) => file && handleFileUpload(file, 'photoUrl'))}
                     >
                       <input
                         id="instagram-photo-upload"
@@ -512,7 +557,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
+                    <p className="text-xs text-muted-foreground">Clique ou arraste a foto</p>
                   </div>
                 </div>
               )}
@@ -646,8 +691,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                   <div className="space-y-2">
                     <FormLabel className="text-sm font-medium text-gray-700">Upload do PDF</FormLabel>
                     <div 
-                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`border-2 border-dashed rounded-xl p-8 transition-all flex flex-col items-center justify-center cursor-pointer relative ${isUploading ? 'opacity-50 pointer-events-none' : dragOverZone === 'pdf' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:bg-gray-50'}`}
                       onClick={() => document.getElementById('pdf-upload')?.click()}
+                      {...createDropHandlers('pdf', ([file]) => file && handleFileUpload(file, 'fileUrl'))}
                     >
                       <input
                         id="pdf-upload"
@@ -659,23 +705,32 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           if (file) handleFileUpload(file, "fileUrl");
                         }}
                       />
-                      <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4">
-                        <Upload className="w-6 h-6 text-primary" />
-                      </div>
-                      <p className="text-sm font-medium text-gray-700">Clique para carregar PDF</p>
-                      <p className="text-xs text-gray-400 mt-1">PDF até 10MB</p>
-                      
-                      {isUploading && (
-                        <div className="w-full max-w-[200px] mt-4">
-                          <Progress value={progress} className="h-1" />
+                      {dragOverZone === 'pdf' ? (
+                        <div className="flex flex-col items-center gap-2 pointer-events-none">
+                          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-sm font-semibold text-primary">Solte para carregar</p>
                         </div>
-                      )}
-                      
-                      {(watchedValues as any).fileUrl && !isUploading && (
-                        <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-100 flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                          <span className="text-[10px] font-medium text-green-700">Upload concluído</span>
-                        </div>
+                      ) : (
+                        <>
+                          <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4">
+                            <Upload className="w-6 h-6 text-primary" />
+                          </div>
+                          <p className="text-sm font-medium text-gray-700">Clique ou arraste o PDF aqui</p>
+                          <p className="text-xs text-gray-400 mt-1">PDF até 10MB</p>
+                          {isUploading && (
+                            <div className="w-full max-w-[200px] mt-4">
+                              <Progress value={progress} className="h-1" />
+                            </div>
+                          )}
+                          {(watchedValues as any).fileUrl && !isUploading && (
+                            <div className="mt-4 p-2 bg-green-50 rounded-lg border border-green-100 flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                              <span className="text-[10px] font-medium text-green-700">Upload concluído</span>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -686,8 +741,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                 <div className="space-y-6">
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : dragOverZone === 'links-photo' ? 'border-primary bg-primary/5' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
                       onClick={() => document.getElementById('profile-upload')?.click()}
+                      {...createDropHandlers('links-photo', ([file]) => file && handleFileUpload(file, 'photoUrl'))}
                     >
                       <input
                         id="profile-upload"
@@ -718,7 +774,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
+                    <p className="text-xs text-muted-foreground">Clique ou arraste a foto</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -844,9 +900,10 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           <div key={item.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-3">
                             <div className="flex items-start gap-3">
                               <div
-                                className="w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer hover:bg-slate-50 transition-colors relative group"
+                                className={`w-12 h-12 bg-white rounded-xl border flex items-center justify-center flex-shrink-0 overflow-hidden cursor-pointer transition-colors relative group ${dragOverZone === `link-img-${index}` ? 'border-primary bg-primary/5' : 'border-slate-200 hover:bg-slate-50'}`}
                                 onClick={() => document.getElementById(`link-img-${index}`)?.click()}
                                 title="Carregar foto"
+                                {...createDropHandlers(`link-img-${index}`, ([file]) => file && handleFileUpload(file, `links.${index}.imageUrl`))}
                               >
                                 <input
                                   id={`link-img-${index}`}
@@ -922,8 +979,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                 <div className="space-y-6">
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className="relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden"
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden ${dragOverZone === 'vcard-photo' ? 'border-primary bg-primary/5' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
                       onClick={() => document.getElementById('vcard-photo-upload')?.click()}
+                      {...createDropHandlers('vcard-photo', ([file]) => file && handleFileUpload(file, 'photoUrl'))}
                     >
                       <input
                         type="file"
@@ -946,7 +1004,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
+                    <p className="text-xs text-muted-foreground">Clique ou arraste a foto</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1164,8 +1222,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
                     {((watchedValues as any).fileUrls || []).length === 0 ? (
                       <div
-                        className={`border-2 border-dashed rounded-xl p-10 transition-all flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 ${isUploading ? "opacity-50 pointer-events-none" : "border-gray-200"}`}
+                        className={`border-2 border-dashed rounded-xl p-10 transition-all flex flex-col items-center justify-center cursor-pointer ${isUploading ? "opacity-50 pointer-events-none" : dragOverZone === 'images-main' ? "border-primary bg-primary/5" : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"}`}
                         onClick={() => document.getElementById("images-upload")?.click()}
+                        {...createDropHandlers('images-main', handleMultipleImageUpload)}
                       >
                         <input
                           id="images-upload"
@@ -1175,43 +1234,15 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                           className="hidden"
                           onChange={async (e) => {
                             const files = Array.from(e.target.files || []);
-                            const current: string[] = (form.getValues() as any).fileUrls || [];
-                            const remaining = 10 - current.length;
-                            const toUpload = files.slice(0, remaining);
-                            const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-                            const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-                            setIsUploading(true);
-                            const newUrls: string[] = [...current];
-                            for (let i = 0; i < toUpload.length; i++) {
-                              const file = toUpload[i];
-                              setProgress(Math.round(((i) / toUpload.length) * 100));
-                              const fd = new FormData();
-                              fd.append("file", file);
-                              fd.append("upload_preset", uploadPreset);
-                              try {
-                                const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
-                                const result = await res.json();
-                                if (result.secure_url) {
-                                  let url = result.secure_url;
-                                  if (result.public_id && url.includes('.pdf')) {
-                                    url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v${result.version}/${result.public_id}`;
-                                  }
-                                  newUrls.push(url);
-                                }
-                              } catch {}
-                            }
-                            setProgress(100);
-                            setIsUploading(false);
-                            form.setValue("fileUrls" as any, newUrls);
-                            onGenerate({ ...form.getValues(), fileUrls: newUrls });
+                            await handleMultipleImageUpload(files);
                             e.target.value = "";
                           }}
                         />
                         <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3">
                           <ImageIcon className="w-7 h-7 text-primary" />
                         </div>
-                        <p className="text-sm font-semibold text-gray-700">Clique para adicionar imagens</p>
-                        <p className="text-xs text-gray-400 mt-1">Selecione várias imagens de uma vez</p>
+                        <p className="text-sm font-semibold text-gray-700">Clique ou arraste imagens</p>
+                        <p className="text-xs text-gray-400 mt-1">Selecione ou arraste várias imagens de uma vez</p>
                         <p className="text-[11px] text-gray-300 mt-0.5">PNG, JPG, WebP · até 10MB · máx. 10 imagens</p>
                         {isUploading && (
                           <div className="w-full max-w-[200px] mt-4">
@@ -1247,8 +1278,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
                           {((watchedValues as any).fileUrls || []).length < 10 && (
                             <div
-                              className={`aspect-square rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                              className={`aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all ${isUploading ? "opacity-50 pointer-events-none" : dragOverZone === 'images-more' ? "border-primary bg-primary/5" : "border-gray-200 hover:border-primary/50 hover:bg-primary/5"}`}
                               onClick={() => document.getElementById("images-upload-more")?.click()}
+                              {...createDropHandlers('images-more', handleMultipleImageUpload)}
                             >
                               <input
                                 id="images-upload-more"
@@ -1258,35 +1290,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                                 className="hidden"
                                 onChange={async (e) => {
                                   const files = Array.from(e.target.files || []);
-                                  const current: string[] = (form.getValues() as any).fileUrls || [];
-                                  const remaining = 10 - current.length;
-                                  const toUpload = files.slice(0, remaining);
-                                  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-                                  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-                                  setIsUploading(true);
-                                  const newUrls: string[] = [...current];
-                                  for (let i = 0; i < toUpload.length; i++) {
-                                    const file = toUpload[i];
-                                    setProgress(Math.round(((i) / toUpload.length) * 100));
-                                    const fd = new FormData();
-                                    fd.append("file", file);
-                                    fd.append("upload_preset", uploadPreset);
-                                    try {
-                                      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: fd });
-                                      const result = await res.json();
-                                      if (result.secure_url) {
-                                        let url = result.secure_url;
-                                        if (result.public_id && url.includes('.pdf')) {
-                                          url = `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v${result.version}/${result.public_id}`;
-                                        }
-                                        newUrls.push(url);
-                                      }
-                                    } catch {}
-                                  }
-                                  setProgress(100);
-                                  setIsUploading(false);
-                                  form.setValue("fileUrls" as any, newUrls);
-                                  onGenerate({ ...form.getValues(), fileUrls: newUrls });
+                                  await handleMultipleImageUpload(files);
                                   e.target.value = "";
                                 }}
                               />
@@ -1341,8 +1345,9 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                 <div className="space-y-6">
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : dragOverZone === 'business-logo' ? 'border-primary bg-primary/5' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
                       onClick={() => document.getElementById('business-photo-upload')?.click()}
+                      {...createDropHandlers('business-logo', ([file]) => file && handleFileUpload(file, 'photoUrl'))}
                     >
                       <input
                         id="business-photo-upload"
@@ -1370,7 +1375,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Clique para adicionar logo da empresa</p>
+                    <p className="text-xs text-muted-foreground">Clique ou arraste o logo</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1861,9 +1866,10 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
                   <div className="flex flex-col items-center gap-3">
                     <div
-                      className={`relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`relative w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer transition-colors overflow-hidden ${isUploading ? 'opacity-50 pointer-events-none' : dragOverZone === 'facebook-photo' ? 'border-primary bg-primary/5' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'}`}
                       onClick={() => document.getElementById('facebook-photo-upload')?.click()}
                       data-testid="button-upload-facebook-photo"
+                      {...createDropHandlers('facebook-photo', ([file]) => file && handleFileUpload(file, 'photoUrl'))}
                     >
                       <input
                         id="facebook-photo-upload"
@@ -1891,7 +1897,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">Clique para adicionar foto de perfil</p>
+                    <p className="text-xs text-muted-foreground">Clique ou arraste a foto</p>
                   </div>
                 </div>
               )}

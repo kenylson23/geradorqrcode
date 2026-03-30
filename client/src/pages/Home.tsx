@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
 import { QrResult } from "@/components/QrResult";
+import { QrDesign, defaultDesign, type QrDesignSettings } from "@/components/QrDesign";
 import { useQrGenerator } from "@/hooks/use-qr-generator";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +20,7 @@ const QR_ELEMENT_ID = "qr-code-element";
 
 type DownloadFormat = "png" | "svg" | "pdf";
 
-const FORMAT_META: Record<DownloadFormat, { label: string; desc: string; icon: React.ReactNode }> = {
+const FORMAT_META: Record<DownloadFormat, { label: string; desc: string; icon: ReactNode }> = {
   png: { label: "PNG", desc: "Alta resolução (4×)", icon: <ImageIcon className="h-4 w-4 text-blue-500" /> },
   svg: { label: "SVG", desc: "Vectorial, escalável",  icon: <Code className="h-4 w-4 text-orange-500" /> },
   pdf: { label: "PDF", desc: "Documento A4",          icon: <FileText className="h-4 w-4 text-red-500" /> },
@@ -30,11 +31,31 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
+  const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
 
   const handleDownload = () => {
     if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID);
     else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID);
     else downloadPng(QR_ELEMENT_ID);
+  };
+
+  const handleNext = () => {
+    if (currentStep === 2) {
+      setCurrentStep(3);
+      setShowQr(true);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep === 3) {
+      setCurrentStep(2);
+      setShowQr(false);
+    } else {
+      reset();
+      if ((window as any).qrFormRef?.handleBack) {
+        (window as any).qrFormRef.handleBack();
+      }
+    }
   };
 
   return (
@@ -45,20 +66,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
-            {/* Left Column: Form (6 columns) */}
+            {/* Left Column: Form or Design (6 columns) */}
             <div className="lg:col-span-6 pb-56">
-              <QrForm 
-                onGenerate={(data) => {
-                  generate(data);
-                  if (currentStep < 2) setCurrentStep(2);
-                }} 
-                onStepChange={setCurrentStep}
-                ref={(instance) => {
-                  if (instance) {
-                    (window as any).qrFormRef = instance;
-                  }
-                }}
-              />
+              {currentStep < 3 ? (
+                <QrForm 
+                  onGenerate={(data) => {
+                    generate(data);
+                    if (currentStep < 2) setCurrentStep(2);
+                  }} 
+                  onStepChange={setCurrentStep}
+                  ref={(instance) => {
+                    if (instance) {
+                      (window as any).qrFormRef = instance;
+                    }
+                  }}
+                />
+              ) : (
+                <QrDesign design={design} onChange={setDesign} />
+              )}
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
@@ -103,6 +128,7 @@ export default function Home() {
                         value={qrData}
                         showQr={showQr}
                         setShowQr={setShowQr}
+                        design={design}
                       />
                     </div>
                   ) : (
@@ -137,12 +163,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <Button 
               variant="outline"
-              onClick={() => {
-                reset();
-                if ((window as any).qrFormRef?.handleBack) {
-                  (window as any).qrFormRef.handleBack();
-                }
-              }}
+              onClick={handleBack}
               className="h-9 px-6 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
               data-testid="button-back"
             >
@@ -150,53 +171,59 @@ export default function Home() {
             </Button>
             
             <div className="flex gap-2">
-              {/* Download split button */}
-              <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
-                <Button
-                  onClick={handleDownload}
-                  className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
-                  data-testid="button-download"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Baixar {FORMAT_META[selectedFormat].label}
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className="h-9 px-2.5 rounded-none rounded-r-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95"
-                      data-testid="button-download-formats"
-                    >
-                      <ChevronDown className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
-                      <DropdownMenuItem
-                        key={fmt}
-                        className="cursor-pointer gap-2"
-                        onClick={() => setSelectedFormat(fmt)}
-                        data-testid={`menu-format-${fmt}`}
+              {/* Download split button — only on step 3 */}
+              {currentStep === 3 && (
+                <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
+                  <Button
+                    onClick={handleDownload}
+                    className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
+                    data-testid="button-download"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Baixar {FORMAT_META[selectedFormat].label}
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        className="h-9 px-2.5 rounded-none rounded-r-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95"
+                        data-testid="button-download-formats"
                       >
-                        {meta.icon}
-                        <div className="flex-1">
-                          <div className="font-medium">{meta.label}</div>
-                          <div className="text-[11px] text-muted-foreground">{meta.desc}</div>
-                        </div>
-                        {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
+                        <DropdownMenuItem
+                          key={fmt}
+                          className="cursor-pointer gap-2"
+                          onClick={() => setSelectedFormat(fmt)}
+                          data-testid={`menu-format-${fmt}`}
+                        >
+                          {meta.icon}
+                          <div className="flex-1">
+                            <div className="font-medium">{meta.label}</div>
+                            <div className="text-[11px] text-muted-foreground">{meta.desc}</div>
+                          </div>
+                          {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              )}
 
-              <Button 
-                className="h-9 px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
-                data-testid="button-next"
-              >
-                Próximo →
-              </Button>
+              {/* Próximo button — only on step 2 */}
+              {currentStep === 2 && (
+                <Button 
+                  onClick={handleNext}
+                  className="h-9 px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
+                  data-testid="button-next"
+                >
+                  Design QR →
+                </Button>
+              )}
             </div>
           </div>
         </div>

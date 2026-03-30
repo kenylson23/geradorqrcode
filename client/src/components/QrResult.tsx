@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LinkTree } from "./LinkTree";
 import { useState, useEffect, useRef } from "react";
 import { compressToEncodedURIComponent as lzCompress, decompressFromEncodedURIComponent as lzDecompress } from "lz-string";
+import type { QrDesignSettings } from "./QrDesign";
 
 // Cloudinary URL helpers (Option B: strip base URL + version to save ~50 chars)
 function shrinkCloudinaryUrl(url: string): string {
@@ -24,9 +25,10 @@ interface QrResultProps {
   value: any;
   showQr?: boolean;
   setShowQr?: (show: boolean) => void;
+  design?: QrDesignSettings;
 }
 
-export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSetShowQr }: QrResultProps) {
+export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSetShowQr, design }: QrResultProps) {
   const [showQr, setShowQr] = useState(false);
   const [simCurrent, setSimCurrent] = useState(0);
   const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
@@ -1028,7 +1030,11 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                 </div>
               </div>
 
-              <div id="qr-code-element" className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mt-12">
+              <div
+                id="qr-code-element"
+                className="p-4 rounded-xl shadow-sm border border-slate-100 mt-12"
+                style={{ backgroundColor: design?.bgColor ?? "#ffffff" }}
+              >
                 {isTooLong ? (
                   <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
                     <AlertTriangle className="w-10 h-10 mb-2" />
@@ -1039,16 +1045,18 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                     <QRCodeSVG
                       value={hasMinData ? qrValue : "https://replit.com"}
                       size={200}
-                      level="M"
-                      includeMargin={true}
-                      imageSettings={{
-                        src: "/logo.png",
+                      level={design?.level ?? "M"}
+                      fgColor={design?.fgColor ?? "#000000"}
+                      bgColor={design?.bgColor ?? "#ffffff"}
+                      includeMargin={design?.includeMargin ?? true}
+                      imageSettings={design?.showLogo !== false ? {
+                        src: design?.logoSrc ?? "/logo.png",
                         x: undefined,
                         y: undefined,
-                        height: 40,
-                        width: 40,
+                        height: design?.logoSize ?? 40,
+                        width: design?.logoSize ?? 40,
                         excavate: true,
-                      }}
+                      } : undefined}
                     />
                   </div>
                 )}

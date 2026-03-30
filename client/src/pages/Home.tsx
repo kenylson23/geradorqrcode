@@ -5,10 +5,20 @@ import { QrForm } from "@/components/QrForm";
 import { QrResult } from "@/components/QrResult";
 import { useQrGenerator } from "@/hooks/use-qr-generator";
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Download, ChevronDown, ImageIcon, FileText, Code } from "lucide-react";
+
+const QR_ELEMENT_ID = "qr-code-element";
 
 export default function Home() {
-  const { qrData, generate, download, reset } = useQrGenerator();
+  const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(false);
 
@@ -124,15 +134,66 @@ export default function Home() {
               ← Voltar
             </Button>
             
-            <div className="flex gap-3">
-              <Button 
-                onClick={() => download("qr-code-element")} 
-                className="h-9 px-6 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-lg shadow-[#2ECC71]/20 transition-all active:scale-95"
-                data-testid="button-download-qr"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Download PNG
-              </Button>
+            <div className="flex gap-2">
+              {/* Download split button */}
+              <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
+                <Button
+                  onClick={() => downloadPng(QR_ELEMENT_ID)}
+                  className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
+                  data-testid="button-download-png"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Baixar PNG
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      className="h-9 px-2.5 rounded-none rounded-r-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95"
+                      data-testid="button-download-formats"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => downloadPng(QR_ELEMENT_ID)}
+                      data-testid="menu-download-png"
+                    >
+                      <ImageIcon className="mr-2 h-4 w-4 text-blue-500" />
+                      <div>
+                        <div className="font-medium">PNG</div>
+                        <div className="text-[11px] text-muted-foreground">Alta resolução (4×)</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => downloadSvg(QR_ELEMENT_ID)}
+                      data-testid="menu-download-svg"
+                    >
+                      <Code className="mr-2 h-4 w-4 text-orange-500" />
+                      <div>
+                        <div className="font-medium">SVG</div>
+                        <div className="text-[11px] text-muted-foreground">Vectorial, escalável</div>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => downloadPdf(QR_ELEMENT_ID)}
+                      data-testid="menu-download-pdf"
+                    >
+                      <FileText className="mr-2 h-4 w-4 text-red-500" />
+                      <div>
+                        <div className="font-medium">PDF</div>
+                        <div className="text-[11px] text-muted-foreground">Documento A4</div>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
               <Button 
                 className="h-9 px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
                 data-testid="button-next"

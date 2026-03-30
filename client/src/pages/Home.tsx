@@ -29,7 +29,7 @@ const FORMAT_META: Record<DownloadFormat, { label: string; desc: string; icon: R
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
-  const [showQr, setShowQr] = useState(false);
+  const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
 

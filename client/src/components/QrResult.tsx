@@ -1061,7 +1061,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                         value={hasMinData ? qrValue : "https://replit.com"}
                         design={design ?? {
                           fgColor: "#000000", bgColor: "#ffffff", cornerColor: "",
-                          level: "M", showLogo: true, logoSrc: "/logo.png", logoSize: 40,
+                          level: "M", showLogo: false, logoSrc: "/favicon.png", logoSize: 40,
                           includeMargin: true, dotStyle: "square", cornerSquareStyle: "square",
                           cornerDotStyle: "square", frameStyle: "none", frameColor: "#000000",
                           labelText: "", labelColor: "#000000", qrSize: 200,

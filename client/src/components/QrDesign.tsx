@@ -28,8 +28,8 @@ export const defaultDesign: QrDesignSettings = {
   bgColor: "#ffffff",
   cornerColor: "",
   level: "M",
-  showLogo: true,
-  logoSrc: "/logo.png",
+  showLogo: false,
+  logoSrc: "/favicon.png",
   logoSize: 40,
   includeMargin: true,
   dotStyle: "square",
@@ -241,8 +241,8 @@ export function QrDesign({ design, onChange }: Props) {
                   Carregar logo personalizado
                 </button>
                 <p className="text-[11px] text-muted-foreground">PNG, JPG, SVG · fundo transparente recomendado</p>
-                {design.logoSrc !== "/logo.png" && (
-                  <button type="button" onClick={() => set("logoSrc", "/logo.png")}
+                {design.logoSrc !== "/favicon.png" && (
+                  <button type="button" onClick={() => set("logoSrc", "/favicon.png")}
                     className="text-[11px] text-red-500 hover:underline">
                     Repor logo padrão
                   </button>

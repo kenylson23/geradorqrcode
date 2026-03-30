@@ -1036,21 +1036,14 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                 className="mt-12 inline-flex flex-col items-center"
                 style={{ backgroundColor: "transparent" }}
               >
-                {/* Frame wrapper */}
-                <div
-                  className={[
-                    "inline-flex flex-col items-center",
-                    design?.frameStyle === "simple"  ? "border-2" : "",
-                    design?.frameStyle === "rounded" ? "border-2 rounded-2xl" : "",
-                    design?.frameStyle === "shadow"  ? "shadow-xl rounded-2xl" : "",
-                    design?.frameStyle !== "none"    ? "p-3" : "",
-                  ].join(" ")}
-                  style={{
-                    borderColor: design?.frameStyle !== "none" ? (design?.frameColor ?? "#000000") : undefined,
-                    backgroundColor: design?.bgColor ?? "#ffffff",
-                  }}
-                >
-                  {isTooLong ? (
+                {(() => {
+                  const fs = design?.frameStyle ?? "none";
+                  const fc = design?.frameColor ?? "#000000";
+                  const bg = design?.bgColor ?? "#ffffff";
+                  const labelText = design?.labelText || "Scan Me!";
+                  const labelColor = design?.labelColor ?? "#000000";
+
+                  const qrNode = isTooLong ? (
                     <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
                       <AlertTriangle className="w-10 h-10 mb-2" />
                       <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
@@ -1069,14 +1062,118 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                         size={design?.qrSize ?? 200}
                       />
                     </div>
-                  )}
-                  {design?.labelText && (
-                    <p className="mt-2 text-center text-sm font-medium max-w-[200px] leading-tight"
-                       style={{ color: design.labelColor ?? "#000000" }}>
-                      {design.labelText}
-                    </p>
-                  )}
-                </div>
+                  );
+
+                  if (fs === "none") {
+                    return (
+                      <div style={{ backgroundColor: bg }}>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (fs === "simple") {
+                    return (
+                      <div style={{ border: `2px solid ${fc}`, backgroundColor: bg, padding: 12 }}>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (fs === "rounded") {
+                    return (
+                      <div style={{ border: `2px solid ${fc}`, borderRadius: 16, backgroundColor: bg, padding: 12 }}>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (fs === "bold") {
+                    return (
+                      <div style={{ border: `5px solid ${fc}`, backgroundColor: bg, padding: 10 }}>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (fs === "shadow") {
+                    return (
+                      <div style={{ borderRadius: 16, backgroundColor: bg, padding: 12, boxShadow: `4px 4px 0px ${fc}` }}>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  if (fs === "banner") {
+                    return (
+                      <div style={{ border: `2px solid ${fc}`, backgroundColor: bg, display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ padding: 10 }}>{qrNode}</div>
+                        <div style={{ backgroundColor: fc, width: "100%", padding: "6px 12px", textAlign: "center" }}>
+                          <span style={{ color: bg, fontSize: 12, fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase" }}>{labelText}</span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (fs === "banner-rounded") {
+                    return (
+                      <div style={{ border: `2px solid ${fc}`, borderRadius: 14, backgroundColor: bg, display: "inline-flex", flexDirection: "column", alignItems: "center", overflow: "hidden" }}>
+                        <div style={{ padding: 10 }}>{qrNode}</div>
+                        <div style={{ backgroundColor: fc, width: "100%", padding: "6px 12px", textAlign: "center" }}>
+                          <span style={{ color: bg, fontSize: 12, fontWeight: 800, letterSpacing: "0.05em", textTransform: "uppercase" }}>{labelText}</span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (fs === "ticket") {
+                    return (
+                      <div style={{ border: `2px dashed ${fc}`, backgroundColor: bg, display: "inline-flex", flexDirection: "column", alignItems: "center" }}>
+                        <div style={{ padding: 10 }}>{qrNode}</div>
+                        <div style={{ borderTop: `2px dashed ${fc}`, width: "100%", padding: "6px 12px", textAlign: "center", backgroundColor: bg }}>
+                          <span style={{ color: fc, fontSize: 12, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase" }}>{labelText}</span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (fs === "corner") {
+                    const s = (design?.qrSize ?? 200) + 24;
+                    const arm = 18;
+                    const t = 3;
+                    return (
+                      <div style={{ position: "relative", display: "inline-block", padding: 12, backgroundColor: bg }}>
+                        <svg width={s} height={s} style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
+                          <path d={`M${arm} ${t} L${t} ${t} L${t} ${arm}`} stroke={fc} strokeWidth={t * 2} fill="none" strokeLinecap="round"/>
+                          <path d={`M${s - arm} ${t} L${s - t} ${t} L${s - t} ${arm}`} stroke={fc} strokeWidth={t * 2} fill="none" strokeLinecap="round"/>
+                          <path d={`M${t} ${s - arm} L${t} ${s - t} L${arm} ${s - t}`} stroke={fc} strokeWidth={t * 2} fill="none" strokeLinecap="round"/>
+                          <path d={`M${s - t} ${s - arm} L${s - t} ${s - t} L${s - arm} ${s - t}`} stroke={fc} strokeWidth={t * 2} fill="none" strokeLinecap="round"/>
+                        </svg>
+                        {qrNode}
+                        {design?.labelText && (
+                          <p className="mt-2 text-center text-sm font-medium leading-tight" style={{ color: labelColor }}>{design.labelText}</p>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return <div style={{ backgroundColor: bg }}>{qrNode}</div>;
+                })()}
               </div>
           </div>
         </div>

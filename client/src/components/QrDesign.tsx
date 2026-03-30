@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import type { ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -16,7 +17,7 @@ export interface QrDesignSettings {
   dotStyle: "square" | "rounded" | "dots" | "classy" | "classy-rounded" | "extra-rounded";
   cornerSquareStyle: "square" | "extra-rounded" | "dot";
   cornerDotStyle: "square" | "dot";
-  frameStyle: "none" | "simple" | "rounded" | "shadow";
+  frameStyle: "none" | "simple" | "rounded" | "shadow" | "banner" | "banner-rounded" | "bold" | "corner" | "ticket";
   frameColor: string;
   labelText: string;
   labelColor: string;
@@ -69,11 +70,61 @@ const CORNER_DOT_STYLES: { value: QrDesignSettings["cornerDotStyle"]; label: str
   { value: "square", label: "Quadrado" },
   { value: "dot",    label: "Círculo" },
 ];
-const FRAME_STYLES: { value: QrDesignSettings["frameStyle"]; label: string }[] = [
-  { value: "none",    label: "Nenhuma" },
-  { value: "simple",  label: "Simples" },
-  { value: "rounded", label: "Arredondada" },
-  { value: "shadow",  label: "Sombra" },
+const FRAME_STYLES: { value: QrDesignSettings["frameStyle"]; label: string; preview: ReactNode }[] = [
+  {
+    value: "none", label: "Nenhuma",
+    preview: (
+      <svg viewBox="0 0 40 40" className="w-8 h-8"><circle cx="20" cy="20" r="14" stroke="#cbd5e1" strokeWidth="1.5" fill="none" strokeDasharray="3 2"/><line x1="12" y1="12" x2="28" y2="28" stroke="#cbd5e1" strokeWidth="1.5"/></svg>
+    ),
+  },
+  {
+    value: "simple", label: "Borda simples",
+    preview: (
+      <svg viewBox="0 0 40 44" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="2" fill="white" stroke="#334155" strokeWidth="2"/><rect x="7" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="23" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="7" y="23" width="10" height="10" rx="1" fill="#334155"/><rect x="19" y="21" width="4" height="4" fill="#334155"/><rect x="25" y="25" width="4" height="4" fill="#334155"/></svg>
+    ),
+  },
+  {
+    value: "rounded", label: "Borda arredondada",
+    preview: (
+      <svg viewBox="0 0 40 44" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="8" fill="white" stroke="#334155" strokeWidth="2"/><rect x="7" y="7" width="10" height="10" rx="2" fill="#334155"/><rect x="23" y="7" width="10" height="10" rx="2" fill="#334155"/><rect x="7" y="23" width="10" height="10" rx="2" fill="#334155"/><rect x="19" y="21" width="4" height="4" fill="#334155"/><rect x="25" y="25" width="4" height="4" fill="#334155"/></svg>
+    ),
+  },
+  {
+    value: "bold", label: "Borda grossa",
+    preview: (
+      <svg viewBox="0 0 40 44" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="2" fill="white" stroke="#334155" strokeWidth="4"/><rect x="8" y="8" width="10" height="10" rx="1" fill="#334155"/><rect x="22" y="8" width="10" height="10" rx="1" fill="#334155"/><rect x="8" y="22" width="10" height="10" rx="1" fill="#334155"/><rect x="20" y="20" width="4" height="4" fill="#334155"/></svg>
+    ),
+  },
+  {
+    value: "banner", label: "Faixa inferior",
+    preview: (
+      <svg viewBox="0 0 40 48" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="2" fill="white" stroke="#334155" strokeWidth="2"/><rect x="2" y="36" width="36" height="10" rx="2" fill="#334155"/><rect x="7" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="23" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="7" y="23" width="10" height="10" rx="1" fill="#334155"/><text x="20" y="44" textAnchor="middle" fontSize="5" fill="white" fontWeight="bold">Scan Me!</text></svg>
+    ),
+  },
+  {
+    value: "banner-rounded", label: "Faixa arredondada",
+    preview: (
+      <svg viewBox="0 0 40 48" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="8" fill="white" stroke="#334155" strokeWidth="2"/><rect x="2" y="36" width="36" height="10" rx="8" fill="#334155"/><rect x="7" y="7" width="10" height="10" rx="2" fill="#334155"/><rect x="23" y="7" width="10" height="10" rx="2" fill="#334155"/><rect x="7" y="23" width="10" height="10" rx="2" fill="#334155"/><text x="20" y="44" textAnchor="middle" fontSize="5" fill="white" fontWeight="bold">Scan Me!</text></svg>
+    ),
+  },
+  {
+    value: "ticket", label: "Ticket",
+    preview: (
+      <svg viewBox="0 0 40 48" className="w-8 h-9"><rect x="2" y="2" width="36" height="36" rx="2" fill="white" stroke="#334155" strokeWidth="2" strokeDasharray="4 2"/><rect x="2" y="36" width="36" height="10" rx="2" fill="#334155"/><rect x="7" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="23" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="7" y="23" width="10" height="10" rx="1" fill="#334155"/><text x="20" y="44" textAnchor="middle" fontSize="5" fill="white" fontWeight="bold">Scan Me!</text></svg>
+    ),
+  },
+  {
+    value: "corner", label: "Cantos",
+    preview: (
+      <svg viewBox="0 0 40 40" className="w-8 h-8"><path d="M4 14 L4 4 L14 4" stroke="#334155" strokeWidth="3" fill="none" strokeLinecap="round"/><path d="M26 4 L36 4 L36 14" stroke="#334155" strokeWidth="3" fill="none" strokeLinecap="round"/><path d="M36 26 L36 36 L26 36" stroke="#334155" strokeWidth="3" fill="none" strokeLinecap="round"/><path d="M14 36 L4 36 L4 26" stroke="#334155" strokeWidth="3" fill="none" strokeLinecap="round"/><rect x="10" y="10" width="8" height="8" rx="1" fill="#94a3b8"/><rect x="22" y="10" width="8" height="8" rx="1" fill="#94a3b8"/><rect x="10" y="22" width="8" height="8" rx="1" fill="#94a3b8"/><rect x="20" y="20" width="3" height="3" fill="#94a3b8"/></svg>
+    ),
+  },
+  {
+    value: "shadow", label: "Sombra",
+    preview: (
+      <svg viewBox="0 0 44 44" className="w-8 h-8"><rect x="5" y="5" width="36" height="36" rx="4" fill="#cbd5e1"/><rect x="2" y="2" width="36" height="36" rx="4" fill="white" stroke="#e2e8f0" strokeWidth="1"/><rect x="7" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="21" y="7" width="10" height="10" rx="1" fill="#334155"/><rect x="7" y="21" width="10" height="10" rx="1" fill="#334155"/><rect x="19" y="19" width="4" height="4" fill="#334155"/></svg>
+    ),
+  },
 ];
 const LEVELS: { value: QrDesignSettings["level"]; label: string; desc: string }[] = [
   { value: "L", label: "L — Baixa",  desc: "~7%" },
@@ -264,19 +315,20 @@ export function QrDesign({ design, onChange }: Props) {
 
       {/* ── MOLDURA ──────────────────────────────────── */}
       <section className="space-y-3">
-        <Label className="text-base font-bold text-foreground">Moldura</Label>
-        <div className="grid grid-cols-4 gap-2">
+        <Label className="text-base font-bold text-foreground">Estilo de moldura</Label>
+        <div className="grid grid-cols-3 gap-2">
           {FRAME_STYLES.map(f => (
             <button key={f.value} type="button" onClick={() => set("frameStyle", f.value)}
               data-testid={`button-frame-${f.value}`}
-              className={`py-2 rounded-xl border-2 text-[11px] font-semibold transition-all ${design.frameStyle === f.value ? "border-primary bg-primary/5 text-primary" : "border-slate-100 text-muted-foreground hover:border-slate-200"}`}
+              className={`p-2 rounded-xl border-2 flex flex-col items-center gap-1.5 transition-all ${design.frameStyle === f.value ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"}`}
             >
-              {f.label}
+              {f.preview}
+              <span className={`text-[9px] font-semibold text-center leading-tight ${design.frameStyle === f.value ? "text-primary" : "text-muted-foreground"}`}>{f.label}</span>
             </button>
           ))}
         </div>
         {design.frameStyle !== "none" && (
-          <div className="space-y-2">
+          <div className="space-y-2 pt-1">
             <p className="text-xs font-medium text-muted-foreground">Cor da moldura</p>
             <ColorRow colors={DOT_PRESETS} selected={design.frameColor} onChange={c => set("frameColor", c)} />
           </div>

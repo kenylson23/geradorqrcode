@@ -1,4 +1,4 @@
-import { HelpCircle, Menu } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { Link } from "wouter";
 import logoPngPath from "@assets/image_1771526445503.png";
 
@@ -35,9 +35,6 @@ export function Header({ currentStep }: HeaderProps) {
           <div className="flex items-center gap-2">
             <button className="p-2 rounded-lg border border-border hover:bg-muted transition-colors">
               <HelpCircle className="h-5 w-5 text-muted-foreground" />
-            </button>
-            <button className="p-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors">
-              <Menu className="h-5 w-5" />
             </button>
           </div>
         </div>

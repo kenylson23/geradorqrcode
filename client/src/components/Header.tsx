@@ -1,4 +1,5 @@
 import { HelpCircle, Menu } from "lucide-react";
+import { Link } from "wouter";
 import logoPngPath from "@assets/image_1771526445503.png";
 
 interface HeaderProps {
@@ -9,13 +10,13 @@ export function Header({ currentStep }: HeaderProps) {
   return (
     <header className="w-full bg-white border-b border-border shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
-        <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 cursor-pointer">
+        <Link href="/" className="flex items-center gap-2 cursor-pointer">
           <img 
             src={logoPngPath} 
             alt="Ango QrCode Logo" 
             className="h-10 w-auto object-contain"
           />
-        </a>
+        </Link>
         
         <div className="flex items-center gap-4">
           <div className="hidden lg:flex items-center gap-8 mr-8">

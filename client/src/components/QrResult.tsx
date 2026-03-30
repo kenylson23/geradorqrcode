@@ -1,4 +1,4 @@
-import { QRCodeSVG } from "qrcode.react";
+import { QrCodeStyled } from "./QrCodeStyled";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Globe, MessageCircle, FileText, User, Instagram, Facebook, Smartphone, Search, MoreHorizontal, Briefcase, Image as ImageIcon, Video, ChevronLeft, ChevronRight, ArrowRight, MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
 import { SiInstagram, SiTiktok, SiFacebook, SiWhatsapp, SiYoutube } from "react-icons/si";
@@ -1030,36 +1030,53 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                 </div>
               </div>
 
+              {/* QR element — captures frame + label for download */}
               <div
                 id="qr-code-element"
-                className="p-4 rounded-xl shadow-sm border border-slate-100 mt-12"
-                style={{ backgroundColor: design?.bgColor ?? "#ffffff" }}
+                className="mt-12 inline-flex flex-col items-center"
+                style={{ backgroundColor: "transparent" }}
               >
-                {isTooLong ? (
-                  <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
-                    <AlertTriangle className="w-10 h-10 mb-2" />
-                    <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
-                  </div>
-                ) : (
-                  <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
-                    <QRCodeSVG
-                      value={hasMinData ? qrValue : "https://replit.com"}
-                      size={200}
-                      level={design?.level ?? "M"}
-                      fgColor={design?.fgColor ?? "#000000"}
-                      bgColor={design?.bgColor ?? "#ffffff"}
-                      includeMargin={design?.includeMargin ?? true}
-                      imageSettings={design?.showLogo !== false ? {
-                        src: design?.logoSrc ?? "/logo.png",
-                        x: undefined,
-                        y: undefined,
-                        height: design?.logoSize ?? 40,
-                        width: design?.logoSize ?? 40,
-                        excavate: true,
-                      } : undefined}
-                    />
-                  </div>
-                )}
+                {/* Frame wrapper */}
+                <div
+                  className={[
+                    "inline-flex flex-col items-center",
+                    design?.frameStyle === "simple"  ? "border-2" : "",
+                    design?.frameStyle === "rounded" ? "border-2 rounded-2xl" : "",
+                    design?.frameStyle === "shadow"  ? "shadow-xl rounded-2xl" : "",
+                    design?.frameStyle !== "none"    ? "p-3" : "",
+                  ].join(" ")}
+                  style={{
+                    borderColor: design?.frameStyle !== "none" ? (design?.frameColor ?? "#000000") : undefined,
+                    backgroundColor: design?.bgColor ?? "#ffffff",
+                  }}
+                >
+                  {isTooLong ? (
+                    <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
+                      <AlertTriangle className="w-10 h-10 mb-2" />
+                      <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
+                    </div>
+                  ) : (
+                    <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
+                      <QrCodeStyled
+                        value={hasMinData ? qrValue : "https://replit.com"}
+                        design={design ?? {
+                          fgColor: "#000000", bgColor: "#ffffff", cornerColor: "",
+                          level: "M", showLogo: true, logoSrc: "/logo.png", logoSize: 40,
+                          includeMargin: true, dotStyle: "square", cornerSquareStyle: "square",
+                          cornerDotStyle: "square", frameStyle: "none", frameColor: "#000000",
+                          labelText: "", labelColor: "#000000", qrSize: 200,
+                        }}
+                        size={design?.qrSize ?? 200}
+                      />
+                    </div>
+                  )}
+                  {design?.labelText && (
+                    <p className="mt-2 text-center text-sm font-medium max-w-[200px] leading-tight"
+                       style={{ color: design.labelColor ?? "#000000" }}>
+                      {design.labelText}
+                    </p>
+                  )}
+                </div>
               </div>
           </div>
         </div>

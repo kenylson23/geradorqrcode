@@ -35,8 +35,8 @@ export default function Home() {
 
   const handleDownload = () => {
     if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID);
-    else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID);
-    else downloadPng(QR_ELEMENT_ID);
+    else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID, design);
+    else downloadPng(QR_ELEMENT_ID, design);
   };
 
   const handleNext = () => {

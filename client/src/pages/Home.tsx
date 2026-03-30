@@ -13,14 +13,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download, ChevronDown, ImageIcon, FileText, Code } from "lucide-react";
+import { Download, ChevronDown, ImageIcon, FileText, Code, Check } from "lucide-react";
 
 const QR_ELEMENT_ID = "qr-code-element";
+
+type DownloadFormat = "png" | "svg" | "pdf";
+
+const FORMAT_META: Record<DownloadFormat, { label: string; desc: string; icon: React.ReactNode }> = {
+  png: { label: "PNG", desc: "Alta resolução (4×)", icon: <ImageIcon className="h-4 w-4 text-blue-500" /> },
+  svg: { label: "SVG", desc: "Vectorial, escalável",  icon: <Code className="h-4 w-4 text-orange-500" /> },
+  pdf: { label: "PDF", desc: "Documento A4",          icon: <FileText className="h-4 w-4 text-red-500" /> },
+};
 
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
+
+  const handleDownload = () => {
+    if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID);
+    else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID);
+    else downloadPng(QR_ELEMENT_ID);
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
@@ -138,12 +153,12 @@ export default function Home() {
               {/* Download split button */}
               <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
                 <Button
-                  onClick={() => downloadPng(QR_ELEMENT_ID)}
+                  onClick={handleDownload}
                   className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
-                  data-testid="button-download-png"
+                  data-testid="button-download"
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Baixar PNG
+                  Baixar {FORMAT_META[selectedFormat].label}
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -154,42 +169,24 @@ export default function Home() {
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => downloadPng(QR_ELEMENT_ID)}
-                      data-testid="menu-download-png"
-                    >
-                      <ImageIcon className="mr-2 h-4 w-4 text-blue-500" />
-                      <div>
-                        <div className="font-medium">PNG</div>
-                        <div className="text-[11px] text-muted-foreground">Alta resolução (4×)</div>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => downloadSvg(QR_ELEMENT_ID)}
-                      data-testid="menu-download-svg"
-                    >
-                      <Code className="mr-2 h-4 w-4 text-orange-500" />
-                      <div>
-                        <div className="font-medium">SVG</div>
-                        <div className="text-[11px] text-muted-foreground">Vectorial, escalável</div>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => downloadPdf(QR_ELEMENT_ID)}
-                      data-testid="menu-download-pdf"
-                    >
-                      <FileText className="mr-2 h-4 w-4 text-red-500" />
-                      <div>
-                        <div className="font-medium">PDF</div>
-                        <div className="text-[11px] text-muted-foreground">Documento A4</div>
-                      </div>
-                    </DropdownMenuItem>
+                    {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
+                      <DropdownMenuItem
+                        key={fmt}
+                        className="cursor-pointer gap-2"
+                        onClick={() => setSelectedFormat(fmt)}
+                        data-testid={`menu-format-${fmt}`}
+                      >
+                        {meta.icon}
+                        <div className="flex-1">
+                          <div className="font-medium">{meta.label}</div>
+                          <div className="text-[11px] text-muted-foreground">{meta.desc}</div>
+                        </div>
+                        {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                      </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

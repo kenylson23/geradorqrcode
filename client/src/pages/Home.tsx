@@ -21,22 +21,30 @@ const QR_ELEMENT_ID = "qr-code-element";
 type DownloadFormat = "png" | "svg" | "pdf";
 
 const FORMAT_META: Record<DownloadFormat, { label: string; desc: string; icon: ReactNode }> = {
-  png: { label: "PNG", desc: "Alta resolução (4×)", icon: <ImageIcon className="h-4 w-4 text-blue-500" /> },
+  png: { label: "PNG", desc: "Alta resolução",        icon: <ImageIcon className="h-4 w-4 text-blue-500" /> },
   svg: { label: "SVG", desc: "Vectorial, escalável",  icon: <Code className="h-4 w-4 text-orange-500" /> },
   pdf: { label: "PDF", desc: "Documento A4",          icon: <FileText className="h-4 w-4 text-red-500" /> },
 };
+
+const SIZE_OPTIONS: { label: string; value: number; desc: string }[] = [
+  { label: "512 px",  value: 512,  desc: "Web / redes sociais" },
+  { label: "1024 px", value: 1024, desc: "Padrão (recomendado)" },
+  { label: "2048 px", value: 2048, desc: "Impressão pequena" },
+  { label: "4096 px", value: 4096, desc: "Impressão grande" },
+];
 
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
+  const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
 
   const handleDownload = () => {
-    if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID);
-    else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID, design);
-    else downloadPng(QR_ELEMENT_ID, design);
+    if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID, downloadSize);
+    else if (selectedFormat === "pdf") downloadPdf(QR_ELEMENT_ID, design, downloadSize);
+    else downloadPng(QR_ELEMENT_ID, design, downloadSize);
   };
 
   const handleNext = () => {
@@ -170,48 +178,83 @@ export default function Home() {
               ← Voltar
             </Button>
             
-            <div className="flex gap-2">
-              {/* Download split button — only on step 3 */}
+            <div className="flex gap-2 items-center">
+              {/* Download controls — only on step 3 */}
               {currentStep === 3 && (
-                <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
-                  <Button
-                    onClick={handleDownload}
-                    className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
-                    data-testid="button-download"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Baixar {FORMAT_META[selectedFormat].label}
-                  </Button>
+                <>
+                  {/* Size picker */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
-                        className="h-9 px-2.5 rounded-none rounded-r-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95"
-                        data-testid="button-download-formats"
+                        variant="outline"
+                        className="h-9 px-3 rounded-xl border-2 border-slate-200 text-slate-600 text-xs font-semibold hover:border-slate-300 gap-1"
+                        data-testid="button-download-size"
                       >
-                        <ChevronDown className="h-4 w-4" />
+                        {SIZE_OPTIONS.find(s => s.value === downloadSize)?.label ?? "1024 px"}
+                        <ChevronDown className="h-3.5 w-3.5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-52">
-                      <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
+                      <DropdownMenuLabel className="text-xs text-muted-foreground">Tamanho do ficheiro</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
+                      {SIZE_OPTIONS.map(sz => (
                         <DropdownMenuItem
-                          key={fmt}
+                          key={sz.value}
                           className="cursor-pointer gap-2"
-                          onClick={() => setSelectedFormat(fmt)}
-                          data-testid={`menu-format-${fmt}`}
+                          onClick={() => setDownloadSize(sz.value)}
+                          data-testid={`menu-size-${sz.value}`}
                         >
-                          {meta.icon}
                           <div className="flex-1">
-                            <div className="font-medium">{meta.label}</div>
-                            <div className="text-[11px] text-muted-foreground">{meta.desc}</div>
+                            <div className="font-medium">{sz.label}</div>
+                            <div className="text-[11px] text-muted-foreground">{sz.desc}</div>
                           </div>
-                          {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                          {downloadSize === sz.value && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
+
+                  {/* Format + Download split button */}
+                  <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
+                    <Button
+                      onClick={handleDownload}
+                      className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
+                      data-testid="button-download"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar {FORMAT_META[selectedFormat].label}
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className="h-9 px-2.5 rounded-none rounded-r-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95"
+                          data-testid="button-download-formats"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-52">
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
+                          <DropdownMenuItem
+                            key={fmt}
+                            className="cursor-pointer gap-2"
+                            onClick={() => setSelectedFormat(fmt)}
+                            data-testid={`menu-format-${fmt}`}
+                          >
+                            {meta.icon}
+                            <div className="flex-1">
+                              <div className="font-medium">{meta.label}</div>
+                              <div className="text-[11px] text-muted-foreground">{meta.desc}</div>
+                            </div>
+                            {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
               )}
 
               {/* Próximo button — only on step 2 */}

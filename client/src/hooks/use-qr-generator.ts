@@ -44,7 +44,7 @@ export function useQrGenerator() {
    */
   const svgToCanvas = (
     elementId: string,
-    scale = 4,
+    targetPx: number,
     design?: QrDesignSettings
   ): Promise<HTMLCanvasElement | null> => {
     return new Promise(async (resolve) => {
@@ -62,6 +62,8 @@ export function useQrGenerator() {
       const h = parseInt(svgEl.getAttribute("height") || "0") || svgEl.clientHeight || 200;
       clone.setAttribute("width", String(w));
       clone.setAttribute("height", String(h));
+
+      const scale = Math.round(targetPx / Math.max(w, h)) || 4;
 
       // Replace <image> hrefs with embedded data URIs
       const imageEls = clone.querySelectorAll("image");
@@ -154,15 +156,15 @@ export function useQrGenerator() {
     });
   };
 
-  const downloadPng = async (elementId: string, design?: QrDesignSettings) => {
-    const canvas = await svgToCanvas(elementId, 4, design);
+  const downloadPng = async (elementId: string, design?: QrDesignSettings, sizePx = 1024) => {
+    const canvas = await svgToCanvas(elementId, sizePx, design);
     if (!canvas) return;
     canvas.toBlob((blob) => {
       if (blob) saveAs(blob, getFileName("png"));
     }, "image/png");
   };
 
-  const downloadSvg = (elementId: string) => {
+  const downloadSvg = (elementId: string, sizePx = 1024) => {
     const element = document.getElementById(elementId);
     if (!element) return;
     const svgEl = element.querySelector("svg");
@@ -170,22 +172,27 @@ export function useQrGenerator() {
     const clone = svgEl.cloneNode(true) as SVGElement;
     clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+    clone.setAttribute("width", String(sizePx));
+    clone.setAttribute("height", String(sizePx));
+    const w = parseInt(svgEl.getAttribute("width") || "0") || svgEl.clientWidth || 200;
+    const h = parseInt(svgEl.getAttribute("height") || "0") || svgEl.clientHeight || 200;
+    clone.setAttribute("viewBox", `0 0 ${w} ${h}`);
     const svgString = new XMLSerializer().serializeToString(clone);
     const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
     saveAs(blob, getFileName("svg"));
   };
 
-  const downloadPdf = async (elementId: string, design?: QrDesignSettings) => {
-    const canvas = await svgToCanvas(elementId, 4, design);
+  const downloadPdf = async (elementId: string, design?: QrDesignSettings, sizePx = 1024) => {
+    const canvas = await svgToCanvas(elementId, sizePx, design);
     if (!canvas) return;
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const qrSize = 80;
-    const x = (pageW - qrSize) / 2;
-    const y = (pageH - qrSize) / 2;
-    pdf.addImage(imgData, "PNG", x, y, qrSize, qrSize);
+    const qrMm = Math.min(pageW, pageH) * 0.6;
+    const x = (pageW - qrMm) / 2;
+    const y = (pageH - qrMm) / 2;
+    pdf.addImage(imgData, "PNG", x, y, qrMm, qrMm);
     pdf.save(getFileName("pdf"));
   };
 

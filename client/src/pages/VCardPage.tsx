@@ -289,7 +289,7 @@ export default function VCardPage() {
           </button>
 
           <div className="pt-2 text-center">
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+            <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-400 uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
           </div>
         </div>
       </div>

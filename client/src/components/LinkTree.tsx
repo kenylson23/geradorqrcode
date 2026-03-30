@@ -90,7 +90,7 @@ export function LinkTree({ title, description, photoUrl, links }: LinkTreeProps)
       </div>
 
       <div className="mt-auto py-6 flex flex-col items-center">
-        <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Gerado por AngoQrCode</span>
+        <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-400 uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
       </div>
     </div>
   );

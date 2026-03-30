@@ -419,7 +419,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
 
                   <div className="pt-1 border-t border-slate-100 text-center">
-                    <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                    <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
                   </div>
                 </div>
               </div>
@@ -469,7 +469,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   </div>
 
                   <div className="pt-1 border-t border-slate-100 text-center">
-                    <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                    <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
                   </div>
                 </div>
               </div>
@@ -544,7 +544,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
             </div>
 
             <div className="py-4 text-center">
-              <p className="text-[8px] text-slate-600 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+              <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-slate-600 uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
             </div>
           </div>
         );
@@ -698,7 +698,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               </button>
 
               <div className="text-center pt-1 pb-2">
-                <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-slate-300 uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
               </div>
             </div>
           </div>
@@ -868,7 +868,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
               )}
 
               <div className="pt-1 pb-2 text-center">
-                <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-slate-300 uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
               </div>
             </div>
           </div>
@@ -977,7 +977,7 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                 </Button>
               )}
               <div className="pt-2 border-t border-slate-100 text-center">
-                <p className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+                <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[8px] text-muted-foreground uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
               </div>
             </div>
           </div>

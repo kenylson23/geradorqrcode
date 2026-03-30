@@ -206,7 +206,7 @@ export default function ImagePage({ params }: ImagePageProps) {
           )}
 
           <div className="pt-4 border-t border-slate-100 text-center">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Gerado por AngoQrCode</p>
+            <a href="https://angoqurcode.ao" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold" style={{cursor:"pointer"}}>Gerado por AngoQrCode</a>
           </div>
         </div>
       </div>

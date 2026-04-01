@@ -1,0 +1,35 @@
+Preciso melhorar a página inicial (home/landing page) do AngoQRCode para ficar completa e profissional, como as maiores plataformas do mercado (QRCodeChimp, QR Tiger, Uniqode). A página atual mostra apenas a grid de seleção de tipo de QR code. Precisa manter a paleta de cores existente (verde principal, fundo cinza claro, branco nos cards). NÃO alterar o fluxo de criação de QR (as 3 etapas que já existem).
+
+ESTRUTURA COMPLETA DA NOVA PÁGINA INICIAL:
+
+──────────────────────────────────────
+SEÇÃO 1 — GRID DE TIPOS (já existe, manter no topo)
+──────────────────────────────────────
+- Manter exatamente como está: "1. Selecione um tipo de código QR"
+- NÃO mover, NÃO alterar visual, NÃO alterar lógica
+- Apenas adicionar id="criar" no container dessa seção (para âncoras futuras)
+
+══════════════════════════════════════
+TUDO ABAIXO É NOVO — adicionar APÓS a grid de tipos
+══════════════════════════════════════
+
+──────────────────────────────────────
+SEÇÃO 2 — COMO FUNCIONA
+──────────────────────────────────────
+- Título da seção: "Como funciona"
+- 3 passos em cards horizontais (ícone + número + título + descrição):
+  1. Escolha o tipo → "Selecione entre 9 modelos: site, WhatsApp, PDF, vCard e mais"
+  2. Personalize o conteúdo → "Preencha as informações e customize as cores e o design do seu QR"
+  3. Baixe e compartilhe → "Faça download em PNG ou SVG e use em qualquer material"
+- Seta ou linha conectando os 3 passos visualmente
+- Fundo levemente acinzentado (mesma cor de fundo da página atual)
+
+──────────────────────────────────────
+SEÇÃO 3 — FUNCIONALIDADES / BENEFÍCIOS
+──────────────────────────────────────
+- Título: "Por que usar o AngoQRCode?"
+- Grid 2x3 de cards de benefícios (ícone SVG + título + descrição curta):
+  1. QR Code Dinâmico — "Edite o destino a qualquer hora sem reimprimir"
+  2. Analytics de Scans — "Acompanhe quantas vezes seu QR foi escaneado"
+  3. Design Personalizado — "Adicione cores, logo e estilo ao seu QR"
+  4. PDF e Imagens — "Hospede documentos e

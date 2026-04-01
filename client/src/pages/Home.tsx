@@ -14,7 +14,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download, ChevronDown, ImageIcon, FileText, Code, Check } from "lucide-react";
+import {
+  Download, ChevronDown, ImageIcon, FileText, Code, Check,
+  MousePointerClick, Palette, Share2,
+  RefreshCw, BarChart2, Paintbrush, FileImage, FileDown, Gift,
+  ArrowRight,
+} from "lucide-react";
 
 const QR_ELEMENT_ID = "qr-code-element";
 
@@ -70,7 +75,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <Header currentStep={currentStep} />
 
-      <main className="flex-grow pb-24">
+      <main id="criar" className="flex-grow pb-24">
         <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
@@ -272,7 +277,127 @@ export default function Home() {
         </div>
       )}
 
-      {!qrData && <Footer />}
+      {/* Landing sections — only visible before QR is generated */}
+      {!qrData && (
+        <>
+          {/* Section 2 — Como funciona */}
+          <section className="py-16 bg-[#f8fafc] border-t border-slate-100">
+            <div className="max-w-5xl mx-auto px-6">
+              <h2 className="text-2xl font-bold text-center text-slate-800 mb-12">Como funciona</h2>
+              <div className="flex flex-col md:flex-row items-start gap-0">
+
+                {/* Step 1 */}
+                <div className="flex-1 flex flex-col items-center text-center px-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#2ECC71]/10 flex items-center justify-center mb-4">
+                    <MousePointerClick className="h-7 w-7 text-[#2ECC71]" />
+                  </div>
+                  <div className="w-7 h-7 rounded-full bg-[#2ECC71] text-white text-xs font-bold flex items-center justify-center mb-3">1</div>
+                  <h3 className="font-semibold text-slate-800 mb-2">Escolha o tipo</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">Selecione entre 9 modelos: site, WhatsApp, PDF, vCard e mais</p>
+                </div>
+
+                {/* Arrow */}
+                <div className="hidden md:flex items-center justify-center pt-6 px-2">
+                  <ArrowRight className="h-6 w-6 text-slate-300" />
+                </div>
+                <div className="md:hidden flex justify-center w-full py-3">
+                  <div className="w-px h-8 bg-slate-200" />
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex-1 flex flex-col items-center text-center px-4">
+                  <div className="w-14 h-14 rounded-2xl bg-[#8B5CF6]/10 flex items-center justify-center mb-4">
+                    <Palette className="h-7 w-7 text-[#8B5CF6]" />
+                  </div>
+                  <div className="w-7 h-7 rounded-full bg-[#8B5CF6] text-white text-xs font-bold flex items-center justify-center mb-3">2</div>
+                  <h3 className="font-semibold text-slate-800 mb-2">Personalize o conteúdo</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">Preencha as informações e customize as cores e o design do seu QR</p>
+                </div>
+
+                {/* Arrow */}
+                <div className="hidden md:flex items-center justify-center pt-6 px-2">
+                  <ArrowRight className="h-6 w-6 text-slate-300" />
+                </div>
+                <div className="md:hidden flex justify-center w-full py-3">
+                  <div className="w-px h-8 bg-slate-200" />
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex-1 flex flex-col items-center text-center px-4">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-4">
+                    <Share2 className="h-7 w-7 text-blue-500" />
+                  </div>
+                  <div className="w-7 h-7 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center mb-3">3</div>
+                  <h3 className="font-semibold text-slate-800 mb-2">Baixe e compartilhe</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">Faça download em PNG ou SVG e use em qualquer material</p>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* Section 3 — Por que usar o AngoQRCode? */}
+          <section className="py-16 bg-white border-t border-slate-100">
+            <div className="max-w-5xl mx-auto px-6">
+              <h2 className="text-2xl font-bold text-center text-slate-800 mb-12">Por que usar o AngoQRCode?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                {[
+                  {
+                    icon: <RefreshCw className="h-6 w-6 text-[#2ECC71]" />,
+                    bg: "bg-[#2ECC71]/10",
+                    title: "QR Code Dinâmico",
+                    desc: "Edite o destino a qualquer hora sem reimprimir",
+                  },
+                  {
+                    icon: <BarChart2 className="h-6 w-6 text-[#8B5CF6]" />,
+                    bg: "bg-[#8B5CF6]/10",
+                    title: "Analytics de Scans",
+                    desc: "Acompanhe quantas vezes seu QR foi escaneado",
+                  },
+                  {
+                    icon: <Paintbrush className="h-6 w-6 text-orange-500" />,
+                    bg: "bg-orange-500/10",
+                    title: "Design Personalizado",
+                    desc: "Adicione cores, logo e estilo ao seu QR",
+                  },
+                  {
+                    icon: <FileImage className="h-6 w-6 text-blue-500" />,
+                    bg: "bg-blue-500/10",
+                    title: "PDF e Imagens",
+                    desc: "Hospede documentos e imagens diretamente no QR",
+                  },
+                  {
+                    icon: <FileDown className="h-6 w-6 text-red-500" />,
+                    bg: "bg-red-500/10",
+                    title: "Múltiplos Formatos",
+                    desc: "Baixe em PNG, SVG ou PDF com alta resolução",
+                  },
+                  {
+                    icon: <Gift className="h-6 w-6 text-teal-500" />,
+                    bg: "bg-teal-500/10",
+                    title: "Totalmente Gratuito",
+                    desc: "Crie quantos QR codes quiser sem cadastro",
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="bg-[#f8fafc] rounded-2xl p-6 flex gap-4 items-start hover:shadow-md transition-shadow">
+                    <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 mb-1">{item.title}</h3>
+                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            </div>
+          </section>
+
+          <Footer />
+        </>
+      )}
     </div>
   );
 }

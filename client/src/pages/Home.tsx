@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -43,6 +43,20 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
+  const [mockupVisible, setMockupVisible] = useState(true);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setMockupVisible(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
   const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
 
@@ -100,7 +114,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start fixed right-0 top-16 w-1/2 pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
+            <div className={`lg:col-span-6 flex-col items-center justify-start fixed right-0 top-16 w-1/2 pointer-events-none transition-opacity duration-300 ${mockupVisible ? 'hidden lg:flex opacity-100' : 'hidden'}`} style={{paddingBottom: qrData ? '96px' : '0'}}>
 
               {/* Control Tabs */}
               {qrData && (
@@ -168,6 +182,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {/* Sentinel: when visible, landing sections are in view — hide mockup */}
+        <div ref={sentinelRef} className="h-px w-full" />
       </main>
 
       {/* Fixed Bottom Navigation */}

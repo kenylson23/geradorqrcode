@@ -50,7 +50,16 @@ export default function Home() {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setMockupVisible(!entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // sentinel entered view → user reached landing sections
+          setMockupVisible(false);
+        } else if (entry.boundingClientRect.top > 0) {
+          // sentinel is below viewport → user scrolled back up to top
+          setMockupVisible(true);
+        }
+        // if top < 0 → sentinel is above viewport → user still in landing sections, keep hidden
+      },
       { threshold: 0 }
     );
     observer.observe(sentinel);

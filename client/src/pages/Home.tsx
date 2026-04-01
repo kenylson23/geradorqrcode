@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import stepOneImg from "@assets/image_1775053797453.png";
+import stepTwoImg from "@assets/image_1775054078641.png";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -319,7 +320,7 @@ export default function Home() {
                     numColor: "text-[#8B5CF6]",
                     title: "Personalize",
                     desc: "Preencha as informações e customize cores, logo e design do seu QR",
-                    img: null,
+                    img: stepTwoImg,
                   },
                   {
                     num: "03", icon: <Share2 className="h-6 w-6 text-blue-400" />,

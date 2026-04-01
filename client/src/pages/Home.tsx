@@ -331,17 +331,18 @@ export default function Home() {
                   },
                 ].map((step) => (
                   <div key={step.num} className="relative flex flex-col items-center text-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/8 transition-all">
-                    <div className={`w-14 h-14 rounded-2xl ${step.iconBg} flex items-center justify-center mb-5`}>
-                      {step.icon}
-                    </div>
-                    <span className={`text-xs font-bold tracking-widest uppercase mb-2 ${step.numColor}`}>{step.num}</span>
-                    <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-white/50 leading-relaxed mb-4">{step.desc}</p>
-                    {step.img && (
-                      <div className="w-full mt-2 rounded-2xl overflow-hidden border border-white/10">
+                    {step.img ? (
+                      <div className="w-full mb-5 rounded-2xl overflow-hidden border border-white/10">
                         <img src={step.img} alt={step.title} className="w-full h-auto object-cover" />
                       </div>
+                    ) : (
+                      <div className={`w-14 h-14 rounded-2xl ${step.iconBg} flex items-center justify-center mb-5`}>
+                        {step.icon}
+                      </div>
                     )}
+                    <span className={`text-xs font-bold tracking-widest uppercase mb-2 ${step.numColor}`}>{step.num}</span>
+                    <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
+                    <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
                   </div>
                 ))}
               </div>

@@ -45,6 +45,7 @@ export default function Home() {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
   const [mockupVisible, setMockupVisible] = useState(true);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -416,6 +417,56 @@ export default function Home() {
                   </div>
                 ))}
 
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4 — FAQ */}
+          <section className="py-16 bg-[#f8fafc] border-t border-slate-100">
+            <div className="max-w-3xl mx-auto px-6">
+              <h2 className="text-2xl font-bold text-center text-slate-800 mb-10">Perguntas frequentes</h2>
+              <div className="flex flex-col gap-3">
+                {[
+                  {
+                    q: "O AngoQRCode é gratuito?",
+                    a: "Sim, totalmente gratuito. Pode criar, personalizar e descarregar QR codes sem precisar de criar conta.",
+                  },
+                  {
+                    q: "Que tipos de QR code posso criar?",
+                    a: "Pode criar QR codes para URLs, WhatsApp, Instagram, Facebook, vCard (cartão de contacto), PDF, imagens, Link Tree e muito mais.",
+                  },
+                  {
+                    q: "Posso adicionar o meu logo ao QR code?",
+                    a: "Sim. Na etapa de design pode fazer upload do seu logotipo para ser exibido no centro do QR code.",
+                  },
+                  {
+                    q: "Em que formatos posso descarregar o QR code?",
+                    a: "Pode descarregar em PNG (ideal para redes sociais), SVG (vetorial, escalável sem perda de qualidade) ou PDF (pronto para impressão em A4).",
+                  },
+                  {
+                    q: "O QR code gerado expira?",
+                    a: "Não. Os QR codes gerados são permanentes e não têm data de expiração.",
+                  },
+                  {
+                    q: "Consigo usar o QR code para impressão em grande formato?",
+                    a: "Sim. Ao descarregar, pode escolher resoluções até 4096 px ou usar o formato SVG que é infinitamente escalável sem perda de qualidade.",
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                    <button
+                      className="w-full flex items-center justify-between px-6 py-4 text-left gap-4"
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    >
+                      <span className="font-medium text-slate-800">{item.q}</span>
+                      <ChevronDown className={`h-5 w-5 text-slate-400 flex-shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openFaq === i && (
+                      <div className="px-6 pb-5 text-sm text-slate-500 leading-relaxed border-t border-slate-50 pt-3">
+                        {item.a}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </section>

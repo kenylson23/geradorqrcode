@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import stepOneImg from "@assets/image_1775053797453.png";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -310,6 +311,7 @@ export default function Home() {
                     numColor: "text-[#2ECC71]",
                     title: "Escolha o tipo",
                     desc: "Selecione entre 9 modelos: site, WhatsApp, PDF, vCard e mais",
+                    img: stepOneImg,
                   },
                   {
                     num: "02", icon: <Palette className="h-6 w-6 text-[#8B5CF6]" />,
@@ -317,6 +319,7 @@ export default function Home() {
                     numColor: "text-[#8B5CF6]",
                     title: "Personalize",
                     desc: "Preencha as informações e customize cores, logo e design do seu QR",
+                    img: null,
                   },
                   {
                     num: "03", icon: <Share2 className="h-6 w-6 text-blue-400" />,
@@ -324,6 +327,7 @@ export default function Home() {
                     numColor: "text-blue-400",
                     title: "Baixe e use",
                     desc: "Faça download em PNG, SVG ou PDF e use em qualquer material",
+                    img: null,
                   },
                 ].map((step) => (
                   <div key={step.num} className="relative flex flex-col items-center text-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/8 transition-all">
@@ -332,7 +336,12 @@ export default function Home() {
                     </div>
                     <span className={`text-xs font-bold tracking-widest uppercase mb-2 ${step.numColor}`}>{step.num}</span>
                     <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
+                    <p className="text-sm text-white/50 leading-relaxed mb-4">{step.desc}</p>
+                    {step.img && (
+                      <div className="w-full mt-2 rounded-2xl overflow-hidden border border-white/10">
+                        <img src={step.img} alt={step.title} className="w-full h-auto object-cover" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

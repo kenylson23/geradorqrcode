@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -43,29 +43,7 @@ export default function Home() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
-  const [mockupVisible, setMockupVisible] = useState(true);
-  const sentinelRef = useRef<HTMLDivElement>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          // sentinel entered view → user reached landing sections
-          setMockupVisible(false);
-        } else if (entry.boundingClientRect.top > 0) {
-          // sentinel is below viewport → user scrolled back up to top
-          setMockupVisible(true);
-        }
-        // if top < 0 → sentinel is above viewport → user still in landing sections, keep hidden
-      },
-      { threshold: 0 }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, []);
 
   const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
@@ -123,8 +101,8 @@ export default function Home() {
               )}
             </div>
 
-            {/* Right Column: Mockup (6 columns) - Desktop only - Fixed Position */}
-            <div className={`lg:col-span-6 flex-col items-center justify-start fixed right-0 top-16 w-1/2 pointer-events-none transition-opacity duration-300 ${mockupVisible ? 'hidden lg:flex opacity-100' : 'hidden'}`} style={{paddingBottom: qrData ? '96px' : '0'}}>
+            {/* Right Column: Mockup (6 columns) - Desktop only - Sticky */}
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
 
               {/* Control Tabs */}
               {qrData && (
@@ -192,8 +170,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Sentinel: when visible, landing sections are in view — hide mockup */}
-        <div ref={sentinelRef} className="h-px w-full" />
       </main>
 
       {/* Fixed Bottom Navigation */}

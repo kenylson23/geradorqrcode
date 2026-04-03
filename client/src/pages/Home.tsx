@@ -401,13 +401,13 @@ export default function Home() {
                         <div className="w-9 h-9 rounded-lg bg-white border-2 border-slate-200 shadow-sm flex items-center justify-center">
                           <div className="w-3 h-3 rounded bg-slate-200" />
                         </div>
-                        <div className="w-9 h-9 rounded-lg bg-[#4F6EF7] border-2 border-[#4F6EF7] shadow-sm flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-[#2ECC71] border-2 border-[#2ECC71] shadow-sm flex items-center justify-center">
                           <div className="w-3 h-3 rounded bg-white/60" />
                         </div>
                       </div>
                       {/* Cursor */}
                       <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-white rounded-full shadow-md flex items-center justify-center border border-slate-100">
-                        <MousePointerClick className="h-3.5 w-3.5 text-[#4F6EF7]" />
+                        <MousePointerClick className="h-3.5 w-3.5 text-[#2ECC71]" />
                       </div>
                     </div>
                   </div>
@@ -425,13 +425,13 @@ export default function Home() {
                     <div className="relative">
                       {/* Colorful blocks */}
                       <div className="grid grid-cols-2 gap-1.5">
-                        <div className="w-9 h-9 rounded-lg bg-[#4F6EF7] shadow-sm" />
+                        <div className="w-9 h-9 rounded-lg bg-[#8B5CF6] shadow-sm" />
                         <div className="w-9 h-9 rounded-lg bg-[#F59E0B] shadow-sm" />
                         <div className="w-9 h-9 rounded-lg bg-[#EF4444] shadow-sm" />
                         <div className="w-9 h-9 rounded-lg bg-[#2ECC71] shadow-sm" />
                       </div>
                       {/* Badge */}
-                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#4F6EF7] rounded-full shadow-md flex items-center justify-center">
+                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#8B5CF6] rounded-full shadow-md flex items-center justify-center">
                         <Palette className="h-3.5 w-3.5 text-white" />
                       </div>
                     </div>
@@ -485,7 +485,7 @@ export default function Home() {
                         </div>
                       </div>
                       {/* Download badge */}
-                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-[#4F6EF7] rounded-full shadow-md flex items-center justify-center">
+                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-[#2ECC71] rounded-full shadow-md flex items-center justify-center">
                         <FileDown className="h-3.5 w-3.5 text-white" />
                       </div>
                     </div>
@@ -503,7 +503,7 @@ export default function Home() {
               <div className="flex justify-center">
                 <a href="#criar">
                   <Button
-                    className="h-11 px-8 rounded-xl font-semibold bg-[#4F6EF7] hover:bg-[#3d5ce0] text-white shadow-md shadow-[#4F6EF7]/30 transition-all active:scale-95"
+                    className="h-11 px-8 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-md shadow-[#2ECC71]/30 transition-all active:scale-95"
                     data-testid="button-how-it-works-cta"
                   >
                     Criar código QR
@@ -690,7 +690,7 @@ export default function Home() {
                     name: "Marta Ferreira",
                     role: "Dona de restaurante, Luanda",
                     initials: "MF",
-                    color: "bg-[#4F6EF7]",
+                    color: "bg-[#0EA5E9]",
                     stars: 5,
                     quote: "Criei o QR code do menu do meu restaurante em menos de 2 minutos. Os clientes adoram e já não precisamos de imprimir menus em papel.",
                   },

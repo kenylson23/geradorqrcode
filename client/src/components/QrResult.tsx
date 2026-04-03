@@ -1044,9 +1044,10 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
                   const labelColor = design?.labelColor ?? "#000000";
 
                   const qrNode = isTooLong ? (
-                    <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border border-destructive/20 p-4">
-                      <AlertTriangle className="w-10 h-10 mb-2" />
-                      <span className="text-[10px] font-bold text-center uppercase tracking-wider">Dados muito longos</span>
+                    <div className="w-48 h-48 flex flex-col items-center justify-center text-destructive bg-destructive/5 rounded-xl border-2 border-destructive/30 p-4 gap-1.5">
+                      <AlertTriangle className="w-8 h-8 flex-shrink-0" />
+                      <span className="text-[10px] font-bold text-center uppercase tracking-wider leading-tight">Conteúdo demasiado longo</span>
+                      <span className="text-[9px] text-center text-destructive/70">{qrValue.length} / 2953 chars</span>
                     </div>
                   ) : (
                     <div className={!hasMinData ? "opacity-20 grayscale" : ""}>
@@ -1179,16 +1180,81 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         </div>
       </div>
 
-      {isTooLong && (
-        <Alert variant="destructive" className="border-2 mt-4">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Erro: Arquivo muito grande</AlertTitle>
-          <AlertDescription className="text-xs">
-            O conteúdo deste arquivo excede o limite de um QR Code (máx ~3KB). 
-            Tente usar um arquivo menor ou use a opção de "URL" para arquivos na nuvem.
-          </AlertDescription>
-        </Alert>
-      )}
+      {isTooLong && (() => {
+        const over = qrValue.length - 2953;
+        const pct = Math.min(100, Math.round((qrValue.length / 2953) * 100));
+        const type = typeof value === 'object' ? value?.type : null;
+
+        const tips: Record<string, string[]> = {
+          vcard: [
+            "Encurte ou elimine o campo «Resumo/Bio»",
+            "Remova links de redes sociais opcionais",
+            "Abrevie moradas e cargos muito longos",
+          ],
+          business: [
+            "Reduza a descrição da empresa",
+            "Remova serviços ou links desnecessários",
+            "Use um URL externo em vez de incorporar tudo no QR",
+          ],
+          links: [
+            "Reduza o número de links ou use títulos mais curtos",
+            "Remova imagens dos links (poupam espaço significativo)",
+          ],
+          images: [
+            "Use menos imagens",
+            "Os URLs das imagens são longos — prefira CDNs com URLs curtos",
+          ],
+          whatsapp: [
+            "Encurte a mensagem pré-definida",
+          ],
+          url: [
+            "Use um encurtador de links (ex: bit.ly) antes de gerar o QR",
+          ],
+          pdf: [
+            "Faça upload do PDF e use o URL gerado em vez de incorporar o ficheiro",
+          ],
+        };
+
+        const suggestions = tips[type] ?? [
+          "Reduza o texto nos campos preenchidos",
+          "Elimine campos opcionais que não são essenciais",
+          "Considere dividir a informação por vários QR codes",
+        ];
+
+        return (
+          <Alert variant="destructive" className="border-2 mt-4 bg-red-50">
+            <AlertTriangle className="h-4 w-4 mt-0.5" />
+            <AlertTitle className="font-bold text-sm mb-1">
+              Conteúdo demasiado longo para QR Code
+            </AlertTitle>
+            <AlertDescription className="text-xs space-y-3">
+              {/* Character meter */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-medium">
+                  <span>Caracteres usados</span>
+                  <span className="text-destructive font-bold">{qrValue.length.toLocaleString()} / 2 953 (+{over.toLocaleString()} extra)</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-red-200 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-destructive transition-all"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Type-specific tips */}
+              <div>
+                <p className="font-semibold mb-1">Como resolver:</p>
+                <ul className="list-disc list-inside space-y-0.5 text-destructive/80">
+                  {suggestions.map((tip, i) => (
+                    <li key={i}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            </AlertDescription>
+          </Alert>
+        );
+      })()}
     </div>
   );
 }

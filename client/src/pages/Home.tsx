@@ -168,15 +168,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans overflow-x-hidden">
       <Header currentStep={currentStep} />
 
       <main id="criar" className="flex-grow pb-24">
-        <div className="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-12 lg:py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
             
             {/* Left Column: Form or Design (6 columns) */}
-            <div className="lg:col-span-6 pb-56">
+            <div className="lg:col-span-6 pb-28 lg:pb-56">
               {currentStep < 3 ? (
                 <QrForm 
                   onGenerate={(data) => {
@@ -268,62 +268,65 @@ export default function Home() {
 
       {/* Fixed Bottom Navigation */}
       {qrData && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg py-2 px-6">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg py-2 px-3 sm:px-6">
+          <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
             <Button 
               variant="outline"
               onClick={handleBack}
-              className="h-9 px-6 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95"
+              className="h-9 px-3 sm:px-6 rounded-xl font-semibold border-2 border-slate-300 text-slate-600 hover:text-slate-700 hover:border-slate-400 transition-all active:scale-95 flex-shrink-0 text-sm"
               data-testid="button-back"
             >
-              ← Voltar
+              ← <span className="hidden sm:inline ml-1">Voltar</span>
             </Button>
             
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center min-w-0">
               {/* Download controls — only on step 3 */}
               {currentStep === 3 && (
                 <>
-                  {/* Size picker */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="h-9 px-3 rounded-xl border-2 border-slate-200 text-slate-600 text-xs font-semibold hover:border-slate-300 gap-1"
-                        data-testid="button-download-size"
-                      >
-                        {SIZE_OPTIONS.find(s => s.value === downloadSize)?.label ?? "1024 px"}
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-52">
-                      <DropdownMenuLabel className="text-xs text-muted-foreground">Tamanho do ficheiro</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {SIZE_OPTIONS.map(sz => (
-                        <DropdownMenuItem
-                          key={sz.value}
-                          className="cursor-pointer gap-2"
-                          onClick={() => setDownloadSize(sz.value)}
-                          data-testid={`menu-size-${sz.value}`}
+                  {/* Size picker — hidden on mobile */}
+                  <div className="hidden sm:block">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="h-9 px-3 rounded-xl border-2 border-slate-200 text-slate-600 text-xs font-semibold hover:border-slate-300 gap-1"
+                          data-testid="button-download-size"
                         >
-                          <div className="flex-1">
-                            <div className="font-medium">{sz.label}</div>
-                            <div className="text-[11px] text-muted-foreground">{sz.desc}</div>
-                          </div>
-                          {downloadSize === sz.value && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                          {SIZE_OPTIONS.find(s => s.value === downloadSize)?.label ?? "1024 px"}
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-52">
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">Tamanho do ficheiro</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {SIZE_OPTIONS.map(sz => (
+                          <DropdownMenuItem
+                            key={sz.value}
+                            className="cursor-pointer gap-2"
+                            onClick={() => setDownloadSize(sz.value)}
+                            data-testid={`menu-size-${sz.value}`}
+                          >
+                            <div className="flex-1">
+                              <div className="font-medium">{sz.label}</div>
+                              <div className="text-[11px] text-muted-foreground">{sz.desc}</div>
+                            </div>
+                            {downloadSize === sz.value && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
 
                   {/* Format + Download split button */}
                   <div className="flex rounded-xl overflow-hidden shadow-lg shadow-[#2ECC71]/20">
                     <Button
                       onClick={handleDownload}
-                      className="h-9 px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60]"
+                      className="h-9 px-3 sm:px-5 rounded-none rounded-l-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white transition-all active:scale-95 border-r border-[#27ae60] text-sm"
                       data-testid="button-download"
                     >
-                      <Download className="mr-2 h-4 w-4" />
-                      Baixar {FORMAT_META[selectedFormat].label}
+                      <Download className="h-4 w-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Baixar {FORMAT_META[selectedFormat].label}</span>
+                      <span className="sm:hidden">{FORMAT_META[selectedFormat].label}</span>
                     </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -362,7 +365,7 @@ export default function Home() {
               {currentStep === 2 && (
                 <Button 
                   onClick={handleNext}
-                  className="h-9 px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95"
+                  className="h-9 px-4 sm:px-6 rounded-xl font-semibold bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-lg shadow-[#8B5CF6]/20 transition-all active:scale-95 text-sm"
                   data-testid="button-next"
                 >
                   Design QR →
@@ -377,7 +380,7 @@ export default function Home() {
       {!qrData && (
         <>
           {/* Section 2 — Como funciona */}
-          <section className="py-20 bg-[#eef2f7]">
+          <section className="py-12 md:py-20 bg-[#eef2f7]">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2 tracking-tight">
                 Como criar o seu código QR personalizado?
@@ -514,7 +517,7 @@ export default function Home() {
           </section>
 
           {/* Section 2.5 — Explore as Funcionalidades */}
-          <section className="py-24 bg-[#f8fafc]">
+          <section className="py-14 md:py-24 bg-[#f8fafc]">
             <div className="max-w-6xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Explore cada funcionalidade</h2>
               <p className="text-center text-slate-400 mb-10 text-base">Clique em cada tipo para ver uma prévia de como ficará no telemóvel</p>
@@ -546,7 +549,7 @@ export default function Home() {
               {(() => {
                 const feature = FEATURES.find(f => f.type === activeFeature) ?? FEATURES[0];
                 return (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center bg-white rounded-3xl border border-slate-100 shadow-sm p-8 lg:p-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-center bg-white rounded-3xl border border-slate-100 shadow-sm p-5 sm:p-8 lg:p-12">
                     {/* Left: Info */}
                     <div className="flex flex-col gap-6">
                       <div className="flex items-center gap-3">
@@ -563,9 +566,9 @@ export default function Home() {
                         <p className="text-slate-500 text-base leading-relaxed">{feature.description}</p>
                       </div>
 
-                      <a href="#criar">
+                      <a href="#criar" className="w-full sm:w-fit">
                         <Button
-                          className="w-fit px-6 h-11 rounded-xl font-semibold text-white transition-all active:scale-95 shadow-md"
+                          className="w-full sm:w-fit px-6 h-11 rounded-xl font-semibold text-white transition-all active:scale-95 shadow-md"
                           style={{ backgroundColor: feature.color }}
                           data-testid={`button-create-${feature.type}`}
                         >
@@ -607,10 +610,10 @@ export default function Home() {
           </section>
 
           {/* Section 3 — Por que usar o AngoQRCode? */}
-          <section className="py-24 bg-white">
+          <section className="py-14 md:py-24 bg-white">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Por que usar o AngoQRCode?</h2>
-              <p className="text-center text-slate-400 mb-16 text-base">Tudo que precisa para criar QR codes profissionais</p>
+              <p className="text-center text-slate-400 mb-8 md:mb-16 text-base">Tudo que precisa para criar QR codes profissionais</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {[
@@ -679,10 +682,10 @@ export default function Home() {
           </section>
 
           {/* Section — Depoimentos */}
-          <section className="py-24 bg-[#eef2f7]">
+          <section className="py-14 md:py-24 bg-[#eef2f7]">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">O que dizem os nossos utilizadores</h2>
-              <p className="text-center text-slate-400 mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
+              <p className="text-center text-slate-400 mb-8 md:mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {[
@@ -767,10 +770,10 @@ export default function Home() {
           </section>
 
           {/* Section 4 — FAQ */}
-          <section className="py-24 bg-[#f8fafc]">
+          <section className="py-14 md:py-24 bg-[#f8fafc]">
             <div className="max-w-2xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Perguntas frequentes</h2>
-              <p className="text-center text-slate-400 mb-12 text-base">Tudo o que precisa de saber antes de começar</p>
+              <p className="text-center text-slate-400 mb-8 md:mb-12 text-base">Tudo o que precisa de saber antes de começar</p>
 
               <div className="flex flex-col gap-2">
                 {[

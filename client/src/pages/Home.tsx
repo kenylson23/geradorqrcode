@@ -1,6 +1,4 @@
 import { useState, type ReactNode } from "react";
-import stepOneImg from "@assets/image_1775053797453.png";
-import stepTwoImg from "@assets/image_1775237621446.png";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -379,67 +377,138 @@ export default function Home() {
       {!qrData && (
         <>
           {/* Section 2 — Como funciona */}
-          <section className="relative py-24 overflow-hidden" style={{background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)"}}>
-            {/* Glow orbs */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#2ECC71]/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#8B5CF6]/10 rounded-full blur-3xl pointer-events-none" />
+          <section className="py-20 bg-[#eef2f7]">
+            <div className="max-w-5xl mx-auto px-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2 tracking-tight">
+                Como criar o seu código QR personalizado?
+              </h2>
+              <p className="text-center text-slate-400 mb-14 text-sm">Em apenas 3 passos simples, crie um QR code profissional</p>
 
-            <div className="relative max-w-5xl mx-auto px-6">
-              {/* Badge */}
-              <div className="flex justify-center mb-5">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white/70 border border-white/10 backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2ECC71] animate-pulse" />
-                  Simples e rápido
-                </span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-4 tracking-tight">Como funciona</h2>
-              <p className="text-center text-white/50 mb-16 text-base">Em apenas 3 passos, crie um QR code profissional</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-                {/* Connecting line desktop */}
-                <div className="hidden md:block absolute top-10 left-[calc(16.66%+1.5rem)] right-[calc(16.66%+1.5rem)] h-px bg-gradient-to-r from-[#2ECC71]/40 via-[#8B5CF6]/40 to-blue-500/40" />
-
-                {[
-                  {
-                    num: "01", icon: <MousePointerClick className="h-6 w-6 text-[#2ECC71]" />,
-                    iconBg: "bg-[#2ECC71]/15 border border-[#2ECC71]/20",
-                    numColor: "text-[#2ECC71]",
-                    title: "Escolha o tipo",
-                    desc: "Selecione entre 9 modelos: site, WhatsApp, PDF, vCard e mais",
-                    img: stepOneImg,
-                  },
-                  {
-                    num: "02", icon: <Palette className="h-6 w-6 text-[#8B5CF6]" />,
-                    iconBg: "bg-[#8B5CF6]/15 border border-[#8B5CF6]/20",
-                    numColor: "text-[#8B5CF6]",
-                    title: "Personalize",
-                    desc: "Preencha as informações e customize cores, logo e design do seu QR",
-                    img: stepTwoImg,
-                  },
-                  {
-                    num: "03", icon: <Share2 className="h-6 w-6 text-blue-400" />,
-                    iconBg: "bg-blue-500/15 border border-blue-500/20",
-                    numColor: "text-blue-400",
-                    title: "Baixe e use",
-                    desc: "Faça download em PNG, SVG ou PDF e use em qualquer material",
-                    img: null,
-                  },
-                ].map((step) => (
-                  <div key={step.num} className="relative flex flex-col items-center text-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/8 transition-all">
-                    {step.img ? (
-                      <div className="w-full mb-5 rounded-2xl overflow-hidden border border-white/20 bg-white shadow-lg">
-                        <img src={step.img} alt={step.title} className="w-full h-auto object-contain" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                {/* Step 1 */}
+                <div className="flex flex-col items-center text-center">
+                  {/* Illustration */}
+                  <div className="w-28 h-28 mb-6 flex items-center justify-center">
+                    <div className="relative">
+                      {/* Grid of boxes */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="w-9 h-9 rounded-lg bg-white border-2 border-slate-200 shadow-sm flex items-center justify-center">
+                          <div className="w-3 h-3 rounded bg-slate-200" />
+                        </div>
+                        <div className="w-9 h-9 rounded-lg bg-white border-2 border-slate-200 shadow-sm flex items-center justify-center">
+                          <div className="w-3 h-3 rounded bg-slate-200" />
+                        </div>
+                        <div className="w-9 h-9 rounded-lg bg-white border-2 border-slate-200 shadow-sm flex items-center justify-center">
+                          <div className="w-3 h-3 rounded bg-slate-200" />
+                        </div>
+                        <div className="w-9 h-9 rounded-lg bg-[#4F6EF7] border-2 border-[#4F6EF7] shadow-sm flex items-center justify-center">
+                          <div className="w-3 h-3 rounded bg-white/60" />
+                        </div>
                       </div>
-                    ) : (
-                      <div className={`w-14 h-14 rounded-2xl ${step.iconBg} flex items-center justify-center mb-5`}>
-                        {step.icon}
+                      {/* Cursor */}
+                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-white rounded-full shadow-md flex items-center justify-center border border-slate-100">
+                        <MousePointerClick className="h-3.5 w-3.5 text-[#4F6EF7]" />
                       </div>
-                    )}
-                    <span className={`text-xs font-bold tracking-widest uppercase mb-2 ${step.numColor}`}>{step.num}</span>
-                    <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-white/50 leading-relaxed">{step.desc}</p>
+                    </div>
                   </div>
-                ))}
+                  <h3 className="font-bold text-slate-900 text-base mb-2">
+                    1. Escolha o conteúdo do seu código QR
+                  </h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    Selecione o material que deseja partilhar. Inclua links para sites, PDFs, menus, vídeos, aplicativos e muito mais!
+                  </p>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-28 h-28 mb-6 flex items-center justify-center">
+                    <div className="relative">
+                      {/* Colorful blocks */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="w-9 h-9 rounded-lg bg-[#4F6EF7] shadow-sm" />
+                        <div className="w-9 h-9 rounded-lg bg-[#F59E0B] shadow-sm" />
+                        <div className="w-9 h-9 rounded-lg bg-[#EF4444] shadow-sm" />
+                        <div className="w-9 h-9 rounded-lg bg-[#2ECC71] shadow-sm" />
+                      </div>
+                      {/* Badge */}
+                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#4F6EF7] rounded-full shadow-md flex items-center justify-center">
+                        <Palette className="h-3.5 w-3.5 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-base mb-2">
+                    2. Personalize o design
+                  </h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    Use o AngoQRCode para adicionar facilmente logotipos, cores e estilos ao seu código QR.
+                  </p>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-28 h-28 mb-6 flex items-center justify-center">
+                    <div className="relative">
+                      {/* QR code representation */}
+                      <div className="w-[76px] h-[76px] bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
+                        <div className="grid grid-cols-3 gap-0.5 p-1">
+                          <div className="w-4 h-4 rounded-sm bg-slate-800 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-[2px] bg-slate-800 border border-white/60" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex flex-col gap-0.5 items-center justify-center">
+                            <div className="w-3 h-1 rounded-full bg-slate-300" />
+                            <div className="w-2 h-1 rounded-full bg-slate-300" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm bg-slate-800 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-[2px] bg-slate-800 border border-white/60" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex flex-col gap-0.5 items-center justify-center">
+                            <div className="w-3 h-1 rounded-full bg-slate-300" />
+                            <div className="w-2 h-1 rounded-full bg-slate-300" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-sm bg-slate-400" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex flex-col gap-0.5 items-center justify-center">
+                            <div className="w-1 h-1 rounded-full bg-slate-400" />
+                            <div className="w-3 h-1 rounded-full bg-slate-300" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm bg-slate-800 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-[2px] bg-slate-800 border border-white/60" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex flex-col gap-0.5 items-center justify-center">
+                            <div className="w-2 h-1 rounded-full bg-slate-300" />
+                            <div className="w-3 h-1 rounded-full bg-slate-300" />
+                          </div>
+                          <div className="w-4 h-4 rounded-sm flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+                          </div>
+                        </div>
+                      </div>
+                      {/* Download badge */}
+                      <div className="absolute -bottom-2 -right-2 w-7 h-7 bg-[#4F6EF7] rounded-full shadow-md flex items-center justify-center">
+                        <FileDown className="h-3.5 w-3.5 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-base mb-2">
+                    3. Baixe o seu código QR
+                  </h3>
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    Obtenha o seu código QR nos formatos PNG, SVG ou PDF. Imprima ou partilhe digitalmente. É muito fácil!
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="flex justify-center">
+                <a href="#criar">
+                  <Button
+                    className="h-11 px-8 rounded-xl font-semibold bg-[#4F6EF7] hover:bg-[#3d5ce0] text-white shadow-md shadow-[#4F6EF7]/30 transition-all active:scale-95"
+                    data-testid="button-how-it-works-cta"
+                  >
+                    Criar código QR
+                  </Button>
+                </a>
               </div>
             </div>
           </section>

@@ -516,13 +516,6 @@ export default function Home() {
           {/* Section 2.5 — Explore as Funcionalidades */}
           <section className="py-24 bg-[#f8fafc]">
             <div className="max-w-6xl mx-auto px-6">
-              {/* Badge */}
-              <div className="flex justify-center mb-5">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#8B5CF6]/10 text-[#8B5CF6] border border-[#8B5CF6]/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
-                  9 tipos disponíveis
-                </span>
-              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Explore cada funcionalidade</h2>
               <p className="text-center text-slate-400 mb-10 text-base">Clique em cada tipo para ver uma prévia de como ficará no telemóvel</p>
 
@@ -616,13 +609,6 @@ export default function Home() {
           {/* Section 3 — Por que usar o AngoQRCode? */}
           <section className="py-24 bg-white">
             <div className="max-w-5xl mx-auto px-6">
-              {/* Badge */}
-              <div className="flex justify-center mb-5">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#2ECC71]/10 text-[#2ECC71] border border-[#2ECC71]/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2ECC71]" />
-                  Funcionalidades
-                </span>
-              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Por que usar o AngoQRCode?</h2>
               <p className="text-center text-slate-400 mb-16 text-base">Tudo que precisa para criar QR codes profissionais</p>
 
@@ -695,13 +681,6 @@ export default function Home() {
           {/* Section — Depoimentos */}
           <section className="py-24 bg-[#eef2f7]">
             <div className="max-w-5xl mx-auto px-6">
-              {/* Badge */}
-              <div className="flex justify-center mb-5">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#4F6EF7]/10 text-[#4F6EF7] border border-[#4F6EF7]/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F6EF7]" />
-                  Depoimentos
-                </span>
-              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">O que dizem os nossos utilizadores</h2>
               <p className="text-center text-slate-400 mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
 
@@ -790,12 +769,6 @@ export default function Home() {
           {/* Section 4 — FAQ */}
           <section className="py-24 bg-[#f8fafc]">
             <div className="max-w-2xl mx-auto px-6">
-              {/* Badge */}
-              <div className="flex justify-center mb-5">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-slate-900/8 text-slate-600 border border-slate-200">
-                  Dúvidas
-                </span>
-              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Perguntas frequentes</h2>
               <p className="text-center text-slate-400 mb-12 text-base">Tudo o que precisa de saber antes de começar</p>
 

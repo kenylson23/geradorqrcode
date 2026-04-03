@@ -20,8 +20,101 @@ import {
   Download, ChevronDown, ImageIcon, FileText, Code, Check,
   MousePointerClick, Palette, Share2,
   RefreshCw, BarChart2, Paintbrush, FileImage, FileDown, Gift,
-  ArrowRight,
+  ArrowRight, Globe, MessageCircle, UserCircle, Briefcase, Facebook, Instagram, Link2,
 } from "lucide-react";
+import { SiWhatsapp } from "react-icons/si";
+
+const FEATURES: {
+  type: string;
+  label: string;
+  icon: ReactNode;
+  color: string;
+  title: string;
+  description: string;
+  sampleData: any;
+}[] = [
+  {
+    type: "url",
+    label: "Site",
+    icon: <Globe className="h-4 w-4" />,
+    color: "#2ECC71",
+    title: "Link para qualquer Website",
+    description: "Direcione quem escaneia o QR code diretamente para qualquer URL ou página web. Ideal para menus digitais, catálogos online, portfólios e muito mais.",
+    sampleData: { type: "url", url: "https://www.meusite.com" },
+  },
+  {
+    type: "whatsapp",
+    label: "WhatsApp",
+    icon: <SiWhatsapp className="h-4 w-4" />,
+    color: "#25D366",
+    title: "Mensagem direta para WhatsApp",
+    description: "Ao escanear o QR, o utilizador abre uma conversa no WhatsApp com uma mensagem pré-preenchida. Perfeito para atendimento ao cliente e contacto rápido.",
+    sampleData: { type: "whatsapp", phone: "244949639932", countryCode: "+244", message: "Olá! Gostaria de saber mais informações." },
+  },
+  {
+    type: "vcard",
+    label: "vCard",
+    icon: <UserCircle className="h-4 w-4" />,
+    color: "#8B5CF6",
+    title: "Cartão de visita digital",
+    description: "Partilhe os seus dados de contacto de forma instantânea. Ao escanear, o utilizador pode guardar o contacto directamente no telemóvel.",
+    sampleData: { type: "vcard", firstName: "João", lastName: "Silva", phone: "244949639932", email: "joao@empresa.com", organization: "Empresa Lda", jobTitle: "Director Geral", website: "https://empresa.com" },
+  },
+  {
+    type: "pdf",
+    label: "PDF",
+    icon: <FileText className="h-4 w-4" />,
+    color: "#EF4444",
+    title: "Visualizar documentos PDF",
+    description: "Partilhe documentos, brochuras, catálogos ou relatórios em PDF. O utilizador abre e lê directamente no telemóvel sem descarregar ficheiros.",
+    sampleData: { type: "pdf", url: "https://example.com/doc.pdf", companyName: "Empresa Lda", title: "Relatório Anual 2024", description: "Aceda ao nosso relatório anual de 2024 com todos os resultados.", buttonLabel: "Abrir Documento" },
+  },
+  {
+    type: "links",
+    label: "Lista de Links",
+    icon: <Link2 className="h-4 w-4" />,
+    color: "#F59E0B",
+    title: "Todos os seus links num só lugar",
+    description: "Crie uma página personalizada com todos os seus links importantes. Ideal para bio do Instagram, perfis de redes sociais e sites.",
+    sampleData: { type: "links", title: "Os meus links", description: "Todos os meus perfis num só lugar", links: [{ label: "Instagram", url: "https://instagram.com/perfil", imageUrl: "" }, { label: "YouTube", url: "https://youtube.com/canal", imageUrl: "" }, { label: "Website", url: "https://meusite.com", imageUrl: "" }] },
+  },
+  {
+    type: "images",
+    label: "Imagens",
+    icon: <ImageIcon className="h-4 w-4" />,
+    color: "#3B82F6",
+    title: "Galeria de imagens interativa",
+    description: "Mostre várias imagens ao escanear o QR code. Ideal para portfólios, galerias de produtos, eventos e álbuns fotográficos.",
+    sampleData: { type: "images", title: "Galeria de Fotos", description: "Veja as nossas melhores fotos", website: "https://meusite.com", buttonLabel: "Ver Mais" },
+  },
+  {
+    type: "facebook",
+    label: "Facebook",
+    icon: <Facebook className="h-4 w-4" />,
+    color: "#1877F2",
+    title: "Página do Facebook",
+    description: "Direcione o utilizador directamente para a sua página do Facebook e aumente os seus seguidores de forma rápida e fácil.",
+    sampleData: { type: "facebook", url: "https://facebook.com/minhapagina", title: "Siga-nos no Facebook", description: "Acompanhe as nossas novidades e promoções exclusivas!", buttonLabel: "Ver Página" },
+  },
+  {
+    type: "instagram",
+    label: "Instagram",
+    icon: <Instagram className="h-4 w-4" />,
+    color: "#E1306C",
+    title: "Perfil do Instagram",
+    description: "Leve os utilizadores directamente ao seu perfil do Instagram. Aumente os seus seguidores e partilhe conteúdo visual de forma eficaz.",
+    sampleData: { type: "instagram", url: "https://instagram.com/meuperfil", instagramUser: "@meuperfil", title: "Siga no Instagram", description: "Conteúdo exclusivo e novidades todos os dias!", buttonLabel: "Ver Perfil" },
+  },
+  {
+    type: "business",
+    label: "Negócios",
+    icon: <Briefcase className="h-4 w-4" />,
+    color: "#0EA5E9",
+    title: "Cartão de empresa completo",
+    description: "Apresente a sua empresa de forma profissional com informações completas: morada, horários, contactos, redes sociais e muito mais.",
+    sampleData: { type: "business", companyName: "Empresa Lda", industry: "Tecnologia", caption: "A melhor solução tecnológica de Angola", location: "Luanda, Angola", email: "info@empresa.com", website: "https://empresa.com", phone: "244949639932", whatsappNumber: "244949639932" },
+  },
+];
 
 const QR_ELEMENT_ID = "qr-code-element";
 
@@ -46,6 +139,7 @@ export default function Home() {
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [activeFeature, setActiveFeature] = useState("url");
 
   const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
@@ -347,6 +441,106 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+            </div>
+          </section>
+
+          {/* Section 2.5 — Explore as Funcionalidades */}
+          <section className="py-24 bg-[#f8fafc]">
+            <div className="max-w-6xl mx-auto px-6">
+              {/* Badge */}
+              <div className="flex justify-center mb-5">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#8B5CF6]/10 text-[#8B5CF6] border border-[#8B5CF6]/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
+                  9 tipos disponíveis
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Explore cada funcionalidade</h2>
+              <p className="text-center text-slate-400 mb-10 text-base">Clique em cada tipo para ver uma prévia de como ficará no telemóvel</p>
+
+              {/* Tab Pills */}
+              <div className="flex flex-wrap gap-2 justify-center mb-10" data-testid="feature-tabs">
+                {FEATURES.map((f) => {
+                  const isActive = activeFeature === f.type;
+                  return (
+                    <button
+                      key={f.type}
+                      onClick={() => setActiveFeature(f.type)}
+                      data-testid={`tab-feature-${f.type}`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                        isActive
+                          ? "text-white border-transparent shadow-lg scale-105"
+                          : "bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-800"
+                      }`}
+                      style={isActive ? { backgroundColor: f.color, boxShadow: `0 4px 14px ${f.color}40` } : {}}
+                    >
+                      <span style={isActive ? { color: "white" } : { color: f.color }}>{f.icon}</span>
+                      {f.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Content Panel */}
+              {(() => {
+                const feature = FEATURES.find(f => f.type === activeFeature) ?? FEATURES[0];
+                return (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center bg-white rounded-3xl border border-slate-100 shadow-sm p-8 lg:p-12">
+                    {/* Left: Info */}
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg" style={{ backgroundColor: feature.color }}>
+                          <span className="[&>svg]:h-6 [&>svg]:w-6">{feature.icon}</span>
+                        </div>
+                        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: feature.color }}>
+                          {feature.label}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-2xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                        <p className="text-slate-500 text-base leading-relaxed">{feature.description}</p>
+                      </div>
+
+                      <a href="#criar">
+                        <Button
+                          className="w-fit px-6 h-11 rounded-xl font-semibold text-white transition-all active:scale-95 shadow-md"
+                          style={{ backgroundColor: feature.color }}
+                          data-testid={`button-create-${feature.type}`}
+                        >
+                          Criar QR Code de {feature.label} →
+                        </Button>
+                      </a>
+                    </div>
+
+                    {/* Right: iPhone Mockup Preview */}
+                    <div className="flex justify-center">
+                      <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[480px] w-[270px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
+                        {/* Notch */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
+                          <div className="w-10 h-2.5 bg-[#111] rounded-full"></div>
+                        </div>
+                        {/* Side buttons */}
+                        <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10"></div>
+                        <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10"></div>
+                        <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10"></div>
+                        <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10"></div>
+
+                        <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
+                          <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300" key={feature.type}>
+                            <QrResult
+                              value={feature.sampleData}
+                              showQr={false}
+                              design={defaultDesign}
+                            />
+                          </div>
+                          {/* Home Indicator */}
+                          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </section>
 

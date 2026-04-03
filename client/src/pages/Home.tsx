@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -141,6 +141,11 @@ export default function Home() {
 
   const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
+  const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
+
+  useEffect(() => {
+    if (qrData) setMobilePreviewOpen(true);
+  }, [!!qrData]);
 
   const handleDownload = () => {
     if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID, downloadSize);
@@ -194,6 +199,76 @@ export default function Home() {
                 <QrDesign design={design} onChange={setDesign} />
               )}
             </div>
+
+            {/* Mobile Preview Accordion — only visible below lg, only when qrData exists */}
+            {qrData && (
+              <div className="lg:hidden col-span-1 -mt-2">
+                <button
+                  onClick={() => setMobilePreviewOpen(o => !o)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-2xl border border-slate-200 shadow-sm text-sm font-semibold text-slate-700 transition-all active:scale-[0.99]"
+                  data-testid="button-mobile-preview-toggle"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#2ECC71] animate-pulse" />
+                    Pré-visualização em tempo real
+                  </div>
+                  <ChevronDown
+                    className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${mobilePreviewOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {mobilePreviewOpen && (
+                  <div className="mt-3 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                    {/* Preview/QR tabs */}
+                    <div className="flex gap-2 px-4 pt-3 pb-2 border-b border-slate-100">
+                      <button
+                        onClick={() => setShowQr(false)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${!showQr ? 'bg-[#8B5CF6] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                        data-testid="button-mobile-tab-preview"
+                      >
+                        Prévia da página
+                      </button>
+                      <button
+                        onClick={() => setShowQr(true)}
+                        className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${showQr ? 'bg-[#8B5CF6] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                        data-testid="button-mobile-tab-qr"
+                      >
+                        Código QR
+                      </button>
+                    </div>
+
+                    {/* Scaled iPhone mockup */}
+                    <div className="flex justify-center items-center py-6" style={{ minHeight: 320 }}>
+                      <div style={{ transform: 'scale(0.72)', transformOrigin: 'top center', height: 332 }}>
+                        <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[460px] w-[260px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
+                          {/* Notch */}
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
+                            <div className="w-10 h-2.5 bg-[#111] rounded-full" />
+                          </div>
+                          {/* Side buttons */}
+                          <div className="h-[28px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[130px] rounded-l-lg border-l border-white/10" />
+                          <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[210px] rounded-l-lg border-l border-white/10" />
+                          <div className="h-[44px] w-[2.5px] bg-gray-800 absolute -left-[12.5px] top-[290px] rounded-l-lg border-l border-white/10" />
+                          <div className="h-[70px] w-[2.5px] bg-gray-800 absolute -right-[12.5px] top-[240px] rounded-r-lg border-r border-white/10" />
+                          {/* Screen */}
+                          <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
+                            <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                              <QrResult
+                                value={qrData}
+                                showQr={showQr}
+                                setShowQr={setShowQr}
+                                design={design}
+                              />
+                            </div>
+                            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-black rounded-full z-50 opacity-20" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Right Column: Mockup (6 columns) - Desktop only - Sticky */}
             <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>

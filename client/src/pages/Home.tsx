@@ -692,6 +692,101 @@ export default function Home() {
             </div>
           </section>
 
+          {/* Section — Depoimentos */}
+          <section className="py-24 bg-[#eef2f7]">
+            <div className="max-w-5xl mx-auto px-6">
+              {/* Badge */}
+              <div className="flex justify-center mb-5">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#4F6EF7]/10 text-[#4F6EF7] border border-[#4F6EF7]/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F6EF7]" />
+                  Depoimentos
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">O que dizem os nossos utilizadores</h2>
+              <p className="text-center text-slate-400 mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {[
+                  {
+                    name: "Marta Ferreira",
+                    role: "Dona de restaurante, Luanda",
+                    initials: "MF",
+                    color: "bg-[#4F6EF7]",
+                    stars: 5,
+                    quote: "Criei o QR code do menu do meu restaurante em menos de 2 minutos. Os clientes adoram e já não precisamos de imprimir menus em papel.",
+                  },
+                  {
+                    name: "Carlos Mendes",
+                    role: "Fotógrafo profissional, Benguela",
+                    initials: "CM",
+                    color: "bg-[#2ECC71]",
+                    stars: 5,
+                    quote: "Uso o AngoQRCode para partilhar o meu portfólio de fotos. Coloco o QR code nos meus cartões de visita e os clientes acedem diretamente às minhas melhores imagens.",
+                  },
+                  {
+                    name: "Sofia Lopes",
+                    role: "Gestora de marketing, Luanda",
+                    initials: "SL",
+                    color: "bg-[#8B5CF6]",
+                    stars: 5,
+                    quote: "Ferramenta incrível! Crio QR codes personalizados com o logo da empresa para todas as nossas campanhas. O design fica sempre profissional.",
+                  },
+                  {
+                    name: "António Dias",
+                    role: "Professor universitário, Lubango",
+                    initials: "AD",
+                    color: "bg-[#F59E0B]",
+                    stars: 5,
+                    quote: "Uso para partilhar materiais de estudo com os meus alunos. Crio um QR code com PDF e eles acedem facilmente pelo telemóvel. Muito prático!",
+                  },
+                  {
+                    name: "Beatriz Santos",
+                    role: "Empreendedora, Huambo",
+                    initials: "BS",
+                    color: "bg-[#EF4444]",
+                    stars: 5,
+                    quote: "O meu negócio cresceu muito desde que passei a usar QR codes para divulgar o WhatsApp e o Instagram. Simples, rápido e completamente gratuito.",
+                  },
+                  {
+                    name: "Rui Tavares",
+                    role: "Músico e produtor, Luanda",
+                    initials: "RT",
+                    color: "bg-[#0EA5E9]",
+                    stars: 5,
+                    quote: "Criei um QR code com a lista de links para todas as minhas plataformas musicais. Os fãs encontram tudo num só scan. Recomendo a todos!",
+                  },
+                ].map((t) => (
+                  <div
+                    key={t.name}
+                    className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                    data-testid={`card-testimonial-${t.initials}`}
+                  >
+                    {/* Stars */}
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: t.stars }).map((_, i) => (
+                        <svg key={i} className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    {/* Quote */}
+                    <p className="text-sm text-slate-600 leading-relaxed flex-1">"{t.quote}"</p>
+                    {/* Author */}
+                    <div className="flex items-center gap-3 pt-2 border-t border-slate-50">
+                      <div className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center flex-shrink-0`}>
+                        <span className="text-xs font-bold text-white">{t.initials}</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800">{t.name}</p>
+                        <p className="text-xs text-slate-400">{t.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
           {/* Section 4 — FAQ */}
           <section className="py-24 bg-[#f8fafc]">
             <div className="max-w-2xl mx-auto px-6">

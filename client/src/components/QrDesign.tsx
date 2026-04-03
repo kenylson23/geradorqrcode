@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { ChevronDown, Palette, Droplets, Image, Frame, Settings } from "lucide-react";
 
 export interface QrDesignSettings {
   fgColor: string;
@@ -155,6 +156,48 @@ function ColorRow({ colors, selected, onChange }: { colors: string[]; selected: 
   );
 }
 
+/* ── Accordion section ───────────────────────────── */
+function Section({
+  id, icon, title, badge, open, onToggle, children,
+}: {
+  id: string;
+  icon: ReactNode;
+  title: string;
+  badge?: string;
+  open: boolean;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-slate-50 transition-colors"
+        data-testid={`accordion-${id}`}
+      >
+        <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 flex-shrink-0">
+          {icon}
+        </div>
+        <span className="flex-1 text-sm font-bold text-slate-800">{title}</span>
+        {badge && (
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+            {badge}
+          </span>
+        )}
+        <ChevronDown
+          className={`h-4 w-4 text-slate-400 transition-transform duration-200 flex-shrink-0 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="px-4 pb-5 pt-1 space-y-5 border-t border-slate-100 animate-in slide-in-from-top-1 duration-150">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface Props {
   design: QrDesignSettings;
   onChange: (d: QrDesignSettings) => void;
@@ -165,6 +208,16 @@ export function QrDesign({ design, onChange }: Props) {
     onChange({ ...design, [k]: v });
 
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const [open, setOpen] = useState<Record<string, boolean>>({
+    estilo: true,
+    cores: true,
+    logo: false,
+    moldura: false,
+    avancado: false,
+  });
+
+  const toggle = (id: string) => setOpen(o => ({ ...o, [id]: !o[id] }));
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -179,108 +232,124 @@ export function QrDesign({ design, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-8 pb-10">
-      <div>
+    <div className="space-y-3 pb-10">
+      <div className="mb-5">
         <h2 className="text-xl font-bold text-foreground mb-1">Design do QR Code</h2>
         <p className="text-sm text-muted-foreground">Personaliza as cores, o estilo e a moldura do código.</p>
       </div>
 
-      {/* ── TAMANHO ──────────────────────────────────── */}
-      <section className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-base font-bold text-foreground">Tamanho do QR</Label>
-          <span className="text-xs font-mono text-muted-foreground">{design.qrSize}px</span>
-        </div>
-        <Slider min={150} max={300} step={10} value={[design.qrSize]}
-          onValueChange={([v]) => set("qrSize", v)} data-testid="slider-qr-size" />
-      </section>
+      {/* ── 1. ESTILO ──────────────────────────────── */}
+      <Section id="estilo" icon={<Palette className="h-4 w-4" />} title="Estilo dos pontos e cantos" open={open.estilo} onToggle={() => toggle("estilo")}>
 
-      {/* ── ESTILO DOS PONTOS ────────────────────────── */}
-      <section className="space-y-3">
-        <Label className="text-base font-bold text-foreground">Estilo dos pontos</Label>
-        <div className="grid grid-cols-3 gap-2">
-          {DOT_STYLES.map(s => (
-            <button key={s.value} type="button" onClick={() => set("dotStyle", s.value)}
-              data-testid={`button-dot-${s.value}`}
-              className={`p-2.5 rounded-xl border-2 flex flex-col items-center gap-1 transition-all ${design.dotStyle === s.value ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"}`}
-            >
-              <span className="text-xl" style={{ color: design.fgColor || "#000" }}>{s.preview}</span>
-              <span className="text-[10px] font-medium text-foreground">{s.label}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* ── ESTILO DOS CANTOS ────────────────────────── */}
-      <section className="space-y-3">
-        <Label className="text-base font-bold text-foreground">Estilo dos cantos</Label>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <p className="text-xs text-muted-foreground font-medium">Quadrado externo</p>
-            <div className="flex gap-2">
-              {CORNER_SQ_STYLES.map(s => (
-                <button key={s.value} type="button" onClick={() => set("cornerSquareStyle", s.value)}
-                  className={`flex-1 py-1.5 rounded-lg border-2 text-[10px] font-semibold transition-all ${design.cornerSquareStyle === s.value ? "border-primary bg-primary/5 text-primary" : "border-slate-100 text-muted-foreground hover:border-slate-200"}`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
+        {/* Tamanho do QR */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-semibold text-foreground">Tamanho do QR</Label>
+            <span className="text-xs font-mono text-muted-foreground bg-slate-100 px-2 py-0.5 rounded-md">{design.qrSize}px</span>
           </div>
-          <div className="space-y-1.5">
-            <p className="text-xs text-muted-foreground font-medium">Ponto interno</p>
-            <div className="flex gap-2">
-              {CORNER_DOT_STYLES.map(s => (
-                <button key={s.value} type="button" onClick={() => set("cornerDotStyle", s.value)}
-                  className={`flex-1 py-1.5 rounded-lg border-2 text-[10px] font-semibold transition-all ${design.cornerDotStyle === s.value ? "border-primary bg-primary/5 text-primary" : "border-slate-100 text-muted-foreground hover:border-slate-200"}`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
+          <Slider min={150} max={300} step={10} value={[design.qrSize]}
+            onValueChange={([v]) => set("qrSize", v)} data-testid="slider-qr-size" />
+        </div>
+
+        {/* Estilo dos pontos */}
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Estilo dos pontos</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {DOT_STYLES.map(s => (
+              <button key={s.value} type="button" onClick={() => set("dotStyle", s.value)}
+                data-testid={`button-dot-${s.value}`}
+                className={`p-2.5 rounded-xl border-2 flex flex-col items-center gap-1 transition-all ${design.dotStyle === s.value ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"}`}
+              >
+                <span className="text-xl" style={{ color: design.fgColor || "#000" }}>{s.preview}</span>
+                <span className="text-[10px] font-medium text-foreground">{s.label}</span>
+              </button>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* ── COR DOS PONTOS ───────────────────────────── */}
-      <section className="space-y-2">
-        <Label className="text-base font-bold text-foreground">Cor dos pontos</Label>
-        <ColorRow colors={DOT_PRESETS} selected={design.fgColor} onChange={c => set("fgColor", c)} />
-        <p className="text-[11px] text-muted-foreground font-mono">{design.fgColor}</p>
-      </section>
-
-      {/* ── COR DOS CANTOS (opcional) ────────────────── */}
-      <section className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-base font-bold text-foreground">Cor dos cantos</Label>
-          {design.cornerColor && (
-            <button type="button" onClick={() => set("cornerColor", "")}
-              className="text-[11px] text-red-500 hover:underline">
-              Usar cor dos pontos
-            </button>
-          )}
+        {/* Estilo dos cantos */}
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Estilo dos cantos</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground font-medium">Quadrado externo</p>
+              <div className="flex gap-2">
+                {CORNER_SQ_STYLES.map(s => (
+                  <button key={s.value} type="button" onClick={() => set("cornerSquareStyle", s.value)}
+                    className={`flex-1 py-1.5 rounded-lg border-2 text-[10px] font-semibold transition-all ${design.cornerSquareStyle === s.value ? "border-primary bg-primary/5 text-primary" : "border-slate-100 text-muted-foreground hover:border-slate-200"}`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground font-medium">Ponto interno</p>
+              <div className="flex gap-2">
+                {CORNER_DOT_STYLES.map(s => (
+                  <button key={s.value} type="button" onClick={() => set("cornerDotStyle", s.value)}
+                    className={`flex-1 py-1.5 rounded-lg border-2 text-[10px] font-semibold transition-all ${design.cornerDotStyle === s.value ? "border-primary bg-primary/5 text-primary" : "border-slate-100 text-muted-foreground hover:border-slate-200"}`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-        <ColorRow colors={DOT_PRESETS} selected={design.cornerColor || design.fgColor} onChange={c => set("cornerColor", c)} />
-        <p className="text-[11px] text-muted-foreground">
-          {design.cornerColor ? <span className="font-mono">{design.cornerColor}</span> : "Igual aos pontos"}
-        </p>
-      </section>
+      </Section>
 
-      {/* ── COR DO FUNDO ─────────────────────────────── */}
-      <section className="space-y-2">
-        <Label className="text-base font-bold text-foreground">Cor do fundo</Label>
-        <ColorRow colors={BG_PRESETS} selected={design.bgColor} onChange={c => set("bgColor", c)} />
-        <p className="text-[11px] text-muted-foreground font-mono">{design.bgColor}</p>
-      </section>
+      {/* ── 2. CORES ───────────────────────────────── */}
+      <Section id="cores" icon={<Droplets className="h-4 w-4" />} title="Cores" open={open.cores} onToggle={() => toggle("cores")}>
 
-      {/* ── LOGO CENTRAL ─────────────────────────────── */}
-      <section className="space-y-4">
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Cor dos pontos</Label>
+          <ColorRow colors={DOT_PRESETS} selected={design.fgColor} onChange={c => set("fgColor", c)} />
+          <p className="text-[11px] text-muted-foreground font-mono">{design.fgColor}</p>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-semibold text-foreground">Cor dos cantos</Label>
+            {design.cornerColor && (
+              <button type="button" onClick={() => set("cornerColor", "")}
+                className="text-[11px] text-red-500 hover:underline">
+                Usar cor dos pontos
+              </button>
+            )}
+          </div>
+          <ColorRow colors={DOT_PRESETS} selected={design.cornerColor || design.fgColor} onChange={c => set("cornerColor", c)} />
+          <p className="text-[11px] text-muted-foreground">
+            {design.cornerColor ? <span className="font-mono">{design.cornerColor}</span> : "Igual aos pontos"}
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Cor do fundo</Label>
+          <ColorRow colors={BG_PRESETS} selected={design.bgColor} onChange={c => set("bgColor", c)} />
+          <p className="text-[11px] text-muted-foreground font-mono">{design.bgColor}</p>
+        </div>
+      </Section>
+
+      {/* ── 3. LOGO ────────────────────────────────── */}
+      <Section
+        id="logo"
+        icon={<Image className="h-4 w-4" />}
+        title="Logo central"
+        badge={design.showLogo ? "Activo" : undefined}
+        open={open.logo}
+        onToggle={() => toggle("logo")}
+      >
         <div className="flex items-center justify-between">
-          <Label className="text-base font-bold text-foreground">Logo central</Label>
+          <div>
+            <p className="text-sm font-semibold text-slate-700">Mostrar logo</p>
+            <p className="text-xs text-muted-foreground">Adiciona a tua marca ao centro do QR</p>
+          </div>
           <Switch checked={design.showLogo} onCheckedChange={v => set("showLogo", v)} data-testid="switch-show-logo" />
         </div>
+
         {design.showLogo && (
-          <div className="space-y-4 pl-1">
+          <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden cursor-pointer hover:bg-slate-100 transition-colors"
                 onClick={() => logoInputRef.current?.click()}>
@@ -304,82 +373,92 @@ export function QrDesign({ design, onChange }: Props) {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium text-muted-foreground">Tamanho do logo</Label>
-                <span className="text-xs font-mono text-muted-foreground">{design.logoSize}px</span>
+                <span className="text-xs font-mono text-muted-foreground bg-slate-100 px-2 py-0.5 rounded-md">{design.logoSize}px</span>
               </div>
               <Slider min={16} max={72} step={4} value={[design.logoSize]}
                 onValueChange={([v]) => set("logoSize", v)} data-testid="slider-logo-size" />
             </div>
           </div>
         )}
-      </section>
+      </Section>
 
-      {/* ── MOLDURA ──────────────────────────────────── */}
-      <section className="space-y-3">
-        <Label className="text-base font-bold text-foreground">Estilo de moldura</Label>
-        <div className="grid grid-cols-3 gap-2">
-          {FRAME_STYLES.map(f => (
-            <button key={f.value} type="button" onClick={() => set("frameStyle", f.value)}
-              data-testid={`button-frame-${f.value}`}
-              className={`p-2 rounded-xl border-2 flex flex-col items-center gap-1.5 transition-all ${design.frameStyle === f.value ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"}`}
-            >
-              {f.preview}
-              <span className={`text-[9px] font-semibold text-center leading-tight ${design.frameStyle === f.value ? "text-primary" : "text-muted-foreground"}`}>{f.label}</span>
-            </button>
-          ))}
-        </div>
-        {design.frameStyle !== "none" && (
-          <div className="space-y-2 pt-1">
-            <p className="text-xs font-medium text-muted-foreground">Cor da moldura</p>
-            <ColorRow colors={DOT_PRESETS} selected={design.frameColor} onChange={c => set("frameColor", c)} />
+      {/* ── 4. MOLDURA E LEGENDA ───────────────────── */}
+      <Section
+        id="moldura"
+        icon={<Frame className="h-4 w-4" />}
+        title="Moldura e legenda"
+        badge={design.frameStyle !== "none" || design.labelText ? "Activo" : undefined}
+        open={open.moldura}
+        onToggle={() => toggle("moldura")}
+      >
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Estilo de moldura</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {FRAME_STYLES.map(f => (
+              <button key={f.value} type="button" onClick={() => set("frameStyle", f.value)}
+                data-testid={`button-frame-${f.value}`}
+                className={`p-2 rounded-xl border-2 flex flex-col items-center gap-1.5 transition-all ${design.frameStyle === f.value ? "border-primary bg-primary/5" : "border-slate-100 hover:border-slate-200"}`}
+              >
+                {f.preview}
+                <span className={`text-[9px] font-semibold text-center leading-tight ${design.frameStyle === f.value ? "text-primary" : "text-muted-foreground"}`}>{f.label}</span>
+              </button>
+            ))}
           </div>
-        )}
-      </section>
+          {design.frameStyle !== "none" && (
+            <div className="space-y-2 pt-1">
+              <p className="text-xs font-medium text-muted-foreground">Cor da moldura</p>
+              <ColorRow colors={DOT_PRESETS} selected={design.frameColor} onChange={c => set("frameColor", c)} />
+            </div>
+          )}
+        </div>
 
-      {/* ── TEXTO / LEGENDA ───────────────────────────── */}
-      <section className="space-y-3">
-        <Label className="text-base font-bold text-foreground">Legenda</Label>
-        <Input
-          placeholder="Ex: Scan para visitar o nosso site"
-          value={design.labelText}
-          onChange={e => set("labelText", e.target.value)}
-          autoCorrect="off" autoComplete="off" spellCheck={false}
-          data-testid="input-label-text"
-        />
-        {design.labelText && (
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">Cor do texto</p>
-            <ColorRow colors={DOT_PRESETS} selected={design.labelColor} onChange={c => set("labelColor", c)} />
+        <div className="space-y-2">
+          <Label className="text-sm font-semibold text-foreground">Legenda</Label>
+          <Input
+            placeholder="Ex: Scan para visitar o nosso site"
+            value={design.labelText}
+            onChange={e => set("labelText", e.target.value)}
+            autoCorrect="off" autoComplete="off" spellCheck={false}
+            data-testid="input-label-text"
+          />
+          {design.labelText && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Cor do texto</p>
+              <ColorRow colors={DOT_PRESETS} selected={design.labelColor} onChange={c => set("labelColor", c)} />
+            </div>
+          )}
+        </div>
+      </Section>
+
+      {/* ── 5. AVANÇADO ────────────────────────────── */}
+      <Section id="avancado" icon={<Settings className="h-4 w-4" />} title="Avançado" open={open.avancado} onToggle={() => toggle("avancado")}>
+
+        <div className="space-y-2">
+          <div>
+            <Label className="text-sm font-semibold text-foreground">Nível de qualidade</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">Maior qualidade → QR mais denso mas mais resistente a danos</p>
           </div>
-        )}
-      </section>
+          <div className="grid grid-cols-2 gap-2">
+            {LEVELS.map(l => (
+              <button key={l.value} type="button" onClick={() => set("level", l.value)}
+                data-testid={`button-level-${l.value}`}
+                className={`p-3 rounded-xl border-2 text-left transition-all ${design.level === l.value ? "border-primary bg-primary/5" : "border-slate-100 bg-white hover:border-slate-200"}`}
+              >
+                <div className="text-xs font-bold text-foreground">{l.label}</div>
+                <div className="text-[11px] text-muted-foreground">{l.desc} de correção</div>
+              </button>
+            ))}
+          </div>
+        </div>
 
-      {/* ── NÍVEL DE QUALIDADE ───────────────────────── */}
-      <section className="space-y-3">
-        <div>
-          <Label className="text-base font-bold text-foreground">Nível de qualidade</Label>
-          <p className="text-xs text-muted-foreground mt-0.5">Maior qualidade → QR mais denso mas mais resistente a danos</p>
+        <div className="flex items-center justify-between py-1">
+          <div>
+            <Label className="text-sm font-semibold text-foreground">Margem branca</Label>
+            <p className="text-xs text-muted-foreground mt-0.5">Recomendada para leitores de QR</p>
+          </div>
+          <Switch checked={design.includeMargin} onCheckedChange={v => set("includeMargin", v)} data-testid="switch-margin" />
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {LEVELS.map(l => (
-            <button key={l.value} type="button" onClick={() => set("level", l.value)}
-              data-testid={`button-level-${l.value}`}
-              className={`p-3 rounded-xl border-2 text-left transition-all ${design.level === l.value ? "border-primary bg-primary/5" : "border-slate-100 bg-white hover:border-slate-200"}`}
-            >
-              <div className="text-xs font-bold text-foreground">{l.label}</div>
-              <div className="text-[11px] text-muted-foreground">{l.desc} de correção</div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* ── MARGEM ───────────────────────────────────── */}
-      <section className="flex items-center justify-between">
-        <div>
-          <Label className="text-base font-bold text-foreground">Margem branca</Label>
-          <p className="text-xs text-muted-foreground mt-0.5">Recomendada para leitores de QR</p>
-        </div>
-        <Switch checked={design.includeMargin} onCheckedChange={v => set("includeMargin", v)} data-testid="switch-margin" />
-      </section>
+      </Section>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import stepOneImg from "@assets/image_1775053797453.png";
-import stepTwoImg from "@assets/image_1775054078641.png";
+import stepTwoImg from "@assets/image_1775237621446.png";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -333,8 +333,8 @@ export default function Home() {
                 ].map((step) => (
                   <div key={step.num} className="relative flex flex-col items-center text-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/8 transition-all">
                     {step.img ? (
-                      <div className="w-full mb-5 rounded-2xl overflow-hidden border border-white/10">
-                        <img src={step.img} alt={step.title} className="w-full h-auto object-cover" />
+                      <div className="w-full mb-5 rounded-2xl overflow-hidden border border-white/20 bg-white shadow-lg">
+                        <img src={step.img} alt={step.title} className="w-full h-auto object-contain" />
                       </div>
                     ) : (
                       <div className={`w-14 h-14 rounded-2xl ${step.iconBg} flex items-center justify-center mb-5`}>

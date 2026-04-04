@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode, type CSSProperties } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -727,14 +727,20 @@ export default function Home() {
                         <p className="text-slate-500 text-base leading-relaxed">{feature.description}</p>
                       </div>
 
-                      <a href="#criar" className="w-full sm:w-fit">
-                        <Button
-                          className="w-full sm:w-fit px-6 h-11 rounded-xl font-semibold text-white transition-all active:scale-95 shadow-md"
-                          style={{ backgroundColor: feature.color }}
-                          data-testid={`button-create-${feature.type}`}
-                        >
-                          Criar QR Code de {feature.label} →
-                        </Button>
+                      <a
+                        href="#criar"
+                        className="animated-cta-btn w-full sm:w-fit justify-center"
+                        style={{ "--cta-color": feature.color } as CSSProperties}
+                        data-testid={`button-create-${feature.type}`}
+                      >
+                        <svg viewBox="0 0 24 24" className="cta-arr-2" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+                        </svg>
+                        <span className="cta-text">Criar QR Code de {feature.label}</span>
+                        <span className="cta-circle" />
+                        <svg viewBox="0 0 24 24" className="cta-arr-1" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+                        </svg>
                       </a>
                     </div>
 

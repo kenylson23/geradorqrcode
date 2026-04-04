@@ -110,6 +110,7 @@
 
 /* ── Animated CTA Button ── */
 .animated-cta-btn {
+  --cta-color: #2ECC71;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -120,8 +121,8 @@
   background-color: transparent;
   border-radius: 100px;
   font-weight: 600;
-  color: #2ECC71;
-  box-shadow: 0 0 0 2px #2ECC71;
+  color: var(--cta-color);
+  box-shadow: 0 0 0 2px var(--cta-color);
   cursor: pointer;
   overflow: hidden;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
@@ -131,7 +132,7 @@
 .animated-cta-btn svg {
   position: absolute;
   width: 22px;
-  fill: #2ECC71;
+  fill: var(--cta-color);
   z-index: 9;
   transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -151,7 +152,7 @@
   transform: translate(-50%, -50%);
   width: 20px;
   height: 20px;
-  background-color: #2ECC71;
+  background-color: var(--cta-color);
   border-radius: 50%;
   opacity: 0;
   transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
@@ -188,7 +189,7 @@
 
 .animated-cta-btn:active {
   scale: 0.95;
-  box-shadow: 0 0 0 4px #2ECC71;
+  box-shadow: 0 0 0 4px var(--cta-color);
 }
 
 .animated-cta-btn:hover .cta-circle {

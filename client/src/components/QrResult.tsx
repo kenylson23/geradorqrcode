@@ -26,9 +26,10 @@ interface QrResultProps {
   showQr?: boolean;
   setShowQr?: (show: boolean) => void;
   design?: QrDesignSettings;
+  onUrlComputed?: (url: string) => void;
 }
 
-export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSetShowQr, design }: QrResultProps) {
+export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSetShowQr, design, onUrlComputed }: QrResultProps) {
   const [showQr, setShowQr] = useState(false);
   const [simCurrent, setSimCurrent] = useState(0);
   const effectiveShowQr = propShowQr !== undefined ? propShowQr : showQr;
@@ -214,6 +215,10 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   };
 
   const qrValue = generateQrValue(value);
+
+  useEffect(() => {
+    if (qrValue && onUrlComputed) onUrlComputed(qrValue);
+  }, [qrValue]);
   
   // QR Code standard limit is around 4296 characters for alphanumeric
   // Base64 encoded PDFs can easily exceed this.

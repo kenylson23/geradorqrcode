@@ -19,6 +19,7 @@ import {
   MousePointerClick, Palette, Share2,
   RefreshCw, BarChart2, Paintbrush, FileImage, FileDown, Gift,
   ArrowRight, Globe, MessageCircle, UserCircle, Briefcase, Facebook, Instagram, Link2,
+  Copy, ClipboardCheck,
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 
@@ -142,10 +143,20 @@ export default function Home() {
   const [downloadSize, setDownloadSize] = useState(1024);
   const [design, setDesign] = useState<QrDesignSettings>(defaultDesign);
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
+  const [qrUrl, setQrUrl] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (qrData) setMobilePreviewOpen(true);
   }, [!!qrData]);
+
+  const handleCopyUrl = () => {
+    if (!qrUrl) return;
+    navigator.clipboard.writeText(qrUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const handleDownload = () => {
     if (selectedFormat === "svg") downloadSvg(QR_ELEMENT_ID, downloadSize);
@@ -313,6 +324,7 @@ export default function Home() {
                         showQr={showQr}
                         setShowQr={setShowQr}
                         design={design}
+                        onUrlComputed={setQrUrl}
                       />
                     </div>
                   ) : (
@@ -358,6 +370,25 @@ export default function Home() {
               {/* Download controls — only on step 3 */}
               {currentStep === 3 && (
                 <>
+                  {/* Copy URL button */}
+                  {qrUrl && (
+                    <Button
+                      variant="outline"
+                      onClick={handleCopyUrl}
+                      className={`h-9 px-3 rounded-xl border-2 font-semibold text-sm transition-all active:scale-95 flex-shrink-0 gap-1.5
+                        ${copied
+                          ? 'border-[#2ECC71] text-[#2ECC71] bg-[#2ECC71]/5'
+                          : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                        }`}
+                      data-testid="button-copy-url"
+                    >
+                      {copied
+                        ? <><ClipboardCheck className="h-3.5 w-3.5" /><span className="hidden sm:inline">Copiado!</span></>
+                        : <><Copy className="h-3.5 w-3.5" /><span className="hidden sm:inline">Copiar URL</span></>
+                      }
+                    </Button>
+                  )}
+
                   {/* Size picker — hidden on mobile */}
                   <div className="hidden sm:block">
                     <DropdownMenu>

@@ -228,8 +228,6 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
   const isUrlType = value?.type === 'url' || value?.type === 'facebook' || value?.type === 'instagram' || value?.type === 'pdf';
   const hasMinData = true; // Always show simulation during filling
 
-  console.log("QrResult Render:", { type: value?.type, hasMinData, value });
-
   const renderSimulation = () => {
     // If value is a string, it might be an encoded URL from LinkTree or Images
     // We need to decode it to show the simulation, or just skip if it's already a full URL
@@ -239,7 +237,6 @@ export function QrResult({ value, showQr: propShowQr = false, setShowQr: propSet
         if (value.includes('/i/')) {
           const encoded = value.split('/i/')[1];
           data = JSON.parse(decodeURIComponent(encoded));
-          console.log("Decoded Images Data:", data);
         } else if (value.includes('/ll#')) {
           const compressed = value.split('/ll#')[1];
           const decompressed = lzDecompress(compressed);

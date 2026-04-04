@@ -506,7 +506,7 @@ export default function Home() {
       {!qrData && (
         <>
           {/* Section 2 — Como funciona */}
-          <section className="py-12 md:py-20 bg-[#eef2f7]">
+          <section id="como-funciona" className="py-12 md:py-20 bg-[#eef2f7]">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2 tracking-tight">
                 Como criar o seu código QR personalizado?
@@ -643,7 +643,7 @@ export default function Home() {
           </section>
 
           {/* Section 2.5 — Explore as Funcionalidades */}
-          <section className="py-14 md:py-24 bg-[#f8fafc]">
+          <section id="funcionalidades" className="py-14 md:py-24 bg-[#f8fafc]">
             <div className="max-w-6xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Explore cada funcionalidade</h2>
               <p className="text-center text-slate-400 mb-10 text-base">Clique em cada tipo para ver uma prévia de como ficará no telemóvel</p>
@@ -736,7 +736,7 @@ export default function Home() {
           </section>
 
           {/* Section 3 — Por que usar o AngoQRCode? */}
-          <section className="py-14 md:py-24 bg-white">
+          <section id="vantagens" className="py-14 md:py-24 bg-white">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Por que usar o AngoQRCode?</h2>
               <p className="text-center text-slate-400 mb-8 md:mb-16 text-base">Tudo que precisa para criar QR codes profissionais</p>
@@ -808,7 +808,7 @@ export default function Home() {
           </section>
 
           {/* Section — Depoimentos */}
-          <section className="py-14 md:py-24 bg-[#eef2f7]">
+          <section id="depoimentos" className="py-14 md:py-24 bg-[#eef2f7]">
             <div className="max-w-5xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">O que dizem os nossos utilizadores</h2>
               <p className="text-center text-slate-400 mb-8 md:mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
@@ -896,7 +896,7 @@ export default function Home() {
           </section>
 
           {/* Section 4 — FAQ */}
-          <section className="py-14 md:py-24 bg-[#f8fafc]">
+          <section id="faq" className="py-14 md:py-24 bg-[#f8fafc]">
             <div className="max-w-2xl mx-auto px-6">
               <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Perguntas frequentes</h2>
               <p className="text-center text-slate-400 mb-8 md:mb-12 text-base">Tudo o que precisa de saber antes de começar</p>

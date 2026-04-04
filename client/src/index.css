@@ -107,3 +107,25 @@
     display: none;
   }
 }
+
+@keyframes testimonial-scroll-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes testimonial-scroll-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+[data-tscroll="up"] {
+  animation: testimonial-scroll-up 24s linear infinite;
+}
+
+[data-tscroll="down"] {
+  animation: testimonial-scroll-down 24s linear infinite;
+}
+
+[data-tscroll]:hover {
+  animation-play-state: paused;
+}

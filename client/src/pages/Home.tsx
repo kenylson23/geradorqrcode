@@ -133,6 +133,34 @@ const SIZE_OPTIONS: { label: string; value: number; desc: string }[] = [
   { label: "4096 px", value: 4096, desc: "Impressão grande" },
 ];
 
+function TestimonialCard({ t }: { t: { name: string; role: string; initials: string; color: string; quote: string } }) {
+  return (
+    <article
+      data-testid={`card-testimonial-${t.initials}`}
+      className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+    >
+      <blockquote className="text-[15px] text-slate-700 leading-relaxed">
+        <span className="inline-flex items-start gap-2">
+          <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" />
+            <path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" />
+          </svg>
+          {t.quote}
+        </span>
+      </blockquote>
+      <div className="mt-5 flex items-center gap-3">
+        <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center flex-shrink-0`}>
+          <span className="text-xs font-bold text-white">{t.initials}</span>
+        </div>
+        <div>
+          <div className="text-sm font-semibold text-slate-800">{t.name}</div>
+          <div className="text-xs text-slate-400">{t.role}</div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
   const [currentStep, setCurrentStep] = useState(1);
@@ -740,89 +768,97 @@ export default function Home() {
           <VantagensSection />
 
           {/* Section — Depoimentos */}
-          <section id="depoimentos" className="py-14 md:py-24 bg-[#eef2f7]">
-            <div className="max-w-5xl mx-auto px-6">
-              <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">O que dizem os nossos utilizadores</h2>
-              <p className="text-center text-slate-400 mb-8 md:mb-14 text-base">Milhares de pessoas já criaram os seus QR codes com o AngoQRCode</p>
+          <section id="depoimentos" className="py-14 md:py-24 bg-[#eef2f7] overflow-hidden">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Header */}
+              <div className="mb-10">
+                <span className="text-sm font-semibold text-[#25C06D]">Depoimentos</span>
+                <h2 className="mt-2 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+                  O que dizem os nossos utilizadores
+                </h2>
+                <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1.5 shadow-sm">
+                  <span className="inline-flex items-center -space-x-2">
+                    {[
+                      "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=200&auto=format&fit=crop",
+                      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop",
+                      "https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=200&auto=format&fit=crop",
+                      "https://images.unsplash.com/photo-1546456073-6712f79251bb?q=80&w=200&auto=format&fit=crop",
+                    ].map((src, i) => (
+                      <img key={i} className="h-6 w-6 rounded-full ring-2 ring-[#eef2f7] object-cover" src={src} alt={`Utilizador ${i + 1}`} />
+                    ))}
+                  </span>
+                  <span className="ml-1 inline-flex items-center gap-1 text-sm text-slate-600">
+                    {[1,2,3,4].map((_, i) => (
+                      <svg key={i} className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+                    ))}
+                    <svg className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 24 24"><path d="M12 17.8 5.8 21 7 14.1 2 9.3l7-1L12 2" /></svg>
+                    <span className="ml-1 text-slate-500">4.9/5 • +2.400 avaliações</span>
+                  </span>
+                </div>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {[
-                  {
-                    name: "Marta Ferreira",
-                    role: "Dona de restaurante, Luanda",
-                    initials: "MF",
-                    color: "bg-[#0EA5E9]",
-                    stars: 5,
-                    quote: "Criei o QR code do menu do meu restaurante em menos de 2 minutos. Os clientes adoram e já não precisamos de imprimir menus em papel.",
-                  },
-                  {
-                    name: "Carlos Mendes",
-                    role: "Fotógrafo profissional, Benguela",
-                    initials: "CM",
-                    color: "bg-[#2ECC71]",
-                    stars: 5,
-                    quote: "Uso o AngoQRCode para partilhar o meu portfólio de fotos. Coloco o QR code nos meus cartões de visita e os clientes acedem diretamente às minhas melhores imagens.",
-                  },
-                  {
-                    name: "Sofia Lopes",
-                    role: "Gestora de marketing, Luanda",
-                    initials: "SL",
-                    color: "bg-[#8B5CF6]",
-                    stars: 5,
-                    quote: "Ferramenta incrível! Crio QR codes personalizados com o logo da empresa para todas as nossas campanhas. O design fica sempre profissional.",
-                  },
-                  {
-                    name: "António Dias",
-                    role: "Professor universitário, Lubango",
-                    initials: "AD",
-                    color: "bg-[#F59E0B]",
-                    stars: 5,
-                    quote: "Uso para partilhar materiais de estudo com os meus alunos. Crio um QR code com PDF e eles acedem facilmente pelo telemóvel. Muito prático!",
-                  },
-                  {
-                    name: "Beatriz Santos",
-                    role: "Empreendedora, Huambo",
-                    initials: "BS",
-                    color: "bg-[#EF4444]",
-                    stars: 5,
-                    quote: "O meu negócio cresceu muito desde que passei a usar QR codes para divulgar o WhatsApp e o Instagram. Simples, rápido e completamente gratuito.",
-                  },
-                  {
-                    name: "Rui Tavares",
-                    role: "Músico e produtor, Luanda",
-                    initials: "RT",
-                    color: "bg-[#0EA5E9]",
-                    stars: 5,
-                    quote: "Criei um QR code com a lista de links para todas as minhas plataformas musicais. Os fãs encontram tudo num só scan. Recomendo a todos!",
-                  },
-                ].map((t) => (
-                  <div
-                    key={t.name}
-                    className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col gap-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
-                    data-testid={`card-testimonial-${t.initials}`}
-                  >
-                    {/* Stars */}
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: t.stars }).map((_, i) => (
-                        <svg key={i} className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    {/* Quote */}
-                    <p className="text-sm text-slate-600 leading-relaxed flex-1">"{t.quote}"</p>
-                    {/* Author */}
-                    <div className="flex items-center gap-3 pt-2 border-t border-slate-50">
-                      <div className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center flex-shrink-0`}>
-                        <span className="text-xs font-bold text-white">{t.initials}</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-slate-800">{t.name}</p>
-                        <p className="text-xs text-slate-400">{t.role}</p>
+              {/* Scrolling columns */}
+              <div
+                className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 overflow-hidden"
+                style={{
+                  maskImage: "linear-gradient(180deg, transparent, black 20%, black 80%, transparent)",
+                  WebkitMaskImage: "linear-gradient(180deg, transparent, black 20%, black 80%, transparent)",
+                  height: "560px",
+                }}
+              >
+                {/* Column 1 — scroll up */}
+                {(() => {
+                  const col1 = [
+                    { name: "Marta Ferreira", role: "Dona de restaurante, Luanda", initials: "MF", color: "bg-[#0EA5E9]", quote: "Criei o QR code do menu do meu restaurante em menos de 2 minutos. Os clientes adoram e já não precisamos de imprimir menus em papel." },
+                    { name: "Carlos Mendes", role: "Fotógrafo profissional, Benguela", initials: "CM", color: "bg-[#2ECC71]", quote: "Uso o AngoQRCode para partilhar o meu portfólio de fotos. Coloco o QR code nos meus cartões de visita e os clientes acedem diretamente às minhas melhores imagens." },
+                    { name: "Beatriz Santos", role: "Empreendedora, Huambo", initials: "BS", color: "bg-[#EF4444]", quote: "O meu negócio cresceu muito desde que passei a usar QR codes para divulgar o WhatsApp e o Instagram. Simples, rápido e completamente gratuito." },
+                  ];
+                  return (
+                    <div className="overflow-hidden hidden md:block">
+                      <div data-tscroll="up" className="space-y-5">
+                        {[...col1, ...col1].map((t, i) => (
+                          <TestimonialCard key={i} t={t} />
+                        ))}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })()}
+
+                {/* Column 2 — scroll down */}
+                {(() => {
+                  const col2 = [
+                    { name: "Sofia Lopes", role: "Gestora de marketing, Luanda", initials: "SL", color: "bg-[#8B5CF6]", quote: "Ferramenta incrível! Crio QR codes personalizados com o logo da empresa para todas as nossas campanhas. O design fica sempre profissional." },
+                    { name: "António Dias", role: "Professor universitário, Lubango", initials: "AD", color: "bg-[#F59E0B]", quote: "Uso para partilhar materiais de estudo com os meus alunos. Crio um QR code com PDF e eles acedem facilmente pelo telemóvel. Muito prático!" },
+                    { name: "Rui Tavares", role: "Músico e produtor, Luanda", initials: "RT", color: "bg-[#0EA5E9]", quote: "Criei um QR code com a lista de links para todas as minhas plataformas musicais. Os fãs encontram tudo num só scan. Recomendo a todos!" },
+                  ];
+                  return (
+                    <div className="overflow-hidden">
+                      <div data-tscroll="down" className="space-y-5">
+                        {[...col2, ...col2].map((t, i) => (
+                          <TestimonialCard key={i} t={t} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Column 3 — scroll up */}
+                {(() => {
+                  const col3 = [
+                    { name: "Kizua Neto", role: "Designer gráfico, Luanda", initials: "KN", color: "bg-[#25C06D]", quote: "Finalmente uma ferramenta angolana que funciona de verdade. Crio QR codes para os meus clientes em segundos e ficam sempre com uma aparência premium." },
+                    { name: "Esperança Lima", role: "Vendedora ambulante, Malanje", initials: "EL", color: "bg-[#F59E0B]", quote: "Uso o QR code para receber pagamentos. Os clientes passam, lêem e pagam sem confusão. Muito fácil de usar, mesmo sem saber muito de tecnologia." },
+                    { name: "Pedro Viana", role: "Estudante universitário, Huíla", initials: "PV", color: "bg-[#8B5CF6]", quote: "Partilho os meus trabalhos académicos com QR codes. É muito mais prático do que enviar links longos pelo WhatsApp. Toda a gente na turma começou a usar." },
+                  ];
+                  return (
+                    <div className="overflow-hidden hidden md:block">
+                      <div data-tscroll="up" className="space-y-5">
+                        {[...col3, ...col3].map((t, i) => (
+                          <TestimonialCard key={i} t={t} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </section>

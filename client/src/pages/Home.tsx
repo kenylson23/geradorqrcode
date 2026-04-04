@@ -443,7 +443,7 @@ export default function Home() {
                           <ChevronDown className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuContent align="end" className="w-56">
                         <DropdownMenuLabel className="text-xs text-muted-foreground">Escolher formato</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {(Object.entries(FORMAT_META) as [DownloadFormat, typeof FORMAT_META[DownloadFormat]][]).map(([fmt, meta]) => (
@@ -461,6 +461,26 @@ export default function Home() {
                             {selectedFormat === fmt && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
                           </DropdownMenuItem>
                         ))}
+
+                        {/* Size section — only visible on mobile (sm+ uses the separate size picker) */}
+                        <div className="sm:hidden">
+                          <DropdownMenuSeparator />
+                          <DropdownMenuLabel className="text-xs text-muted-foreground">Tamanho do ficheiro</DropdownMenuLabel>
+                          {SIZE_OPTIONS.map(sz => (
+                            <DropdownMenuItem
+                              key={sz.value}
+                              className="cursor-pointer gap-2"
+                              onClick={() => setDownloadSize(sz.value)}
+                              data-testid={`menu-size-mobile-${sz.value}`}
+                            >
+                              <div className="flex-1">
+                                <div className="font-medium">{sz.label}</div>
+                                <div className="text-[11px] text-muted-foreground">{sz.desc}</div>
+                              </div>
+                              {downloadSize === sz.value && <Check className="h-3.5 w-3.5 text-[#2ECC71]" />}
+                            </DropdownMenuItem>
+                          ))}
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

@@ -1,0 +1,140 @@
+<div class="md:p-10 bg-gradient-to-br from-white/[0.04] to-white/[0.02] border-white/10 border rounded-3xl pt-8 pr-8 pb-8 pl-8 backdrop-blur-sm">
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/80 backdrop-blur mb-4">
+          <span class="inline-flex items-center justify-center text-[#ffffff] bg-stone-50/20 w-6 h-6 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" class=""></path><circle cx="12" cy="12" r="4" class=""></circle></svg>
+          </span>
+          Core Values
+        </div>
+        <h2 class="md:text-4xl text-3xl font-semibold tracking-tight">
+          How We <span class="bg-clip-text font-light italic text-transparent font-playfair bg-[#ffffff]/60 px-2">Deliver</span>
+        </h2>
+        <p class="mt-2 text-white/70">Three principles that guide every project we take on.</p>
+      </div>
+      
+      <div class="relative grid gap-8 md:grid-cols-3 overflow-hidden max-w-7xl border-stone-50 rounded-3xl pt-8 pr-8 pb-8 pl-8" style="background-color: #0f0f14; background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px); background-size: 16px 16px; background-position: 0 0, 8px 8px; border: 1px solid rgba(255, 255, 255, 0.08);">
+  <!-- Edge highlight lines (sit exactly on the container border edge) -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+  
+  <!-- Specular flares on the top edge -->
+  <div aria-hidden="true" class="pointer-events-none absolute top-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/80 to-purple-500/70 w-60 opacity-0 transition-all duration-1000 ease-in-out" id="top-flare" style="opacity: 1;"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute top-0 right-0 bg-gradient-to-r from-transparent via-blue-400/30 to-purple-500/30 w-60 h-2 rounded-full blur-sm opacity-0 transition-all duration-1000 ease-in-out" id="top-flare-glow" style="opacity: 1;"></div>
+
+  <!-- Specular flares on the bottom left edge -->
+  <div aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 h-px bg-gradient-to-l from-transparent via-cyan-400/80 to-teal-500/70 w-60 opacity-0 transition-all duration-1000 ease-in-out" id="bottom-flare" style="opacity: 1;"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 bg-gradient-to-l from-transparent via-cyan-400/30 to-teal-500/30 w-60 h-2 rounded-full blur-sm opacity-0 transition-all duration-1000 ease-in-out" id="bottom-flare-glow" style="opacity: 1;"></div>
+
+  <div class="group">
+    <div class="inline-flex group-hover:scale-110 transition-transform text-[#ffffff]/30 bg-[#ffffff]/10 w-12 h-12 border-[#ffffff]/10 border rounded-2xl items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[24px] h-[24px]" data-icon-replaced="true" style="width: 24px; height: 24px; color: rgb(255, 255, 255);"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" class=""></path><circle cx="12" cy="12" r="4" class=""></circle></svg>
+    </div>
+    <h3 class="mt-4 text-xl font-semibold tracking-tight">Velocity</h3>
+    <p class="mt-2 text-sm text-white/70 leading-relaxed">Short loops, weekly demos, and crisp scopes that keep momentum. We ship fast and iterate faster.</p>
+    <div class="flex text-xs font-medium text-[#ffffff] mt-3 items-center">
+      <span class="">Learn more</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="ml-1 h-3 w-3"><path d="M5 12h14" class=""></path><path d="m12 5 7 7-7 7" class=""></path></svg>
+    </div>
+  </div>
+  <div class="group">
+    <div class="inline-flex group-hover:scale-110 transition-transform text-[#ffffff]/30 bg-[#ffffff]/10 w-12 h-12 border-[#ffffff]/10 border rounded-2xl items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[24px] h-[24px]" data-icon-replaced="true" style="width: 24px; height: 24px; color: rgb(255, 255, 255);"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" class=""></path></svg>
+    </div>
+    <h3 class="mt-4 text-xl font-semibold tracking-tight">Reliability</h3>
+    <p class="mt-2 text-sm text-white/70 leading-relaxed">Quality gates and observability built into every release. Your users deserve products that just work.</p>
+    <div class="flex text-xs font-medium text-[#ffffff] mt-3 items-center">
+      <span class="">Learn more</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1." stroke-linecap="round" stroke-linejoin="round" class="ml-1 h-3 w-3"><path d="M5 12h14" class=""></path><path d="m12 5 7 7-7 7" class=""></path></svg>
+    </div>
+  </div>
+  <div class="group">
+    <div class="inline-flex group-hover:scale-110 transition-transform text-[#ffffff]/30 bg-[#ffffff]/10 w-12 h-12 border-[#ffffff]/10 border rounded-2xl items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-[24px] h-[24px]" data-icon-replaced="true" style="width: 24px; height: 24px; color: rgb(255, 255, 255);"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" class=""></path></svg>
+    </div>
+    <h3 class="mt-4 text-xl font-semibold tracking-tight">Care</h3>
+    <p class="mt-2 text-sm text-white/70 leading-relaxed">Clear communication and a partner mindset from day one. We're invested in your long-term success.</p>
+    <div class="flex text-xs font-medium text-[#ffffff] mt-3 items-center">
+      <span class="">Learn more</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="ml-1 h-3 w-3"><path d="M5 12h14" class=""></path><path d="m12 5 7 7-7 7" class=""></path></svg>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const container = document.getElementById('aura-emfzyzeei');
+      const topFlare = document.getElementById('top-flare');
+      const topFlareGlow = document.getElementById('top-flare-glow');
+      const bottomFlare = document.getElementById('bottom-flare');
+      const bottomFlareGlow = document.getElementById('bottom-flare-glow');
+      
+      let hasAnimated = false;
+      let animationTimeout;
+      
+      function startFlareAnimations() {
+        // Initial fade in
+        setTimeout(() => {
+          topFlare.style.opacity = '1';
+          topFlareGlow.style.opacity = '1';
+        }, 500);
+        
+        setTimeout(() => {
+          bottomFlare.style.opacity = '1';
+          bottomFlareGlow.style.opacity = '1';
+        }, 800);
+        
+        // Start continuous animation cycle
+        function animateFlares() {
+          // Top flare cycle
+          setTimeout(() => {
+            topFlare.style.opacity = '0';
+            topFlareGlow.style.opacity = '0';
+          }, 3000);
+          
+          setTimeout(() => {
+            topFlare.style.opacity = '1';
+            topFlareGlow.style.opacity = '1';
+          }, 4500);
+          
+          // Bottom flare cycle (offset)
+          setTimeout(() => {
+            bottomFlare.style.opacity = '0';
+            bottomFlareGlow.style.opacity = '0';
+          }, 2000);
+          
+          setTimeout(() => {
+            bottomFlare.style.opacity = '1';
+            bottomFlareGlow.style.opacity = '1';
+          }, 5500);
+          
+          // Repeat the cycle
+          animationTimeout = setTimeout(animateFlares, 6000);
+        }
+        
+        animateFlares();
+      }
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            startFlareAnimations();
+            hasAnimated = true;
+          } else if (!entry.isIntersecting && hasAnimated) {
+            // Reset when out of view
+            if (animationTimeout) clearTimeout(animationTimeout);
+            topFlare.style.opacity = '0';
+            topFlareGlow.style.opacity = '0';
+            bottomFlare.style.opacity = '0';
+            bottomFlareGlow.style.opacity = '0';
+            hasAnimated = false;
+          }
+        });
+      }, {
+        threshold: 0.3,
+        rootMargin: '50px'
+      });
+      
+      observer.observe(container);
+    })();
+  </script>
+</div>
+    </div>

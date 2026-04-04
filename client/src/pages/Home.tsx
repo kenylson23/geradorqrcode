@@ -17,11 +17,12 @@ import {
 import {
   Download, ChevronDown, ImageIcon, FileText, Code, Check,
   MousePointerClick, Palette, Share2,
-  RefreshCw, BarChart2, Paintbrush, FileImage, FileDown, Gift,
+  FileDown,
   ArrowRight, Globe, MessageCircle, UserCircle, Briefcase, Facebook, Instagram, Link2,
   Copy, ClipboardCheck,
 } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
+import { VantagensSection } from "@/components/VantagensSection";
 
 const FEATURES: {
   type: string;
@@ -736,76 +737,7 @@ export default function Home() {
           </section>
 
           {/* Section 3 — Por que usar o AngoQRCode? */}
-          <section id="vantagens" className="py-14 md:py-24 bg-white">
-            <div className="max-w-5xl mx-auto px-6">
-              <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-4 tracking-tight">Por que usar o AngoQRCode?</h2>
-              <p className="text-center text-slate-400 mb-8 md:mb-16 text-base">Tudo que precisa para criar QR codes profissionais</p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {[
-                  {
-                    icon: <RefreshCw className="h-5 w-5 text-[#2ECC71]" />,
-                    gradient: "from-[#2ECC71]/10 to-[#2ECC71]/5",
-                    border: "border-[#2ECC71]/15",
-                    dot: "bg-[#2ECC71]",
-                    title: "QR Code Dinâmico",
-                    desc: "Edite o destino a qualquer hora sem reimprimir",
-                  },
-                  {
-                    icon: <BarChart2 className="h-5 w-5 text-[#8B5CF6]" />,
-                    gradient: "from-[#8B5CF6]/10 to-[#8B5CF6]/5",
-                    border: "border-[#8B5CF6]/15",
-                    dot: "bg-[#8B5CF6]",
-                    title: "Analytics de Scans",
-                    desc: "Acompanhe quantas vezes seu QR foi escaneado",
-                  },
-                  {
-                    icon: <Paintbrush className="h-5 w-5 text-orange-500" />,
-                    gradient: "from-orange-500/10 to-orange-500/5",
-                    border: "border-orange-500/15",
-                    dot: "bg-orange-500",
-                    title: "Design Personalizado",
-                    desc: "Adicione cores, logo e estilo ao seu QR",
-                  },
-                  {
-                    icon: <FileImage className="h-5 w-5 text-blue-500" />,
-                    gradient: "from-blue-500/10 to-blue-500/5",
-                    border: "border-blue-500/15",
-                    dot: "bg-blue-500",
-                    title: "PDF e Imagens",
-                    desc: "Hospede documentos e imagens diretamente no QR",
-                  },
-                  {
-                    icon: <FileDown className="h-5 w-5 text-rose-500" />,
-                    gradient: "from-rose-500/10 to-rose-500/5",
-                    border: "border-rose-500/15",
-                    dot: "bg-rose-500",
-                    title: "Múltiplos Formatos",
-                    desc: "Baixe em PNG, SVG ou PDF com alta resolução",
-                  },
-                  {
-                    icon: <Gift className="h-5 w-5 text-teal-500" />,
-                    gradient: "from-teal-500/10 to-teal-500/5",
-                    border: "border-teal-500/15",
-                    dot: "bg-teal-500",
-                    title: "Totalmente Gratuito",
-                    desc: "Crie quantos QR codes quiser sem cadastro",
-                  },
-                ].map((item) => (
-                  <div key={item.title} className={`group relative bg-gradient-to-br ${item.gradient} border ${item.border} rounded-2xl p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-default`}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
-                        {item.icon}
-                      </div>
-                      <h3 className="font-semibold text-slate-800 text-sm">{item.title}</h3>
-                    </div>
-                    <p className="text-sm text-slate-500 leading-relaxed pl-0">{item.desc}</p>
-                    <div className={`absolute top-5 right-5 w-1.5 h-1.5 rounded-full ${item.dot} opacity-60`} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <VantagensSection />
 
           {/* Section — Depoimentos */}
           <section id="depoimentos" className="py-14 md:py-24 bg-[#eef2f7]">

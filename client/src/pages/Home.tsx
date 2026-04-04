@@ -659,13 +659,19 @@ export default function Home() {
 
               {/* CTA */}
               <div className="flex justify-center">
-                <a href="#criar">
-                  <Button
-                    className="h-11 px-8 rounded-xl font-semibold bg-[#2ECC71] hover:bg-[#27ae60] text-white shadow-md shadow-[#2ECC71]/30 transition-all active:scale-95"
-                    data-testid="button-how-it-works-cta"
-                  >
-                    Criar código QR
-                  </Button>
+                <a
+                  href="#criar"
+                  className="animated-cta-btn"
+                  data-testid="button-how-it-works-cta"
+                >
+                  <svg viewBox="0 0 24 24" className="cta-arr-2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+                  </svg>
+                  <span className="cta-text">Criar QR Code</span>
+                  <span className="cta-circle" />
+                  <svg viewBox="0 0 24 24" className="cta-arr-1" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+                  </svg>
                 </a>
               </div>
             </div>

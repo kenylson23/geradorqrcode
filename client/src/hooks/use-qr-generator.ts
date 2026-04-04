@@ -1,12 +1,20 @@
 import { useState } from "react";
-import { type QrCodeForm } from "@shared/schema";
+import { type QrCodeForm, type QrType } from "@shared/schema";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 import type { QrDesignSettings } from "@/components/QrDesign";
 
+/**
+ * qrData holds either:
+ *  - null/undefined  → nothing generated yet
+ *  - QrCodeForm      → the raw form object (all types except "images")
+ *  - string          → a pre-encoded URL (only for type "images")
+ */
+export type QrData = QrCodeForm | string | null;
+
 export function useQrGenerator() {
-  const [qrData, setQrData] = useState<any>(null);
-  const [generatedType, setGeneratedType] = useState<string | null>(null);
+  const [qrData, setQrData] = useState<QrData>(null);
+  const [generatedType, setGeneratedType] = useState<QrType | null>(null);
 
   const generate = (data: QrCodeForm) => {
     if (data.type === "images") {
@@ -197,7 +205,7 @@ export function useQrGenerator() {
   };
 
   const reset = () => {
-    setQrData("");
+    setQrData(null);
     setGeneratedType(null);
   };
 

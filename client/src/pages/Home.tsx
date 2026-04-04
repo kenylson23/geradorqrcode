@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
 import { QrResult } from "@/components/QrResult";
 import { QrDesign, defaultDesign, type QrDesignSettings } from "@/components/QrDesign";
-import { useQrGenerator } from "@/hooks/use-qr-generator";
+import { useQrGenerator, type QrData } from "@/hooks/use-qr-generator";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

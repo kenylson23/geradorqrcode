@@ -1,0 +1,275 @@
+<div class="sm:px-6 lg:px-8 max-w-7xl mr-auto ml-auto pr-4 pl-4">
+  <div class="mb-12">
+    <span class="text-sm font-medium text-rose-400">Testimonials</span>
+    <h2 class="mt-2 text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight">
+      Real stories from teams who transformed their analytics.
+    </h2>
+    <div class="mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 border-white/10 bg-white/5">
+      <span class="inline-flex items-center -space-x-2">
+          <img class="h-6 w-6 rounded-full ring-2 object-cover ring-neutral-900" src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&amp;w=200&amp;auto=format&amp;fit=crop" alt="Reviewer 1" style="">
+          <img class="h-6 w-6 rounded-full ring-2 object-cover ring-neutral-900" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&amp;w=200&amp;auto=format&amp;fit=crop" alt="Reviewer 2" style="">
+          <img class="h-6 w-6 rounded-full ring-2 object-cover ring-neutral-900" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&amp;w=200&amp;auto=format&amp;fit=crop" alt="Reviewer 3" style="">
+          <img class="h-6 w-6 rounded-full ring-2 object-cover ring-neutral-900" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=200&amp;auto=format&amp;fit=crop" alt="Reviewer 4" style="">
+        </span>
+      <span class="ml-2 inline-flex items-center gap-1 text-sm text-neutral-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" class="lucide lucide-star w-4 h-4 text-amber-300" style=""><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" class=""></polygon></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" class="lucide lucide-star w-4 h-4 text-amber-300" style=""><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" class=""></polygon></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" class="lucide lucide-star w-4 h-4 text-amber-300" style=""><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" class=""></polygon></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" class="lucide lucide-star w-4 h-4 text-amber-300" style=""><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" class=""></polygon></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star-half" class="lucide lucide-star-half w-4 h-4 text-amber-300" style=""><path d="M12 17.8 5.8 21 7 14.1 2 9.3l7-1L12 2" class=""></path></svg>
+          <span class="ml-1">4.9/5 • 2,431 reviews</span>
+      </span>
+    </div>
+  </div>
+
+  <style>
+    @keyframes scrollUp {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-33.33%);
+      }
+    }
+
+    @keyframes scrollDown {
+      0% {
+        transform: translateY(-33.33%);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    [data-scroll-column="1"] {
+      animation: scrollUp 20s linear infinite;
+    }
+
+    [data-scroll-column="2"] {
+      animation: scrollDown 20s linear infinite;
+    }
+
+    [data-scroll-column="3"] {
+      animation: scrollUp 20s linear infinite;
+    }
+
+    [data-scroll-column]:hover {
+      animation-play-state: paused;
+    }
+  </style>
+
+  <div class="grid grid-cols-1 overflow-hidden md:grid-cols-3 py-12 gap-x-6 gap-y-6"
+    style="mask-image: linear-gradient(180deg, transparent, black 45%, black 45%, transparent); -webkit-mask-image: linear-gradient(180deg, transparent, black 45%, black 45%, transparent);">
+    <!-- Column 1 - Scroll Up -->
+    <div class="overflow-hidden">
+      <div data-scroll-column="1" class="space-y-6">
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "The instant setup let our team start tracking KPIs in minutes, not days. It changed how we plan every sprint."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Aisha Green" style="">
+            <div class="">
+              <div class="text-sm font-medium">Aisha Green</div>
+              <div class="text-xs text-neutral-400">Head of Business Intelligence</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Reporting is effortless now. Our team shares concise insights in seconds—no confusion, no wasted time."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Priya Patel" style="">
+            <div class="">
+              <div class="text-sm font-medium">Priya Patel</div>
+              <div class="text-xs text-neutral-400">Marketing Director</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "From trial to rollout took under a week. Dashboards finally match how our teams actually work."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1546456073-6712f79251bb?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Jonas Weber" style="">
+            <div class="">
+              <div class="text-sm font-medium">Jonas Weber</div>
+              <div class="text-xs text-neutral-400">Operations Lead</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Duplicate for seamless loop -->
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "The instant setup let our team start tracking KPIs in minutes, not days. It changed how we plan every sprint."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Aisha Green" style="">
+            <div class="">
+              <div class="text-sm font-medium">Aisha Green</div>
+              <div class="text-xs text-neutral-400">Head of Business Intelligence</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Column 2 - Scroll Down -->
+    <div class="overflow-hidden">
+      <div data-scroll-column="2" class="space-y-6">
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Clear, trustworthy reports across the org—security included. We cut weekly review time by 62%."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Michael Chen" style="">
+            <div>
+              <div class="text-sm font-medium">Michael Chen</div>
+              <div class="text-xs text-neutral-400">IT Security Lead</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Integrations were seamless. No extra IT tickets, and we saved 120+ hours in the first quarter."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Rachel Adams" style="">
+            <div>
+              <div class="text-sm font-medium">Rachel Adams</div>
+              <div class="text-xs text-neutral-400">Product Manager</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Support is outstanding. Every question had a thoughtful answer within minutes."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Liam O'Connor">
+            <div>
+              <div class="text-sm font-medium">Liam O'Connor</div>
+              <div class="text-xs text-neutral-400">Customer Success Manager</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Duplicate for seamless loop -->
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Clear, trustworthy reports across the org—security included. We cut weekly review time by 62%."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Michael Chen" style="">
+            <div class="">
+              <div class="text-sm font-medium">Michael Chen</div>
+              <div class="text-xs text-neutral-400">IT Security Lead</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Column 3 - Scroll Up -->
+    <div class="overflow-hidden">
+      <div data-scroll-column="3" class="space-y-6">
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Switching platforms was our best decision this year—intuitive, secure, and measurable results."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Carlos Rivera" style="">
+            <div>
+              <div class="text-sm font-medium">Carlos Rivera</div>
+              <div class="text-xs text-neutral-400">CEO</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Transparency removed all doubt. We always know where metrics stand and what to do next."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Sofia Martinez" style="">
+            <div>
+              <div class="text-sm font-medium">Sofia Martinez</div>
+              <div class="text-xs text-neutral-400">Analytics Lead</div>
+            </div>
+          </div>
+        </article>
+
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Predictive models helped us spot trends early and act faster. It's like a compass for growth."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Noah Bennett" style="">
+            <div class="">
+              <div class="text-sm font-medium">Noah Bennett</div>
+              <div class="text-xs text-neutral-400">Strategy Director</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Duplicate for seamless loop -->
+        <article data-card="testimonial" class="rounded-2xl border p-6 border-white/10 bg-neutral-900/70">
+          <blockquote class="text-[16px] sm:text-[18px] text-neutral-100">
+            <span class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="quote" class="lucide lucide-quote w-4 h-4 text-neutral-400"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z" class=""></path></svg>
+                "Switching platforms was our best decision this year—intuitive, secure, and measurable results."
+              </span>
+          </blockquote>
+          <div class="mt-5 flex items-center gap-3">
+            <img class="h-10 w-10 rounded-full object-cover ring-2 ring-white/10" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&amp;w=256&amp;auto=format&amp;fit=crop" alt="Carlos Rivera" style="">
+            <div>
+              <div class="text-sm font-medium">Carlos Rivera</div>
+              <div class="text-xs text-neutral-400">CEO</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>

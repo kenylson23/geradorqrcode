@@ -1,4 +1,5 @@
 import { useState, useEffect, type ReactNode, type CSSProperties } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -163,6 +164,7 @@ function TestimonialCard({ t }: { t: { name: string; role: string; initials: str
 
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
+  const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
@@ -310,8 +312,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* Right Column: Mockup (6 columns) - Desktop only - Sticky */}
-            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start sticky top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
+            {/* Right Column: Mockup (6 columns) - Desktop only */}
+            {!isMobile && <div className="lg:col-span-6 flex flex-col items-center justify-start sticky top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
 
               {/* Control Tabs */}
               {qrData && (
@@ -378,6 +380,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            }
           </div>
         </div>
       </main>
@@ -809,9 +812,20 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Scrolling columns */}
+              {/* Mobile testimonials — simple stack, no animation */}
+              <div className="md:hidden flex flex-col gap-4 mb-2">
+                {[
+                  { name: "Marta Ferreira", role: "Dona de restaurante, Luanda", initials: "MF", color: "bg-[#0EA5E9]", quote: "Criei o QR code do menu do meu restaurante em menos de 2 minutos. Os clientes adoram e já não precisamos de imprimir menus em papel." },
+                  { name: "Sofia Lopes", role: "Gestora de marketing, Luanda", initials: "SL", color: "bg-[#8B5CF6]", quote: "Crio QR codes personalizados com o logo da empresa para todas as nossas campanhas. O design fica sempre profissional." },
+                  { name: "Beatriz Santos", role: "Empreendedora, Huambo", initials: "BS", color: "bg-[#EF4444]", quote: "O meu negócio cresceu muito desde que passei a usar QR codes para divulgar o WhatsApp e o Instagram. Simples, rápido e completamente gratuito." },
+                ].map((t, i) => (
+                  <TestimonialCard key={i} t={t} />
+                ))}
+              </div>
+
+              {/* Scrolling columns — desktop only */}
               <div
-                className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 overflow-hidden testimonials-grid"
+                className="hidden md:grid md:grid-cols-3 gap-x-5 gap-y-5 overflow-hidden testimonials-grid"
                 style={{ height: "560px" }}
               >
                 {/* Column 1 — scroll up */}
@@ -822,7 +836,7 @@ export default function Home() {
                     { name: "Beatriz Santos", role: "Empreendedora, Huambo", initials: "BS", color: "bg-[#EF4444]", quote: "O meu negócio cresceu muito desde que passei a usar QR codes para divulgar o WhatsApp e o Instagram. Simples, rápido e completamente gratuito." },
                   ];
                   return (
-                    <div className="overflow-hidden hidden md:block">
+                    <div className="overflow-hidden">
                       <div data-tscroll="up" className="space-y-5">
                         {[...col1, ...col1].map((t, i) => (
                           <TestimonialCard key={i} t={t} />

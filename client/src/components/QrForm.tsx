@@ -376,21 +376,21 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
   if (!activeType) {
     return (
-      <div className="bg-white rounded-3xl p-6 border border-border shadow-sm space-y-4">
-        <h2 className="text-xl font-bold text-foreground mb-6">1. Selecione um tipo de código QR</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-border shadow-sm space-y-4">
+        <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">1. Selecione um tipo de código QR</h2>
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
           {qrOptions.map((option, index) => (
             <button
               key={index}
               onClick={() => handleTypeSelect(option.type)}
-              className="group flex flex-col items-center p-4 bg-white rounded-xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+              className="group flex flex-col items-center p-3 sm:p-4 bg-white rounded-xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 min-h-[80px] sm:min-h-[auto]"
               data-testid={`button-qr-type-${option.type}-${index}`}
             >
-              <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+              <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-primary/10 transition-colors flex-shrink-0">
                 <option.icon className="w-5 h-5 text-primary" />
               </div>
-              <span className="font-bold text-foreground text-center text-sm mb-0.5">{option.label}</span>
-              <span className="text-[9px] text-muted-foreground text-center leading-tight">{option.description}</span>
+              <span className="font-bold text-foreground text-center text-xs sm:text-sm leading-tight">{option.label}</span>
+              <span className="hidden sm:block text-[9px] text-muted-foreground text-center leading-tight mt-0.5">{option.description}</span>
             </button>
           ))}
         </div>
@@ -575,7 +575,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                             <select
                               value={selectedCountryCode}
                               onChange={(e) => setSelectedCountryCode(e.target.value)}
-                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-base px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                             >
                               {countryCodes.map((c) => (
                                 <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
@@ -1048,7 +1048,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                               <select
                                 value={selectedCountryCode}
                                 onChange={(e) => setSelectedCountryCode(e.target.value)}
-                                className="w-[100px] h-10 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                className="w-[100px] h-10 rounded-lg border border-gray-200 bg-white text-base px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                               >
                                 {countryCodes.map((c) => (
                                   <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>
@@ -1715,7 +1715,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
                             <select
                               value={selectedCountryCode}
                               onChange={(e) => setSelectedCountryCode(e.target.value)}
-                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-sm px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                              className="w-[100px] h-11 rounded-lg border border-gray-200 bg-white text-base px-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                             >
                               {countryCodes.map((c) => (
                                 <option key={c.code} value={c.code}>{c.flag} +{c.code}</option>

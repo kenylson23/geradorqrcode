@@ -1,16 +1,9 @@
-/* ── Helvetica Neue — local font stack ── */
+/* ── Helvetica Neue — apenas pesos essenciais (300, 400, 500, 700) ── */
 @font-face {
   font-family: 'Helvetica Neue';
   src: url('/fonts/HelveticaNeueLight.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueLightItalic.otf') format('opentype');
-  font-weight: 300;
-  font-style: italic;
   font-display: swap;
 }
 @font-face {
@@ -22,13 +15,6 @@
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueItalic.ttf') format('truetype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
   src: url('/fonts/HelveticaNeueMedium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
@@ -36,36 +22,8 @@
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueMediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
   src: url('/fonts/HelveticaNeueBold.otf') format('opentype');
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueBoldItalic.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueHeavy.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueBlack.otf') format('opentype');
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
@@ -286,13 +244,36 @@
 }
 
 [data-tscroll="up"] {
+  will-change: transform;
   animation: testimonial-scroll-up 24s linear infinite;
 }
 
 [data-tscroll="down"] {
+  will-change: transform;
   animation: testimonial-scroll-down 24s linear infinite;
 }
 
 [data-tscroll]:hover {
   animation-play-state: paused;
+}
+
+@media (min-width: 768px) {
+  .testimonials-grid {
+    mask-image: linear-gradient(180deg, transparent, black 20%, black 80%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, transparent, black 20%, black 80%, transparent);
+  }
+}
+
+@media (max-width: 767px) {
+  [data-tscroll] {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-tscroll] {
+    animation: none;
+    will-change: auto;
+  }
 }

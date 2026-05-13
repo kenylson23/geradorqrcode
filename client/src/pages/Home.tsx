@@ -811,12 +811,8 @@ export default function Home() {
 
               {/* Scrolling columns */}
               <div
-                className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 overflow-hidden"
-                style={{
-                  maskImage: "linear-gradient(180deg, transparent, black 20%, black 80%, transparent)",
-                  WebkitMaskImage: "linear-gradient(180deg, transparent, black 20%, black 80%, transparent)",
-                  height: "560px",
-                }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-5 overflow-hidden testimonials-grid"
+                style={{ height: "560px" }}
               >
                 {/* Column 1 — scroll up */}
                 {(() => {

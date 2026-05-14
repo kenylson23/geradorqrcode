@@ -1,28 +1,33 @@
 /* ── Helvetica Neue — apenas pesos essenciais (300, 400, 500, 700) ── */
+/* local() faz iOS/macOS usar a fonte do sistema sem download de rede */
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueLight.otf') format('opentype');
+  src: local('Helvetica Neue Light'), local('HelveticaNeue-Light'),
+       url('/fonts/HelveticaNeueLight.otf') format('opentype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueRoman.otf') format('opentype');
+  src: local('Helvetica Neue'), local('HelveticaNeue'),
+       url('/fonts/HelveticaNeueRoman.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueMedium.otf') format('opentype');
+  src: local('Helvetica Neue Medium'), local('HelveticaNeue-Medium'),
+       url('/fonts/HelveticaNeueMedium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueBold.otf') format('opentype');
+  src: local('Helvetica Neue Bold'), local('HelveticaNeue-Bold'),
+       url('/fonts/HelveticaNeueBold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -110,6 +115,9 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  button, a, [role="button"] {
+    touch-action: manipulation;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);

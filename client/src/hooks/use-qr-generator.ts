@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { type QrCodeForm, type QrType } from "@shared/schema";
 import { saveAs } from "file-saver";
-import jsPDF from "jspdf";
 import type { QrDesignSettings } from "@/components/QrDesign";
 
 /**
@@ -194,6 +193,7 @@ export function useQrGenerator() {
     const canvas = await svgToCanvas(elementId, sizePx, design);
     if (!canvas) return;
     const imgData = canvas.toDataURL("image/png");
+    const { default: jsPDF } = await import("jspdf");
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();

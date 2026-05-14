@@ -744,8 +744,8 @@ export default function Home() {
                       </a>
                     </div>
 
-                    {/* Right: iPhone Mockup Preview */}
-                    <div className="flex justify-center">
+                    {/* Right: iPhone Mockup Preview — hidden on mobile to avoid rendering QrResult off-screen */}
+                    <div className="hidden md:flex justify-center">
                       <div className="relative border-[#222222] bg-[#222222] border-[10px] rounded-[3rem] h-[480px] w-[270px] shadow-2xl overflow-hidden flex flex-col flex-shrink-0">
                         {/* Notch */}
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-xl z-50 flex items-center justify-center">
@@ -796,7 +796,7 @@ export default function Home() {
                       "https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=200&auto=format&fit=crop",
                       "https://images.unsplash.com/photo-1546456073-6712f79251bb?q=80&w=200&auto=format&fit=crop",
                     ].map((src, i) => (
-                      <img key={i} className="h-6 w-6 rounded-full ring-2 ring-[#eef2f7] object-cover" src={src} alt={`Utilizador ${i + 1}`} />
+                      <img key={i} loading="lazy" className="h-6 w-6 rounded-full ring-2 ring-[#eef2f7] object-cover" src={src} alt={`Utilizador ${i + 1}`} />
                     ))}
                   </span>
                   <span className="ml-1 inline-flex items-center gap-1 text-sm text-slate-600">

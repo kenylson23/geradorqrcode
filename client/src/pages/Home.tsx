@@ -1,5 +1,4 @@
 import { useState, useEffect, type ReactNode, type CSSProperties } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QrForm } from "@/components/QrForm";
@@ -164,7 +163,6 @@ function TestimonialCard({ t }: { t: { name: string; role: string; initials: str
 
 export default function Home() {
   const { qrData, generate, downloadPng, downloadSvg, downloadPdf, reset } = useQrGenerator();
-  const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(1);
   const [showQr, setShowQr] = useState(true);
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("png");
@@ -313,7 +311,7 @@ export default function Home() {
             )}
 
             {/* Right Column: Mockup (6 columns) - Desktop only */}
-            {!isMobile && <div className="lg:col-span-6 flex flex-col items-center justify-start sticky top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
+            <div className="hidden lg:flex lg:col-span-6 flex-col items-center justify-start lg:sticky lg:top-16 self-start pointer-events-none" style={{paddingBottom: qrData ? '96px' : '0'}}>
 
               {/* Control Tabs */}
               {qrData && (
@@ -380,7 +378,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            }
           </div>
         </div>
       </main>

@@ -249,7 +249,7 @@ export default function Home() {
                   data-testid="button-mobile-preview-toggle"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#2ECC71] animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-[#2ECC71]" />
                     Pré-visualização em tempo real
                   </div>
                   <ChevronDown
@@ -347,7 +347,7 @@ export default function Home() {
 
                 <div className="rounded-[2.4rem] overflow-hidden w-full h-full bg-white flex flex-col relative">
                   {qrData ? (
-                    <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                    <div className="w-full h-full flex flex-col items-center">
                       <QrResult 
                         value={qrData}
                         showQr={showQr}

@@ -376,17 +376,17 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
 
   if (!activeType) {
     return (
-      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-border shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-4 isolate">
         <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">1. Selecione um tipo de código QR</h2>
-        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-          {qrOptions.map((option, index) => (
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3" style={{contain: 'layout style paint'}}>
+          {qrOptions.map((option) => (
             <button
-              key={index}
+              key={option.type}
               onClick={() => handleTypeSelect(option.type)}
-              className="group flex flex-col items-center p-3 sm:p-4 bg-white rounded-xl border border-border/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 min-h-[80px] sm:min-h-[auto]"
-              data-testid={`button-qr-type-${option.type}-${index}`}
+              className="group flex flex-col items-center p-3 sm:p-4 bg-white rounded-xl border border-slate-200 active:bg-slate-50 sm:hover:border-green-400 sm:hover:shadow-md transition-colors duration-150 min-h-[80px] sm:min-h-[auto]"
+              data-testid={`button-qr-type-${option.type}`}
             >
-              <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-primary/10 transition-colors flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-2 sm:mb-3 sm:group-hover:bg-green-100 flex-shrink-0">
                 <option.icon className="w-5 h-5 text-primary" />
               </div>
               <span className="font-bold text-foreground text-center text-xs sm:text-sm leading-tight">{option.label}</span>
@@ -404,7 +404,7 @@ export const QrForm = forwardRef(({ onGenerate, onStepChange }, ref) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div
               key={activeType}
-              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg min-h-[250px] pb-20 animate-in fade-in slide-in-from-right-2 duration-200"
+              className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm min-h-[250px] pb-20"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">

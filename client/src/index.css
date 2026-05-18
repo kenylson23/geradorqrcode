@@ -277,11 +277,28 @@
     animation: none;
     will-change: auto;
   }
+
+  /* Disable CSS entry animations on mobile — avoids Android Chrome GPU compositing artifacts */
+  .animate-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Prevent GPU layer promotion from box-shadow transitions on mobile */
+  * {
+    --tw-shadow-colored: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-tscroll] {
     animation: none;
     will-change: auto;
+  }
+  .animate-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
